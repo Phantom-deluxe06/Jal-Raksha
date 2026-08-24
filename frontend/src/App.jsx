@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import FloodMap from "./components/FloodMap";
+import Terrain3D from "./components/Terrain3D";
 import Timeline from "./components/Timeline";
 import Legend from "./components/Legend";
 import InfoPanel from "./components/InfoPanel";
@@ -13,6 +14,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [running, setRunning] = useState(false);
   const [mode, setMode] = useState("full"); // "full" | "instant"
+  const [viewMode, setViewMode] = useState("2d"); // "2d" | "3d"
   const [prediction, setPrediction] = useState(null);
   const [predictedLocation, setPredictedLocation] = useState(null);
 
@@ -55,16 +57,45 @@ export default function App() {
         ? `data:image/png;base64,${prediction.overlay_png_base64}`
         : null;
 
+  const activeBounds = mode === "instant" && prediction ? prediction.bounds : meta.bounds;
+
   return (
     <div className="app-root">
       <div className="map-pane">
-        <FloodMap
-          bounds={mode === "instant" && prediction ? prediction.bounds : meta.bounds}
-          overlayUrl={overlayUrl}
-          overlayKey={mode === "full" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
-          breachLatLon={meta.breach_latlon}
-          predictedLocation={mode === "instant" ? predictedLocation : null}
-        />
+        {/* 2D / 3D View Switcher */}
+        <div className="viewport-toggle">
+          <button
+            className={viewMode === "2d" ? "active" : ""}
+            onClick={() => setViewMode("2d")}
+          >
+            🗺️ 2D Map View
+          </button>
+          <button
+            className={viewMode === "3d" ? "active" : ""}
+            onClick={() => setViewMode("3d")}
+          >
+            🌐 3D Terrain (SRTM + S2)
+          </button>
+        </div>
+
+        {viewMode === "2d" ? (
+          <FloodMap
+            bounds={activeBounds}
+            overlayUrl={overlayUrl}
+            overlayKey={mode === "full" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
+            breachLatLon={meta.breach_latlon}
+            predictedLocation={mode === "instant" ? predictedLocation : null}
+          />
+        ) : (
+          <Terrain3D
+            bounds={activeBounds}
+            overlayUrl={overlayUrl}
+            breachLatLon={meta.breach_latlon}
+            currentTimeFormatted={frame ? `T+${frame.t_minutes}m` : "T+0m"}
+            mode={mode}
+          />
+        )}
+
         <Legend />
         {mode === "full" && <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />}
       </div>
@@ -95,3 +126,4 @@ export default function App() {
     </div>
   );
 }
+

@@ -34,3 +34,14 @@ export async function predictInstant({ discharge_cumecs, lat, lon }) {
   }
   return res.json();
 }
+
+export async function fetchDem(downsample = 2) {
+  const res = await fetch(`${API_BASE}/terrain/dem?downsample=${downsample}`);
+  if (!res.ok) throw new Error(`DEM fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export function satelliteUrl() {
+  return `${API_BASE}/terrain/satellite`;
+}
+

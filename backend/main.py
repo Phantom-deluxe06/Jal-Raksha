@@ -185,6 +185,67 @@ def predict_instant(req: PredictRequest):
     }
 
 
+@app.get("/terrain/dem")
+def get_terrain_dem(downsample: int = 1):
+    """Serve the real SRTM DEM elevation grid for 3D terrain mesh rendering."""
+    from swe.dem_utils import load_dem_grid
+    from swe import run_kosi_swe
+    import numpy as np
+
+    dem_path = str(run_kosi_swe.DEM_PATH)
+    grid = load_dem_grid(dem_path, run_kosi_swe.TARGET_RES_DEG)
+    elev = grid.elevation
+
+    if downsample > 1:
+        elev = elev[::downsample, ::downsample]
+
+    min_val = float(np.nanmin(elev))
+    max_val = float(np.nanmax(elev))
+
+    # Clean any nans
+    elev_clean = np.nan_to_num(elev, nan=min_val).astype(float)
+    flat_elev = [round(float(v), 2) for v in elev_clean.flatten()]
+
+    return {
+        "rows": elev_clean.shape[0],
+        "cols": elev_clean.shape[1],
+        "min_elevation": min_val,
+        "max_elevation": max_val,
+        "dx_m": grid.dx * downsample,
+        "dy_m": grid.dy * downsample,
+        "elevations": flat_elev,
+    }
+
+
+@app.get("/terrain/satellite")
+def get_terrain_satellite():
+    """Serve the real Sentinel-2 satellite true-colour preview for the AOI."""
+    sat_path = ROOT / "data" / "satellite" / "preview.png"
+    if not sat_path.exists():
+        raise HTTPException(404, "satellite preview image not found")
+    return FileResponse(sat_path, media_type="image/png")
+
+
+@app.get("/sph/result")
+def get_sph_result():
+    """Serve SPH simulation metadata, physics formulation, and SWE comparison metrics."""
+    sph_meta_path = OUTPUTS_DIR / "sph_kosi_breach" / "metadata.json"
+    if not sph_meta_path.exists():
+        raise HTTPException(404, "SPH simulation results not generated yet -- run backend/sph/run_kosi_sph.py first")
+    return JSONResponse(json.loads(sph_meta_path.read_text()))
+
+
+@app.get("/sph/snapshot/{t_seconds}")
+def get_sph_snapshot(t_seconds: int):
+    """Serve a single time-snapshot of SPH particle positions and velocities."""
+    snap_path = OUTPUTS_DIR / "sph_kosi_breach" / "snapshots" / f"sph_t{t_seconds:04d}.json"
+    if not snap_path.exists():
+        raise HTTPException(404, f"SPH snapshot at t={t_seconds}s not found")
+    return JSONResponse(json.loads(snap_path.read_text()))
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
