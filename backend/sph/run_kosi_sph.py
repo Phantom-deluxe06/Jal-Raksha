@@ -105,25 +105,59 @@ def main():
     snapshot_interval_s = 15.0 # snapshot every 15s (21 snapshots)
     dt = sph_cfg.dt_fixed
 
+    # Progress-timeout guards: a single timestep should normally take low
+    # milliseconds even at the particle cap now that neighbor search is
+    # O(N). If it doesn't, that's a scaling regression we want to catch via
+    # a loud log line -- not discover as a multi-minute hang with no
+    # CPU/GPU activity, which is what happened before this was added.
+    STEP_WARN_S = 2.0    # log a warning if a step exceeds this
+    STEP_ABORT_S = 30.0  # abort the run (saving partial results) beyond this
+    step_times = []
+    solver_aborted = False
+    abort_reason = None
+
     snapshots = []
     t_sim = 0.0
     next_snap = 0.0
     step_count = 0
 
     print("\nRunning SPH time integration on GPU...")
+    print(f"Neighbor search: uniform-grid binning (cell size {solver.cell_size:.0f}m = 2h), "
+          f"max_particles_per_cell={sph_cfg.max_particles_per_cell}, particle cap={sph_cfg.max_particles}")
     while t_sim <= duration_s + 1e-4:
         if t_sim >= next_snap - 1e-4:
             snap = solver.capture_snapshot()
             snapshots.append(snap)
-            print(f"  [T+{snap.t_s:03.0f}s] N={snap.n_particles:5d} particles | max_u={snap.max_speed_ms:4.1f} m/s | max_h={snap.max_depth_m:4.1f} m | front={snap.front_position_m:4.0f} m")
+            overflow = solver.diagnostics.get("bucket_overflow_particles", 0)
+            throttle_note = " [INFLOW THROTTLED -- at particle cap]" if solver.diagnostics.get("inflow_throttled") else ""
+            overflow_note = f" [WARNING: {overflow} particles dropped from neighbor buckets -- increase max_particles_per_cell]" if overflow else ""
+            print(f"  [T+{snap.t_s:03.0f}s] N={snap.n_particles:5d} particles | max_u={snap.max_speed_ms:4.1f} m/s | max_h={snap.max_depth_m:4.1f} m | front={snap.front_position_m:4.0f} m{throttle_note}{overflow_note}")
             next_snap += snapshot_interval_s
 
+        t_step0 = time.time()
         solver.step(dt)
+        step_dt = time.time() - t_step0
+        step_times.append(step_dt)
+
+        if step_dt > STEP_ABORT_S:
+            solver_aborted = True
+            abort_reason = f"single timestep took {step_dt:.1f}s (> {STEP_ABORT_S}s abort threshold) at N={solver.pos.shape[0]} particles, t_sim={t_sim:.1f}s"
+            print(f"  *** ABORTING: {abort_reason} ***")
+            break
+        if step_dt > STEP_WARN_S:
+            print(f"  *** WARNING: step at t_sim={t_sim:.1f}s took {step_dt:.2f}s (> {STEP_WARN_S}s) at N={solver.pos.shape[0]} particles -- possible scaling issue ***")
+
         t_sim += dt
         step_count += 1
 
     wall_time_s = time.time() - t_start
-    print(f"\nSPH Simulation Completed in {wall_time_s:.2f}s ({step_count} time steps, {len(snapshots)} snapshots)")
+    max_step_s = max(step_times) if step_times else 0.0
+    mean_step_s = float(np.mean(step_times)) if step_times else 0.0
+    print(f"\nSPH Simulation {'ABORTED' if solver_aborted else 'Completed'} in {wall_time_s:.2f}s "
+          f"({step_count} time steps, {len(snapshots)} snapshots)")
+    print(f"Step timing: mean={mean_step_s*1000:.1f}ms, max={max_step_s*1000:.1f}ms")
+    if solver_aborted:
+        print(f"Abort reason: {abort_reason}")
 
     # Compute SWE baseline metrics for the same local window and early timesteps for honest comparison
     swe_comparison_data = []
@@ -189,7 +223,27 @@ def main():
             "gpu_accelerated": torch.cuda.is_available(),
             "wall_time_s": round(wall_time_s, 2),
             "total_steps": step_count,
-            "peak_particles": snapshots[-1].n_particles if snapshots else 0,
+            "peak_particles": int(solver.pos.shape[0]),
+            "mean_step_ms": round(mean_step_s * 1000, 2),
+            "max_step_ms": round(max_step_s * 1000, 2),
+        },
+        "neighbor_search": {
+            "method": "uniform-grid spatial binning (cell size = 2h)",
+            "cell_size_m": round(solver.cell_size, 1),
+            "max_particles_per_cell": sph_cfg.max_particles_per_cell,
+            "max_particles_cap": sph_cfg.max_particles,
+            "step_warn_threshold_s": STEP_WARN_S,
+            "step_abort_threshold_s": STEP_ABORT_S,
+            "note": (
+                "Previously a dense N x N pairwise check with no spatial pruning -- this hung "
+                "once particle count reached the low thousands (both compute and the transient "
+                "N x N intermediate tensors scale quadratically). Neighbor search now costs O(N): "
+                "each particle only checks candidates from its own grid cell + 26 adjacent cells."
+            ),
+        },
+        "solver_status": {
+            "aborted": solver_aborted,
+            "abort_reason": abort_reason,
         },
         "domain": {
             "description": "Localized Paschim Kusaha Breach Sub-Region (~1.3 km x 1.3 km)",

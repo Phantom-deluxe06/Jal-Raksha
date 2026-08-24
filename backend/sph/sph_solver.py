@@ -8,6 +8,16 @@ Formulation:
 - Boundary handling: Dynamic DEM boundary particles with Lennard-Jones / Monaghan repulsive boundary forces.
 - Continuous breach inflow injection at the documented discharge rate (3,675 m^3/s).
 - Fully vectorized PyTorch CUDA tensor execution on GPU.
+
+Neighbor search: uniform-grid spatial binning (cell size = 2h, the Wendland C2
+kernel's compact support radius). Each particle's neighbor candidates are the
+particles bucketed into its own cell plus its 26 adjacent cells (27 total),
+gathered as a fixed-size (N, 27*max_particles_per_cell) tensor -- so search
+cost scales with N (particle count), not N^2. See _build_neighbor_candidates.
+Previously this was a dense N x N pairwise check with no cutoff pruning,
+which is what caused simulations to hang once particle count grew into the
+low thousands (both compute and transient memory for the N x N intermediate
+tensors scale quadratically).
 """
 from dataclasses import dataclass, field
 import math
@@ -29,6 +39,18 @@ class SPHConfig:
     dt_fixed: float = 0.04         # Base time step (s)
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
 
+    # Neighbor-search grid binning. Sized generously: a cell is (2h)^3 =
+    # 48x48x48m, and dense clustering (e.g. particles piling near the
+    # breach injection point before terrain slope disperses them) can put
+    # far more than a "typical" areal-density estimate's worth of
+    # particles in one cell. See _build_neighbor_candidates' overflow
+    # diagnostic -- if that ever fires in practice, raise this further
+    # rather than silently dropping particles from the interaction.
+    max_particles_per_cell: int = 128
+
+    # Hard bounds so continuous inflow can never grow memory/compute unboundedly,
+    # even if a run's domain lets particles linger longer than expected.
+    max_particles: int = 6000
 
 
 @dataclass
@@ -83,6 +105,13 @@ def wendland_c2_kernel_and_grad(r, h, dim=2):
     return w, dw_dr
 
 
+# The 27 relative cell offsets (3x3x3 block) making up a cell's Moore neighborhood.
+_NEIGHBOR_OFFSETS = torch.tensor(
+    [(dx, dy, dz) for dx in (-1, 0, 1) for dy in (-1, 0, 1) for dz in (-1, 0, 1)],
+    dtype=torch.long,
+)
+
+
 class WCSPHSolver:
     def __init__(
         self,
@@ -114,6 +143,7 @@ class WCSPHSolver:
         self.dem_dx = dem_dx
         self.dem_dy = dem_dy
         self.dem_min_z = float(np.min(dem_z_grid))
+        self.dem_max_z = float(np.max(dem_z_grid))
 
         # Particle mass based on initial spacing (dx_p^2 * depth_nom * rho0 / N)
         self.particle_mass = (self.cfg.dx_p ** 2) * 1.5 * self.cfg.rho0 # kg per 2.5D particle
@@ -128,6 +158,16 @@ class WCSPHSolver:
         self.t = 0.0
         self.injected_volume_m3 = 0.0
         self.inflow_accumulator = 0.0
+
+        # Neighbor-search grid: cell size = kernel compact support radius (2h),
+        # per the standard SPH cell-list convention (nothing beyond adjacent
+        # cells can be within the kernel cutoff).
+        self.cell_size = 2.0 * self.cfg.h
+        self._neighbor_offsets = _NEIGHBOR_OFFSETS.to(self.dev)
+
+        # Diagnostics populated each step() call -- inspected by the caller
+        # (run_kosi_sph.py) for scaling/overflow warnings.
+        self.diagnostics: dict = {}
 
     def get_bed_elevation(self, x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         """Bilinear elevation lookup from DEM grid."""
@@ -158,7 +198,12 @@ class WCSPHSolver:
         return z
 
     def inject_particles(self, dt: float):
-        """Inject new fluid particles at the breach aperture matching the 3,675 m^3/s flow rate."""
+        """Inject new fluid particles at the breach aperture matching the
+        documented discharge rate -- throttled so the total particle count
+        never exceeds cfg.max_particles. Any demanded inflow volume that
+        can't be injected this step is kept in the accumulator (not
+        discarded), so it's injected once headroom frees up rather than
+        silently lost from the mass balance."""
         target_volume = self.discharge * dt
         self.inflow_accumulator += target_volume
         particle_vol = self.particle_mass / self.cfg.rho0
@@ -167,11 +212,23 @@ class WCSPHSolver:
         if n_new <= 0:
             return
 
-        self.inflow_accumulator -= n_new * particle_vol
-        self.injected_volume_m3 += n_new * particle_vol
+        current_n = self.pos.shape[0]
+        headroom = max(0, self.cfg.max_particles - current_n)
+        n_inject = min(n_new, headroom)
+
+        # Only consume accumulator volume for particles actually injected;
+        # the rest (if throttled) stays queued for a future step.
+        self.inflow_accumulator -= n_inject * particle_vol
+        self.injected_volume_m3 += n_inject * particle_vol
+        self.diagnostics["inflow_throttled"] = n_inject < n_new
+        self.diagnostics["inflow_throttled_particles"] = n_new - n_inject
+
+        if n_inject <= 0:
+            return
+
+        n_new = n_inject
 
         # Distribute particles across breach width (along x around breach_x, slightly behind breach_y)
-        half_w = self.breach_width / 2.0
         rand_x = (torch.rand(n_new, device=self.dev) - 0.5) * self.breach_width + self.breach_x
         rand_y = (torch.rand(n_new, device=self.dev) - 0.5) * (self.cfg.dx_p * 2) + self.breach_y
         bed_z = self.get_bed_elevation(rand_x, rand_y)
@@ -194,29 +251,116 @@ class WCSPHSolver:
         self.rho = torch.cat([self.rho, new_rho], dim=0)
         self.pressure = torch.cat([self.pressure, new_p], dim=0)
 
+    def _build_neighbor_candidates(self):
+        """Uniform-grid spatial binning: returns (cand_idx, valid_mask), each
+        shaped (N, 27*max_particles_per_cell) -- for every particle, the
+        indices of particles bucketed into its own cell + 26 adjacent cells
+        (padded with a sentinel where a cell has fewer than max_particles_per_cell
+        occupants, or where a neighbor cell is outside the grid).
+
+        This is O(N) work (bucket build is one sort + one scatter over all
+        particles; gathering candidates is 27 fixed gathers, independent of
+        N), unlike the old dense N x N distance matrix.
+        """
+        N = self.pos.shape[0]
+        dev = self.dev
+        cs = self.cell_size
+
+        x, y, z = self.pos[:, 0], self.pos[:, 1], self.pos[:, 2]
+        gx_min, gx_max = self.x_min - 50.0, self.x_max + 50.0
+        gy_min, gy_max = self.y_min - 50.0, self.y_max + 50.0
+        gz_min = float(z.min().item()) - 1.0
+        gz_max = float(z.max().item()) + 1.0
+
+        nx = max(1, int(math.ceil((gx_max - gx_min) / cs)))
+        ny = max(1, int(math.ceil((gy_max - gy_min) / cs)))
+        nz = max(1, int(math.ceil((gz_max - gz_min) / cs)))
+
+        icx = torch.clamp(((x - gx_min) / cs).long(), 0, nx - 1)
+        icy = torch.clamp(((y - gy_min) / cs).long(), 0, ny - 1)
+        icz = torch.clamp(((z - gz_min) / cs).long(), 0, nz - 1)
+        cell_id = icx + nx * (icy + ny * icz)  # (N,) linear cell index
+
+        # Sort particles by cell so each cell's members are a contiguous run.
+        order = torch.argsort(cell_id)
+        sorted_cell = cell_id[order]
+
+        # Rank of each particle within its cell's run (0-indexed), via the
+        # standard "first occurrence index" trick on a sorted array.
+        first_idx = torch.searchsorted(sorted_cell, sorted_cell, side="left")
+        rank_in_cell = torch.arange(N, device=dev) - first_idx
+
+        M = self.cfg.max_particles_per_cell
+        overflow = int((rank_in_cell >= M).sum().item())
+
+        n_cells = nx * ny * nz
+        bucket = torch.full((n_cells * M,), -1, dtype=torch.long, device=dev)
+        keep = rank_in_cell < M
+        flat_slot = sorted_cell[keep] * M + rank_in_cell[keep]
+        bucket[flat_slot] = order[keep]
+        bucket = bucket.view(n_cells, M)
+
+        # Gather each particle's own-cell coords, then for the 27 offsets
+        # gather that neighbor cell's bucket row for every particle at once.
+        candidates = []
+        valids = []
+        for doff in self._neighbor_offsets:
+            ncx = icx + doff[0]
+            ncy = icy + doff[1]
+            ncz = icz + doff[2]
+            in_grid = (ncx >= 0) & (ncx < nx) & (ncy >= 0) & (ncy < ny) & (ncz >= 0) & (ncz < nz)
+            ncx_safe = torch.clamp(ncx, 0, nx - 1)
+            ncy_safe = torch.clamp(ncy, 0, ny - 1)
+            ncz_safe = torch.clamp(ncz, 0, nz - 1)
+            ncell = ncx_safe + nx * (ncy_safe + ny * ncz_safe)  # (N,)
+
+            cand = bucket[ncell]  # (N, M) -- gather, fully vectorized
+            cand = torch.where(in_grid.unsqueeze(1), cand, torch.full_like(cand, -1))
+            candidates.append(cand)
+            valids.append(cand >= 0)
+
+        cand_idx = torch.cat(candidates, dim=1)  # (N, 27*M)
+        valid_mask = torch.cat(valids, dim=1)
+
+        self.diagnostics.update(
+            n_cells=n_cells,
+            grid_shape=(nx, ny, nz),
+            bucket_overflow_particles=overflow,
+            candidates_per_particle=cand_idx.shape[1],
+        )
+        return cand_idx, valid_mask
+
     def step(self, dt: float):
         """Execute one WCSPH time integration step on GPU."""
+        self.diagnostics = {}
         self.inject_particles(dt)
         N = self.pos.shape[0]
+        self.diagnostics["n_particles"] = N
         if N < 2:
             self.t += dt
             return
 
-        # Pairwise distance calculation (within cutoff 2*h)
-        # Using fast chunked / vectorized broadcast
-        x = self.pos[:, 0]
-        y = self.pos[:, 1]
-        z = self.pos[:, 2]
+        cand_idx, valid_mask = self._build_neighbor_candidates()
+        cand_idx_safe = torch.clamp(cand_idx, min=0)  # avoid negative indexing; masked out below
 
-        dx = x.unsqueeze(1) - x.unsqueeze(0) # (N, N)
-        dy = y.unsqueeze(1) - y.unsqueeze(0)
-        dz = z.unsqueeze(1) - z.unsqueeze(0)
+        x, y, z = self.pos[:, 0], self.pos[:, 1], self.pos[:, 2]
+        x_j = x[cand_idx_safe]  # (N, K) gathered neighbor-candidate positions
+        y_j = y[cand_idx_safe]
+        z_j = z[cand_idx_safe]
+
+        dx = x.unsqueeze(1) - x_j  # (N, K) -- matches original convention: dx[i,*] = x_i - x_j
+        dy = y.unsqueeze(1) - y_j
+        dz = z.unsqueeze(1) - z_j
         dist = torch.sqrt(dx * dx + dy * dy + dz * dz + 1e-8)
+        # Padding / out-of-grid slots get pushed beyond the kernel cutoff so
+        # they contribute exactly zero, without needing separate masking of
+        # every downstream quantity.
+        dist = torch.where(valid_mask, dist, torch.full_like(dist, 1e6))
 
         # Kernel and derivatives
         W, dW_dr = wendland_c2_kernel_and_grad(dist, self.cfg.h, dim=3)
 
-        # 1. Density summation: rho_i = sum_j m_j W_ij
+        # 1. Density summation: rho_i = sum_j m_j W_ij (self-contribution included, as before)
         self.rho = torch.clamp(
             torch.sum(self.particle_mass * W, dim=1),
             min=0.8 * self.cfg.rho0,
@@ -230,7 +374,6 @@ class WCSPHSolver:
         )
 
         # 3. Navier-Stokes Momentum & Viscous Acceleration
-        # grad W_ij unit vector
         r_safe = torch.clamp(dist, min=1e-6)
         e_ij_x = dx / r_safe
         e_ij_y = dy / r_safe
@@ -242,15 +385,18 @@ class WCSPHSolver:
 
         # Pressure term: (P_i / rho_i^2 + P_j / rho_j^2)
         p_over_rho2 = self.pressure / (self.rho ** 2)
-        p_term = p_over_rho2.unsqueeze(1) + p_over_rho2.unsqueeze(0) # (N, N)
+        p_term = p_over_rho2.unsqueeze(1) + p_over_rho2[cand_idx_safe]  # (N, K)
 
         # Artificial viscosity Pi_ij
-        vel_diff_x = self.vel[:, 0].unsqueeze(0) - self.vel[:, 0].unsqueeze(1)
-        vel_diff_y = self.vel[:, 1].unsqueeze(0) - self.vel[:, 1].unsqueeze(1)
-        vel_diff_z = self.vel[:, 2].unsqueeze(0) - self.vel[:, 2].unsqueeze(1)
+        vel_x_j = self.vel[:, 0][cand_idx_safe]
+        vel_y_j = self.vel[:, 1][cand_idx_safe]
+        vel_z_j = self.vel[:, 2][cand_idx_safe]
+        vel_diff_x = vel_x_j - self.vel[:, 0].unsqueeze(1)
+        vel_diff_y = vel_y_j - self.vel[:, 1].unsqueeze(1)
+        vel_diff_z = vel_z_j - self.vel[:, 2].unsqueeze(1)
         v_dot_r = vel_diff_x * dx + vel_diff_y * dy + vel_diff_z * dz
 
-        rho_bar = 0.5 * (self.rho.unsqueeze(1) + self.rho.unsqueeze(0))
+        rho_bar = 0.5 * (self.rho.unsqueeze(1) + self.rho[cand_idx_safe])
         mu_ij = (self.cfg.h * v_dot_r) / (dist ** 2 + 0.01 * self.cfg.h ** 2)
         pi_ij = torch.where(
             v_dot_r < 0,
@@ -265,11 +411,11 @@ class WCSPHSolver:
         # 4. Bed boundary interaction and terrain slope driving force
         bed_z = self.get_bed_elevation(x, y)
         dist_to_bed = z - bed_z
-        
+
         # Bed normal repulsion for near-bed particles
         bed_pen = torch.clamp(1.5 - dist_to_bed, min=0.0)
         acc_bed_z = 15.0 * bed_pen
-        
+
         # Bed Manning friction dissipation
         speed_horiz = torch.sqrt(self.vel[:, 0] ** 2 + self.vel[:, 1] ** 2 + 1e-6)
         bed_fric_decay = torch.clamp(1.0 - dt * (0.035 ** 2 * 9.81 * speed_horiz / torch.clamp(dist_to_bed, min=0.5) ** (4.0 / 3.0)), min=0.7)
@@ -298,8 +444,8 @@ class WCSPHSolver:
         # Dampen vertical bounce on contact with terrain
         self.vel[:, 2] = torch.where(below_bed, torch.clamp(self.vel[:, 2] * -0.2, min=0.0, max=1.0), self.vel[:, 2])
 
-
-        # Remove particles exiting sub-region bounding box
+        # Remove particles exiting sub-region bounding box (this is also
+        # what bounds long-run memory use, alongside the injection cap above)
         in_bounds = (
             (self.pos[:, 0] >= self.x_min - 50)
             & (self.pos[:, 0] <= self.x_max + 50)
