@@ -19,15 +19,16 @@ import numpy as np
 class SPHConfig:
     rho0: float = 1000.0          # Reference fluid density (kg/m^3)
     gamma: float = 7.0             # Tait EOS exponent
-    c0: float = 45.0               # Numerical speed of sound (m/s) (~10 * u_max)
-    h: float = 12.0                # Smoothing length (m)
-    dx_p: float = 6.0              # Initial particle spacing (m)
-    visc_alpha: float = 0.08       # Monaghan artificial viscosity alpha
-    visc_beta: float = 0.16        # Monaghan artificial viscosity beta
+    c0: float = 25.0               # Numerical speed of sound (m/s) (~10 * u_max)
+    h: float = 24.0                # Smoothing length (m)
+    dx_p: float = 14.0             # Initial particle spacing (m)
+    visc_alpha: float = 0.10       # Monaghan artificial viscosity alpha
+    visc_beta: float = 0.20        # Monaghan artificial viscosity beta
     g: float = 9.81                # Gravity (m/s^2)
-    cfl: float = 0.25              # CFL coefficient for time stepping
-    dt_fixed: float = 0.015        # Base time step (s)
+    cfl: float = 0.30              # CFL coefficient for time stepping
+    dt_fixed: float = 0.04         # Base time step (s)
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
+
 
 
 @dataclass
@@ -261,15 +262,17 @@ class WCSPHSolver:
         acc_press_y = -torch.sum(self.particle_mass * (p_term + pi_ij) * grad_w_y, dim=1)
         acc_press_z = -torch.sum(self.particle_mass * (p_term + pi_ij) * grad_w_z, dim=1)
 
-        # 4. Bed boundary repulsive acceleration & friction
+        # 4. Bed boundary interaction and terrain slope driving force
         bed_z = self.get_bed_elevation(x, y)
         dist_to_bed = z - bed_z
-        # Repulsive force when particle approaches bed
-        bed_pen = torch.clamp(self.cfg.dx_p - dist_to_bed, min=0.0)
-        acc_bed_z = 250.0 * bed_pen + torch.where(dist_to_bed < 0.2, 50.0, 0.0)
+        
+        # Bed normal repulsion for near-bed particles
+        bed_pen = torch.clamp(1.5 - dist_to_bed, min=0.0)
+        acc_bed_z = 15.0 * bed_pen
+        
         # Bed Manning friction dissipation
         speed_horiz = torch.sqrt(self.vel[:, 0] ** 2 + self.vel[:, 1] ** 2 + 1e-6)
-        bed_fric_decay = torch.clamp(1.0 - dt * 0.035 * speed_horiz / torch.clamp(dist_to_bed, min=0.1), min=0.5)
+        bed_fric_decay = torch.clamp(1.0 - dt * (0.035 ** 2 * 9.81 * speed_horiz / torch.clamp(dist_to_bed, min=0.5) ** (4.0 / 3.0)), min=0.7)
 
         # Total Accelerations
         acc_x = acc_press_x
@@ -279,15 +282,22 @@ class WCSPHSolver:
         # 5. Symplectic Euler update
         self.vel[:, 0] = (self.vel[:, 0] + dt * acc_x) * bed_fric_decay
         self.vel[:, 1] = (self.vel[:, 1] + dt * acc_y) * bed_fric_decay
-        self.vel[:, 2] = self.vel[:, 2] + dt * acc_z
+        self.vel[:, 2] = torch.clamp(self.vel[:, 2] + dt * acc_z, min=-8.0, max=4.0)
+
+        # Velocity magnitude safety clamp (max jetting velocity ~18 m/s)
+        speed = torch.sqrt(self.vel[:, 0] ** 2 + self.vel[:, 1] ** 2 + self.vel[:, 2] ** 2 + 1e-6)
+        speed_clamp = torch.clamp(speed, max=18.0)
+        self.vel = self.vel * (speed_clamp / speed).unsqueeze(1)
 
         self.pos += dt * self.vel
 
-        # Keep particles strictly above DEM terrain bed
+        # Keep particles strictly on or above DEM terrain bed
         bed_z_new = self.get_bed_elevation(self.pos[:, 0], self.pos[:, 1])
         below_bed = self.pos[:, 2] < bed_z_new + 0.1
         self.pos[:, 2] = torch.where(below_bed, bed_z_new + 0.1, self.pos[:, 2])
-        self.vel[:, 2] = torch.where(below_bed, torch.clamp(self.vel[:, 2], min=0.0), self.vel[:, 2])
+        # Dampen vertical bounce on contact with terrain
+        self.vel[:, 2] = torch.where(below_bed, torch.clamp(self.vel[:, 2] * -0.2, min=0.0, max=1.0), self.vel[:, 2])
+
 
         # Remove particles exiting sub-region bounding box
         in_bounds = (

@@ -80,12 +80,14 @@ def main():
     print(f"Local Domain: {x_max - x_min:.0f}m x {y_max - y_min:.0f}m, elevation: {local_elev.min():.1f}m - {local_elev.max():.1f}m MSL")
 
     sph_cfg = SPHConfig(
-        dx_p=7.5,
-        h=14.0,
-        c0=40.0,
-        dt_fixed=0.015,
+        dx_p=14.0,
+        h=24.0,
+        c0=25.0,
+        dt_fixed=0.04,
         device="cuda" if torch.cuda.is_available() else "cpu",
     )
+
+
 
     solver = WCSPHSolver(
         domain_bounds=(x_min, y_min, x_max, y_max),

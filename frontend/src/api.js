@@ -45,3 +45,16 @@ export function satelliteUrl() {
   return `${API_BASE}/terrain/satellite`;
 }
 
+export async function fetchSphResult() {
+  const res = await fetch(`${API_BASE}/sph/result`);
+  if (!res.ok) throw new Error(`SPH result fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchSphSnapshot(t_seconds) {
+  const res = await fetch(`${API_BASE}/sph/snapshot/${t_seconds}`);
+  if (!res.ok) throw new Error(`SPH snapshot fetch failed: ${res.status}`);
+  return res.json();
+}
+
+
