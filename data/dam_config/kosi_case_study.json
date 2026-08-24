@@ -1,0 +1,74 @@
+{
+  "case_study_id": "kosi_kusaha_2008",
+  "name": "Kosi River — Kusaha Embankment Breach (2008 Bihar Flood)",
+  "description": "Real-world dam-break-analogue case study: on 18 Aug 2008 the eastern afflux embankment of the Kosi River, ~12 km upstream of Kosi Barrage, breached near Kusaha (Sunsari district, Nepal). The river avulsed onto an old channel and inundated ~3700 sq km across five North Bihar districts. Used here as the reference breach scenario for both the SPH surge model and the SWE flood-spread model.",
+  "river": {
+    "name": "Kosi (Koshi) River",
+    "basin": "Kosi Basin, sub-basin of the Ganga",
+    "country": ["Nepal", "India"]
+  },
+  "structure": {
+    "type": "embankment_breach",
+    "note": "Not a storage dam — the Kosi system is a barrage (diversion weir) with flanking flood-control embankments (afflux bunds). The 2008 disaster was a breach of the eastern embankment, not the barrage structure itself.",
+    "barrage": {
+      "name": "Kosi Barrage (Bhimnagar Barrage)",
+      "coordinates": { "lat": 26.5263, "lon": 86.9269 },
+      "location": "Bhimnagar, Sunsari district, Nepal / Supaul district border, Bihar, India",
+      "length_m": 1149,
+      "gates_total": 56,
+      "sluice_gates_left": 6,
+      "sluice_gates_right": 4,
+      "design_peak_discharge_cumecs": 27000,
+      "design_peak_discharge_cusecs": 950000,
+      "completed_year": 1963
+    },
+    "breach_site": {
+      "name": "Kusaha (Kasuha) eastern afflux embankment breach",
+      "coordinates": { "lat": 26.62, "lon": 87.05 },
+      "coordinates_note": "Approximate — derived from the nearest mapped settlement (Paschim Kasuha, Sunsari district); no surveyed breach-point coordinates were found in public sources. Verify against a topo sheet or satellite imagery before using for precision hydraulic siting.",
+      "distance_upstream_of_barrage_km": 12,
+      "distance_from_india_border_km": 5
+    }
+  },
+  "breach_event": {
+    "date": "2008-08-18",
+    "cause": "Heavy monsoon flow combined with poor embankment maintenance; warnings were not acted on in time.",
+    "discharge_at_breach_cumecs": 3675,
+    "discharge_at_breach_cusecs": 129800,
+    "breach_type_default": "embankment_overtop_and_collapse",
+    "breach_type_options": ["full", "partial", "overtopping"],
+    "outcome": {
+      "affected_bihar_districts": ["Supaul", "Saharsa", "Madhepura", "Araria", "Purnia"],
+      "additional_districts_sometimes_cited": ["Khagaria", "Katihar"],
+      "inundated_area_km2": 3700,
+      "people_affected": 3300000,
+      "people_evacuated_approx": 1000000,
+      "deaths_approx": 500,
+      "villages_affected_approx": 993,
+      "panchayats_affected": 412
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2008_Bihar_flood",
+      "https://en.wikipedia.org/wiki/Koshi_Barrage",
+      "https://www.gfdrr.org/en/india-2008-needs-assessment-undertaken-after-kosi-floods-bihar-affected-33-million-people",
+      "https://indiawris.gov.in/wiki/doku.php?id=kosi_barrage_and_eastern_canal_major_irrigation_project_ji02121"
+    ]
+  },
+  "simulation_defaults": {
+    "breach_type": "full",
+    "breach_width_m": 100,
+    "breach_width_note": "Not documented in public sources for the 2008 event — set to a plausible order-of-magnitude default for a major afflux-embankment failure. Treat as a tunable scenario parameter, not a historical fact.",
+    "breach_hydrograph_ramp_minutes": 30,
+    "breach_hydrograph_note": "No time-resolved historical hydrograph for the 2008 Kusaha breach is publicly documented (the event unfolded over days, not the few-hour window this demo simulates). The solver assumes a linear ramp from 0 to breach_event.discharge_at_breach_cumecs over this many minutes, then holds at peak — a standard simplified breach hydrograph shape, not a historical fact.",
+    "peak_discharge_cumecs": 27000,
+    "peak_discharge_note": "Uses the barrage's design peak discharge as an upper-bound scenario; the actual 2008 breach discharge (3675 cumecs, see breach_event) is the better value for reproducing that specific historical event.",
+    "volume_override_range_pct": [50, 150]
+  },
+  "aoi_bounds": {
+    "west": 86.6,
+    "south": 25.9,
+    "east": 87.3,
+    "north": 26.7,
+    "note": "Bounding box used for the DEM, population raster, and satellite layers in this case study — covers the breach site down through Kosi Barrage into the upper Bihar flood corridor. Does not cover the full historical 3700 sq km extent (which reaches further south/east to Purnia); scoped for demo tractability."
+  }
+}
