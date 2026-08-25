@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Html, useTexture } from "@react-three/drei";
+import { CameraControls, Html, useTexture, Environment } from "@react-three/drei";
+import { EffectComposer, Bloom, N8AO } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { fetchDem, satelliteUrl } from "../api";
 
@@ -10,6 +11,12 @@ import { fetchDem, satelliteUrl } from "../api";
 // only rendered when a real overlayUrl was passed in.
 const TRANSPARENT_PIXEL =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+
+const CAMERA_PRESETS = {
+  oblique: { pos: [0, 26, 36], target: [0, 2, 0] },
+  top: { pos: [0, 48, 0.01], target: [0, 0, 0] },
+  side: { pos: [36, 16, 0], target: [0, 2, 0] },
+};
 
 function TerrainMesh({
   demData,
@@ -40,8 +47,7 @@ function TerrainMesh({
     }
   }, [satTexture, depthTexture]);
 
-
-  const { geometry, waterGeometry, breachPos } = useMemo(() => {
+  const { geometry, waterGeometry, breachPos, topoColors, tintColors } = useMemo(() => {
     if (!demData || !demData.elevations) return {};
 
     const { rows, cols, elevations, min_elevation, max_elevation } = demData;
@@ -54,7 +60,8 @@ function TerrainMesh({
 
     const pos = geom.attributes.position;
     const waterPos = waterGeom.attributes.position;
-    const colors = new Float32Array(pos.count * 3);
+    const vivid = new Float32Array(pos.count * 3);
+    const tint = new Float32Array(pos.count * 3);
 
     // Color ramp for topo mode
     const elevRange = Math.max(1, max_elevation - min_elevation);
@@ -69,7 +76,7 @@ function TerrainMesh({
       pos.setZ(i, normZ);
       waterPos.setZ(i, normZ + 0.05); // slightly above ground to prevent z-fighting
 
-      // Topo color gradient (lush green plains -> yellow-ochre -> brown high ground)
+      // Vivid topo color gradient (lush green plains -> yellow-ochre -> brown high ground)
       const t = (elev - min_elevation) / elevRange;
       const color = new THREE.Color();
       if (t < 0.15) {
@@ -79,13 +86,22 @@ function TerrainMesh({
       } else {
         color.setHSL(0.06, 0.5, 0.5 + (t - 0.5) * 0.3);
       }
-      colors[i * 3] = color.r;
-      colors[i * 3 + 1] = color.g;
-      colors[i * 3 + 2] = color.b;
+      vivid[i * 3] = color.r;
+      vivid[i * 3 + 1] = color.g;
+      vivid[i * 3 + 2] = color.b;
+
+      // Subtle near-white hypsometric tint for satellite mode -- multiplies
+      // with the real imagery (three.js combines vertexColors x map) rather
+      // than replacing it, so low ground reads a touch cooler/darker and
+      // high ground a touch warmer/brighter without discoloring the photo.
+      const tc = new THREE.Color();
+      tc.setHSL(0.08 - t * 0.1, 0.25, 0.86 + t * 0.12);
+      tint[i * 3] = tc.r;
+      tint[i * 3 + 1] = tc.g;
+      tint[i * 3 + 2] = tc.b;
     }
 
-
-    geom.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geom.setAttribute("color", new THREE.BufferAttribute(vivid, 3));
     geom.computeVertexNormals();
     waterGeom.computeVertexNormals();
 
@@ -105,8 +121,18 @@ function TerrainMesh({
       bPos = [bx, bz, -by]; // mapped to 3D world coords (X, Y, Z)
     }
 
-    return { geometry: geom, waterGeometry: waterGeom, breachPos: bPos };
+    return { geometry: geom, waterGeometry: waterGeom, breachPos: bPos, topoColors: vivid, tintColors: tint };
   }, [demData, vertExaggeration, breachLatLon, bounds]);
+
+  // Swap which vertex-color set is active without rebuilding the whole
+  // geometry -- keeps the elevation gradient present (subtly) in both
+  // texture modes instead of only existing for "topo".
+  useEffect(() => {
+    if (!geometry) return;
+    const colors = textureMode === "satellite" ? tintColors : topoColors;
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geometry.attributes.color.needsUpdate = true;
+  }, [geometry, textureMode, topoColors, tintColors]);
 
   if (!geometry) return null;
 
@@ -128,21 +154,27 @@ function TerrainMesh({
         {textureMode === "satellite" ? (
           <meshStandardMaterial
             map={satTexture}
-            roughness={0.85}
-            metalness={0.05}
+            vertexColors
+            roughness={0.92}
+            metalness={0}
             side={THREE.DoubleSide}
           />
         ) : (
           <meshStandardMaterial
             vertexColors
-            roughness={0.75}
-            metalness={0.1}
+            roughness={0.85}
+            metalness={0}
             side={THREE.DoubleSide}
           />
         )}
       </mesh>
 
-      {/* Dynamic Flood Overlay Surface */}
+      {/* Dynamic Flood Overlay Surface -- glossy/reflective water via a
+          physical material: clearcoat gives the glassy top-layer sheen,
+          ior=1.33 is water's real refractive index (drives Fresnel
+          reflectance at grazing angles), while the depth-color texture
+          stays the primary diffuse map so the data underneath the sheen
+          is still readable. */}
       {overlayUrl && (
         <mesh
           ref={waterMeshRef}
@@ -150,13 +182,18 @@ function TerrainMesh({
           rotation={[-Math.PI / 2, 0, 0]}
           position={[0, 0.02, 0]}
         >
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             map={depthTexture}
-            transparent={true}
-            opacity={0.88}
+            transparent
+            opacity={0.92}
             depthWrite={false}
-            roughness={0.1}
-            metalness={0.6}
+            roughness={0.2}
+            metalness={0.05}
+            clearcoat={1}
+            clearcoatRoughness={0.12}
+            ior={1.33}
+            reflectivity={0.6}
+            envMapIntensity={1.6}
             side={THREE.DoubleSide}
           />
         </mesh>
@@ -167,11 +204,11 @@ function TerrainMesh({
         <group position={breachPos}>
           <mesh position={[0, 1.2, 0]}>
             <coneGeometry args={[0.6, 1.8, 16]} />
-            <meshStandardMaterial color="#ff3b30" emissive="#ff1a1a" emissiveIntensity={0.6} />
+            <meshStandardMaterial color="#ff3b30" emissive="#ff1a1a" emissiveIntensity={0.9} />
           </mesh>
           <mesh position={[0, 2.3, 0]}>
             <sphereGeometry args={[0.4, 16, 16]} />
-            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.8} />
+            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.1} />
           </mesh>
           <Html position={[0, 3.2, 0]} center distanceFactor={25}>
             <div className="terrain3d-pin-label">
@@ -194,6 +231,7 @@ export default function Terrain3D({
   const [error, setError] = useState(null);
   const [vertExaggeration, setVertExaggeration] = useState(5);
   const [textureMode, setTextureMode] = useState("satellite"); // "satellite" | "topo"
+  const [activePreset, setActivePreset] = useState("oblique");
   const controlsRef = useRef();
 
   useEffect(() => {
@@ -209,18 +247,12 @@ export default function Terrain3D({
   }, []);
 
   const resetCamera = (viewType) => {
-    if (!controlsRef.current) return;
-    if (viewType === "top") {
-      controlsRef.current.object.position.set(0, 48, 0.01);
-      controlsRef.current.target.set(0, 0, 0);
-    } else if (viewType === "oblique") {
-      controlsRef.current.object.position.set(0, 26, 36);
-      controlsRef.current.target.set(0, 2, 0);
-    } else if (viewType === "side") {
-      controlsRef.current.object.position.set(36, 16, 0);
-      controlsRef.current.target.set(0, 2, 0);
-    }
-    controlsRef.current.update();
+    setActivePreset(viewType);
+    const preset = CAMERA_PRESETS[viewType];
+    if (!controlsRef.current || !preset) return;
+    // CameraControls.setLookAt(..., true) eases to the target over its own
+    // internal damping rather than snapping the camera there in one frame.
+    controlsRef.current.setLookAt(...preset.pos, ...preset.target, true);
   };
 
   return (
@@ -260,9 +292,9 @@ export default function Terrain3D({
 
         <div className="toolbar-group camera-views">
           <label>Preset Views:</label>
-          <button onClick={() => resetCamera("oblique")}>Perspective 3D</button>
-          <button onClick={() => resetCamera("top")}>Top-Down 2.5D</button>
-          <button onClick={() => resetCamera("side")}>Cross-Section</button>
+          <button className={activePreset === "oblique" ? "active" : ""} onClick={() => resetCamera("oblique")}>Perspective 3D</button>
+          <button className={activePreset === "top" ? "active" : ""} onClick={() => resetCamera("top")}>Top-Down 2.5D</button>
+          <button className={activePreset === "side" ? "active" : ""} onClick={() => resetCamera("side")}>Cross-Section</button>
         </div>
       </div>
 
@@ -283,16 +315,23 @@ export default function Terrain3D({
         <Canvas
           camera={{ position: [0, 28, 38], fov: 45, near: 0.1, far: 1000 }}
           shadows
-          style={{ width: "100%", height: "100%", background: "#0b0f17" }}
+          style={{ width: "100%", height: "100%" }}
         >
-          <ambientLight intensity={0.75} />
+          <ambientLight intensity={0.38} />
           <directionalLight
-            position={[30, 45, 20]}
-            intensity={1.4}
+            position={[26, 34, 18]}
+            intensity={2.0}
             castShadow
             shadow-mapSize={[2048, 2048]}
+            shadow-camera-left={-32}
+            shadow-camera-right={32}
+            shadow-camera-top={32}
+            shadow-camera-bottom={-32}
+            shadow-camera-near={0.5}
+            shadow-camera-far={110}
+            shadow-bias={-0.0015}
           />
-          <directionalLight position={[-30, 20, -20]} intensity={0.4} />
+          <directionalLight position={[-24, 16, -18]} intensity={0.35} color="#8fb4ff" />
 
           <Suspense fallback={null}>
             <TerrainMesh
@@ -303,16 +342,24 @@ export default function Terrain3D({
               breachLatLon={breachLatLon}
               bounds={bounds}
             />
+            <Environment preset="park" background={false} environmentIntensity={0.7} />
           </Suspense>
 
-          <OrbitControls
+          <CameraControls
             ref={controlsRef}
-            enableDamping
-            dampingFactor={0.05}
-            maxDistance={120}
             minDistance={5}
-            maxPolarAngle={Math.PI / 2 - 0.05} // prevent going underneath terrain
+            maxDistance={120}
+            maxPolarAngle={Math.PI / 2 - 0.05}
+            dollySpeed={0.6}
+            smoothTime={0.35}
           />
+
+          {/* halfRes + "performance" quality keep this affordable on integrated
+              graphics -- full-res AO is a large cost for a subtle effect. */}
+          <EffectComposer>
+            <N8AO halfRes quality="performance" aoRadius={2.2} intensity={1.4} distanceFalloff={1} />
+            <Bloom luminanceThreshold={0.72} luminanceSmoothing={0.3} intensity={0.5} mipmapBlur />
+          </EffectComposer>
         </Canvas>
       )}
 
@@ -332,4 +379,3 @@ export default function Terrain3D({
     </div>
   );
 }
-

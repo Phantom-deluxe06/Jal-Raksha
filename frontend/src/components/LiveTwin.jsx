@@ -72,7 +72,7 @@ export default function LiveTwin() {
       </div>
     );
   }
-  if (!state) return <div className="sph-panel"><p className="subtle">Loading live twin state…</p></div>;
+  if (!state) return <div className="sph-panel"><div className="panel-loading"><span className="spinner" />Loading live twin state…</div></div>;
 
   const sync = state.last_good_sync;
   const latestAttempt = state.sync_log?.[0];

@@ -43,7 +43,7 @@ export default function RealtimeSar({ onData }) {
         layers elsewhere in this app.
       </p>
 
-      {loading && <p className="subtle">Querying Earth Engine live…</p>}
+      {loading && <div className="panel-loading"><span className="spinner" />Querying Earth Engine live…</div>}
 
       {error && (
         <>

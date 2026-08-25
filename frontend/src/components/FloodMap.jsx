@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, ImageOverlay, GeoJSON, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, ImageOverlay, GeoJSON, Marker, Popup, ZoomControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -32,10 +32,11 @@ export default function FloodMap({ bounds, overlayUrl, overlayKey, breachLatLon,
   const center = [(bounds.south + bounds.north) / 2, (bounds.west + bounds.east) / 2];
 
   return (
-    <MapContainer center={center} zoom={10} style={{ height: "100%", width: "100%" }}>
+    <MapContainer center={center} zoom={10} zoomControl={false} style={{ height: "100%", width: "100%" }}>
+      <ZoomControl position="bottomleft" />
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
       />
       {overlayUrl && (
         <ImageOverlay key={overlayKey || overlayUrl} url={overlayUrl} bounds={leafletBounds} opacity={0.85} />

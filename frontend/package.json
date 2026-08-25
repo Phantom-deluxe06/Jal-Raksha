@@ -12,11 +12,15 @@
   "dependencies": {
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
+    "@react-three/postprocessing": "^3.1.0",
+    "cesium": "^1.144.0",
     "leaflet": "^1.9.4",
+    "postprocessing": "^6.39.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-leaflet": "^5.0.0",
-    "three": "^0.185.1"
+    "three": "^0.185.1",
+    "vite-plugin-cesium": "^1.2.23"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",

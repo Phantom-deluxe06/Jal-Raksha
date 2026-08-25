@@ -38,6 +38,12 @@ export default function InfoPanel({ meta, frame, onRerun, running }) {
           ) : (
             <p className="subtle">No named settlement points fall within the flooded extent at this timestep.</p>
           )}
+        </div>
+      )}
+
+      {hasImpact && (
+        <details>
+          <summary>Impact methodology</summary>
           <p className="subtle impact-methodology">
             Population from WorldPop 2020 (~1km grid, area-averaged against the flood depth grid);
             settlements from OpenStreetMap, point-in-polygon against this timestep's own flood
@@ -45,7 +51,7 @@ export default function InfoPanel({ meta, frame, onRerun, running }) {
             method and its caveats (mean-depth thresholding near flood edges, settlement points vs.
             footprints).
           </p>
-        </div>
+        </details>
       )}
 
       <details open={failed.length > 0}>

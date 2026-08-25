@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import FloodMap from "./components/FloodMap";
-import Terrain3D from "./components/Terrain3D";
+import CesiumViewer from "./components/CesiumViewer";
 import Timeline from "./components/Timeline";
 import Legend from "./components/Legend";
 import InfoPanel from "./components/InfoPanel";
@@ -8,15 +8,19 @@ import PredictionControls from "./components/PredictionControls";
 import SphComparison from "./components/SphComparison";
 import LiveTwin from "./components/LiveTwin";
 import RealtimeSar from "./components/RealtimeSar";
+import SideNav from "./components/SideNav";
+import Overview from "./components/Overview";
 import { fetchResult, frameUrl, triggerRun } from "./api";
 import "./App.css";
+
+const MAP_MODES = new Set(["full", "instant", "realtime"]);
 
 export default function App() {
   const [meta, setMeta] = useState(null);
   const [frameIndex, setFrameIndex] = useState(0);
   const [error, setError] = useState(null);
   const [running, setRunning] = useState(false);
-  const [mode, setMode] = useState("full"); // "full" | "instant" | "sph" | "twin" | "realtime"
+  const [mode, setMode] = useState("overview"); // "overview" | "full" | "instant" | "sph" | "twin" | "realtime"
   const [viewMode, setViewMode] = useState("2d"); // "2d" | "3d"
   const [prediction, setPrediction] = useState(null);
   const [predictedLocation, setPredictedLocation] = useState(null);
@@ -51,7 +55,14 @@ export default function App() {
     );
   }
 
-  if (!meta) return <div className="loading-screen">Loading simulation results…</div>;
+  if (!meta) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner" />
+        <p>Loading simulation results…</p>
+      </div>
+    );
+  }
 
   const frame = meta.frames[frameIndex];
   const overlayUrl =
@@ -62,84 +73,72 @@ export default function App() {
         : null;
 
   const activeBounds = mode === "instant" && prediction ? prediction.bounds : meta.bounds;
+  const showMap = MAP_MODES.has(mode);
 
   return (
-    <div className="app-root">
-      <div className="map-pane">
-        {/* 2D / 3D View Switcher */}
-        <div className="viewport-toggle">
-          <button
-            className={viewMode === "2d" ? "active" : ""}
-            onClick={() => setViewMode("2d")}
-          >
-            🗺️ 2D Map View
-          </button>
-          <button
-            className={viewMode === "3d" ? "active" : ""}
-            onClick={() => setViewMode("3d")}
-          >
-            🌐 3D Terrain (SRTM + S2)
-          </button>
-        </div>
+    <div className="app-shell">
+      <SideNav mode={mode} setMode={setMode} />
 
-        {viewMode === "2d" ? (
-          <FloodMap
-            bounds={activeBounds}
-            overlayUrl={overlayUrl}
-            overlayKey={mode === "full" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
-            breachLatLon={meta.breach_latlon}
-            predictedLocation={mode === "instant" ? predictedLocation : null}
-            realtimeExtent={mode === "realtime" ? realtimeData : null}
-          />
+      <div className="app-main">
+        {mode === "overview" ? (
+          <Overview key="overview" meta={meta} onEnter={setMode} />
         ) : (
-          <Terrain3D
-            bounds={activeBounds}
-            overlayUrl={overlayUrl}
-            breachLatLon={meta.breach_latlon}
-            currentTimeFormatted={frame ? `T+${frame.t_minutes}m` : "T+0m"}
-            mode={mode}
-          />
-        )}
+          <div key={mode} className={`workspace ${showMap ? "workspace-map" : "workspace-dashboard"}`}>
+            {showMap && (
+              <div className="map-pane">
+                <div className="viewport-toggle">
+                  <button
+                    className={viewMode === "2d" ? "active" : ""}
+                    onClick={() => setViewMode("2d")}
+                  >
+                    🗺️ 2D Map
+                  </button>
+                  <button
+                    className={viewMode === "3d" ? "active" : ""}
+                    onClick={() => setViewMode("3d")}
+                  >
+                    🌐 3D Terrain
+                  </button>
+                </div>
 
-        {(mode === "full" || mode === "instant") && <Legend />}
-        {mode === "full" && <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />}
-      </div>
-      <div className="side-panel">
-        <div className="mode-toggle">
-          <button className={mode === "full" ? "active" : ""} onClick={() => setMode("full")}>
-            Full SWE Simulation
-          </button>
-          <button className={mode === "instant" ? "active" : ""} onClick={() => setMode("instant")}>
-            Instant AI Prediction
-          </button>
-          <button className={mode === "sph" ? "active" : ""} onClick={() => setMode("sph")}>
-            SPH Comparison
-          </button>
-          <button className={mode === "twin" ? "active" : ""} onClick={() => setMode("twin")}>
-            Live Twin
-          </button>
-          <button className={mode === "realtime" ? "active" : ""} onClick={() => setMode("realtime")}>
-            Real-Time SAR
-          </button>
-        </div>
+                {viewMode === "2d" ? (
+                  <FloodMap
+                    bounds={activeBounds}
+                    overlayUrl={overlayUrl}
+                    overlayKey={mode === "full" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
+                    breachLatLon={meta.breach_latlon}
+                    predictedLocation={mode === "instant" ? predictedLocation : null}
+                    realtimeExtent={mode === "realtime" ? realtimeData : null}
+                  />
+                ) : (
+                  <CesiumViewer bounds={activeBounds} />
+                )}
 
-        {mode === "full" && <InfoPanel meta={meta} frame={frame} onRerun={handleRerun} running={running} />}
-        {mode === "instant" && (
-          <PredictionControls
-            baseDischarge={meta.discharge_cumecs}
-            baseLat={meta.breach_latlon.lat}
-            baseLon={meta.breach_latlon.lon}
-            onResult={(result, loc) => {
-              setPrediction(result);
-              setPredictedLocation(loc);
-            }}
-          />
+                {(mode === "full" || mode === "instant") && <Legend />}
+                {mode === "full" && <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />}
+              </div>
+            )}
+
+            <div className={showMap ? "side-panel" : "dashboard-panel"}>
+              {mode === "full" && <InfoPanel meta={meta} frame={frame} onRerun={handleRerun} running={running} />}
+              {mode === "instant" && (
+                <PredictionControls
+                  baseDischarge={meta.discharge_cumecs}
+                  baseLat={meta.breach_latlon.lat}
+                  baseLon={meta.breach_latlon.lon}
+                  onResult={(result, loc) => {
+                    setPrediction(result);
+                    setPredictedLocation(loc);
+                  }}
+                />
+              )}
+              {mode === "sph" && <SphComparison />}
+              {mode === "twin" && <LiveTwin />}
+              {mode === "realtime" && <RealtimeSar onData={setRealtimeData} />}
+            </div>
+          </div>
         )}
-        {mode === "sph" && <SphComparison />}
-        {mode === "twin" && <LiveTwin />}
-        {mode === "realtime" && <RealtimeSar onData={setRealtimeData} />}
       </div>
     </div>
   );
 }
-

@@ -24,7 +24,7 @@ export default function SphComparison() {
       </div>
     );
   }
-  if (!meta) return <div className="sph-panel"><p className="subtle">Loading SPH results…</p></div>;
+  if (!meta) return <div className="sph-panel"><div className="panel-loading"><span className="spinner" />Loading SPH results…</div></div>;
 
   const { hardware, neighbor_search, solver_status, domain, parameters, validation_comparison } = meta;
   const timeline = validation_comparison.timelines;
