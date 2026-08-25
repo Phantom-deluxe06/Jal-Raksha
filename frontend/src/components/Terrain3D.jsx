@@ -1,8 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Html } from "@react-three/drei";
+import { OrbitControls, Html, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { fetchDem, satelliteUrl } from "../api";
+
+// 1x1 transparent PNG -- a stable placeholder so useTexture (a hook, so it
+// can't be called conditionally) always has a valid URL even when there's
+// no flood overlay for the current mode/frame; the water mesh itself is
+// only rendered when a real overlayUrl was passed in.
+const TRANSPARENT_PIXEL =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
 
 function TerrainMesh({
   demData,
@@ -16,26 +23,22 @@ function TerrainMesh({
   const meshRef = useRef();
   const waterMeshRef = useRef();
 
-  // Load Satellite Texture
-  const satTexture = useMemo(() => {
-    const loader = new THREE.TextureLoader();
-    const tex = loader.load(satelliteUrl());
-    tex.wrapS = THREE.ClampToEdgeWrapping;
-    tex.wrapT = THREE.ClampToEdgeWrapping;
-    tex.minFilter = THREE.LinearFilter;
-    return tex;
-  }, []);
+  // Texture loading via drei's useTexture (Suspense-integrated, dedupes
+  // through THREE's loading manager) rather than raw `new THREE.TextureLoader()`
+  // inside useMemo -- the latter is a network side effect living in a memo
+  // factory, which React 18 StrictMode intentionally double-invokes in dev,
+  // producing two requests for the same URL with inconsistent CORS mode and
+  // a real (not cosmetic) failure: the flood overlay silently never rendered.
+  const satTexture = useTexture(satelliteUrl());
+  const depthTexture = useTexture(overlayUrl || TRANSPARENT_PIXEL);
 
-  // Load Depth Overlay Texture if provided
-  const depthTexture = useMemo(() => {
-    if (!overlayUrl) return null;
-    const loader = new THREE.TextureLoader();
-    const tex = loader.load(overlayUrl);
-    tex.wrapS = THREE.ClampToEdgeWrapping;
-    tex.wrapT = THREE.ClampToEdgeWrapping;
-    tex.minFilter = THREE.LinearFilter;
-    return tex;
-  }, [overlayUrl]);
+  useEffect(() => {
+    for (const tex of [satTexture, depthTexture]) {
+      tex.wrapS = THREE.ClampToEdgeWrapping;
+      tex.wrapT = THREE.ClampToEdgeWrapping;
+      tex.minFilter = THREE.LinearFilter;
+    }
+  }, [satTexture, depthTexture]);
 
 
   const { geometry, waterGeometry, breachPos } = useMemo(() => {
@@ -140,7 +143,7 @@ function TerrainMesh({
       </mesh>
 
       {/* Dynamic Flood Overlay Surface */}
-      {depthTexture && (
+      {overlayUrl && (
         <mesh
           ref={waterMeshRef}
           geometry={waterGeometry}

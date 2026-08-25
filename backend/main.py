@@ -149,7 +149,13 @@ def simulate_frame(job_id: str, filename: str):
     for subdir in ("frames", "overlays", "geojson"):
         candidate = JOB_OUT_DIR / subdir / filename
         if candidate.exists():
-            return FileResponse(candidate)
+            # no-store: the 3D view's WebGL texture loader (crossOrigin='anonymous')
+            # and the 2D map's plain <img> overlay both request this same URL in
+            # different fetch modes; letting the browser cache a response fetched
+            # in one mode causes the other mode's request to fail outright
+            # (observed as a CORS error even though the server's live response
+            # always includes the right header -- confirmed via direct curl).
+            return FileResponse(candidate, headers={"Cache-Control": "no-store"})
     raise HTTPException(404, f"frame file not found: {filename}")
 
 
@@ -254,7 +260,7 @@ def get_terrain_satellite():
     sat_path = ROOT / "data" / "satellite" / "preview.png"
     if not sat_path.exists():
         raise HTTPException(404, "satellite preview image not found")
-    return FileResponse(sat_path, media_type="image/png")
+    return FileResponse(sat_path, media_type="image/png", headers={"Cache-Control": "no-store"})
 
 
 @app.get("/sph/result")
