@@ -3,6 +3,7 @@ __pycache__/
 node_modules/
 *.pyc
 .env
+backend/credentials/
 backend/ml_checkpoints/*.pt
 data/dem/*.tif
 data/satellite/*.tif

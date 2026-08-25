@@ -299,6 +299,21 @@ def twin_sync():
     return JSONResponse(result)
 
 
+@app.get("/realtime/water-extent")
+def realtime_water_extent():
+    """Live Sentinel-1 SAR water-extent query via Google Earth Engine --
+    queries GEE fresh on every call (no caching, no hardcoded scene date).
+    Typically takes several seconds (real GEE query + vectorization
+    latency, not an artificial delay) -- see query_duration_s in the
+    response and report it in the frontend rather than hiding it."""
+    from realtime.gee_water_extent import fetch_latest_water_extent, GeeError
+    try:
+        result = fetch_latest_water_extent()
+    except GeeError as e:
+        raise HTTPException(502, str(e))
+    return JSONResponse(result)
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

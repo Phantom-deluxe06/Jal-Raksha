@@ -75,4 +75,13 @@ export async function triggerTwinSync() {
   return res.json();
 }
 
+export async function fetchRealtimeWaterExtent() {
+  const res = await fetch(`${API_BASE}/realtime/water-extent`);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `realtime water-extent fetch failed: ${res.status}`);
+  }
+  return res.json();
+}
+
 

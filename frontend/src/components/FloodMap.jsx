@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, ImageOverlay, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, ImageOverlay, GeoJSON, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -16,7 +16,14 @@ const barrageIcon = new L.DivIcon({
   iconAnchor: [6, 6],
 });
 
-export default function FloodMap({ bounds, overlayUrl, overlayKey, breachLatLon, predictedLocation }) {
+const realtimeSarStyle = {
+  color: "#ff9f1c",
+  weight: 1,
+  fillColor: "#ff9f1c",
+  fillOpacity: 0.35,
+};
+
+export default function FloodMap({ bounds, overlayUrl, overlayKey, breachLatLon, predictedLocation, realtimeExtent }) {
   if (!bounds) return null;
   const leafletBounds = [
     [bounds.south, bounds.west],
@@ -32,6 +39,13 @@ export default function FloodMap({ bounds, overlayUrl, overlayKey, breachLatLon,
       />
       {overlayUrl && (
         <ImageOverlay key={overlayKey || overlayUrl} url={overlayUrl} bounds={leafletBounds} opacity={0.85} />
+      )}
+      {realtimeExtent && (
+        <GeoJSON
+          key={realtimeExtent.source?.scene_id || "realtime-sar"}
+          data={realtimeExtent}
+          style={realtimeSarStyle}
+        />
       )}
       {breachLatLon && (
         <Marker position={[breachLatLon.lat, breachLatLon.lon]} icon={breachIcon}>

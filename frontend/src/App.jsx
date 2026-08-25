@@ -7,6 +7,7 @@ import InfoPanel from "./components/InfoPanel";
 import PredictionControls from "./components/PredictionControls";
 import SphComparison from "./components/SphComparison";
 import LiveTwin from "./components/LiveTwin";
+import RealtimeSar from "./components/RealtimeSar";
 import { fetchResult, frameUrl, triggerRun } from "./api";
 import "./App.css";
 
@@ -15,10 +16,11 @@ export default function App() {
   const [frameIndex, setFrameIndex] = useState(0);
   const [error, setError] = useState(null);
   const [running, setRunning] = useState(false);
-  const [mode, setMode] = useState("full"); // "full" | "instant" | "sph" | "twin"
+  const [mode, setMode] = useState("full"); // "full" | "instant" | "sph" | "twin" | "realtime"
   const [viewMode, setViewMode] = useState("2d"); // "2d" | "3d"
   const [prediction, setPrediction] = useState(null);
   const [predictedLocation, setPredictedLocation] = useState(null);
+  const [realtimeData, setRealtimeData] = useState(null);
 
   const load = () => {
     fetchResult().then(setMeta).catch((e) => setError(e.message));
@@ -87,6 +89,7 @@ export default function App() {
             overlayKey={mode === "full" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
             breachLatLon={meta.breach_latlon}
             predictedLocation={mode === "instant" ? predictedLocation : null}
+            realtimeExtent={mode === "realtime" ? realtimeData : null}
           />
         ) : (
           <Terrain3D
@@ -98,7 +101,7 @@ export default function App() {
           />
         )}
 
-        <Legend />
+        {(mode === "full" || mode === "instant") && <Legend />}
         {mode === "full" && <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />}
       </div>
       <div className="side-panel">
@@ -114,6 +117,9 @@ export default function App() {
           </button>
           <button className={mode === "twin" ? "active" : ""} onClick={() => setMode("twin")}>
             Live Twin
+          </button>
+          <button className={mode === "realtime" ? "active" : ""} onClick={() => setMode("realtime")}>
+            Real-Time SAR
           </button>
         </div>
 
@@ -131,6 +137,7 @@ export default function App() {
         )}
         {mode === "sph" && <SphComparison />}
         {mode === "twin" && <LiveTwin />}
+        {mode === "realtime" && <RealtimeSar onData={setRealtimeData} />}
       </div>
     </div>
   );

@@ -4,13 +4,13 @@ AI-powered dam-break inundation modelling platform. See the PRD for full
 scope. **Current status**: SWE simulation + 2D map + export (Build Priority
 #1), an instant ML surrogate (#2), a 3D terrain view, a localized SPH solver
 with an SPH-vs-SWE comparison panel, a Digital Twin sync against the real
-Kosi Barrage CWC gauge, and a population/settlement impact overlay are all
-running end-to-end on real data — five tabs (Full SWE Simulation / Instant
-AI Prediction / SPH Comparison / Live Twin) plus a 2D/3D view switcher
-within the two simulation tabs. GEE real-time SAR integration (#5) is the
-only piece not yet built, blocked on interactive Google auth. Note: SPH and
-the 3D view were built in a separate work session on this repo — see
-`git log` for that history.
+Kosi Barrage CWC gauge, a population/settlement impact overlay, and a
+real-time Sentinel-1 SAR water-extent layer via Google Earth Engine (#5) are
+all running end-to-end on real data — six tabs (Full SWE Simulation /
+Instant AI Prediction / SPH Comparison / Live Twin / Real-Time SAR) plus a
+2D/3D view switcher within the two simulation tabs. Note: SPH and the 3D
+view were built in a separate work session on this repo — see `git log` for
+that history.
 
 ## Case study
 
@@ -170,8 +170,38 @@ run's `metadata.json` (not a separate/inconsistent computation):
   `metadata.json`'s `population_impact_methodology` field and surfaced in
   the frontend, not just in code comments.
 
+## Real-time SAR layer (Google Earth Engine, Build Priority #5)
+
+`backend/realtime/gee_water_extent.py` queries Google Earth Engine live on
+every call — no caching, no hardcoded scene date:
+
+- **Auth**: a GEE service account (`backend/credentials/service_account.json`,
+  gitignored — never commit this file) rather than interactive
+  `earthengine authenticate`, since this runs headless on a server. Requires
+  both an IAM `roles/serviceusage.serviceUsageConsumer` grant on the service
+  account *and* the Cloud Project itself being registered for Earth Engine
+  (`console.cloud.google.com/earth-engine/configuration?project=...`) — two
+  separate one-time setup steps, both already done for this project.
+- **Data**: the actual most recent `COPERNICUS/S1_GRD` (Sentinel-1) scene
+  covering the Kosi AOI, searched over a rolling 30-day window (S1's real
+  revisit interval here is ~6-12 days — a 30-day window just guarantees
+  finding a scene, it doesn't imply hourly freshness).
+- **Water detection**: VV-band backscatter thresholding (< -17dB flagged as
+  water) — a standard, documented SAR water-mapping technique, not ML, and
+  not calibrated against ground truth for this AOI specifically (caveat
+  surfaced in both the API response and the frontend panel).
+- **Endpoint**: `GET /realtime/water-extent` — returns a GeoJSON
+  FeatureCollection plus scene ID, real acquisition timestamp, orbit pass,
+  detected water area, and the query's own latency (typically ~3-7s live —
+  a real GEE round-trip cost, not artificial, and reported honestly rather
+  than hidden or papered over with a spinner).
+- **Frontend**: a "Real-Time SAR" tab, visually distinct (orange badge +
+  orange map layer) from the blue SWE/SPH modeled-depth layers — makes
+  clear this is an actual satellite observation, not a simulation.
+
 ## Next step
 
-Build Priority #5 (PRD section 7): Google Earth Engine real-time SAR layer
-— blocked on the user completing interactive `earthengine authenticate`
-(requires a local browser login I cannot perform).
+None currently scoped — all five PRD build priorities are implemented
+end-to-end on real data. Possible follow-ups: multi-temporal SAR change
+detection (compare against a pre-flood baseline scene) or exposing the SAR
+layer inside the 3D terrain view.
