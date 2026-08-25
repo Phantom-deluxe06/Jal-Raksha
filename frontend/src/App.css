@@ -169,6 +169,134 @@ summary.warn {
 
 p.warn { color: #ff8a65; font-size: 0.8rem; }
 
+.sph-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.sph-panel h2 {
+  font-size: 1.0rem;
+  margin: 0;
+}
+
+.sph-panel h3 {
+  font-size: 0.82rem;
+  margin: 0.4rem 0 0.2rem;
+  color: #cfd8e3;
+  border-top: 1px solid #2a313d;
+  padding-top: 0.6rem;
+}
+
+.sph-status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.sph-status-badge.ok { background: rgba(165, 214, 167, 0.15); color: #a5d6a7; }
+.sph-status-badge.warn { background: rgba(255, 138, 101, 0.15); color: #ff8a65; }
+
+.sph-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sph-chart-row {
+  display: grid;
+  grid-template-columns: 3.2rem 1fr 5.5rem;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+}
+
+.sph-chart-t { color: #9aa4b2; }
+.sph-chart-vals { color: #cfd8e3; text-align: right; white-space: nowrap; }
+
+.sph-bar-track {
+  position: relative;
+  height: 10px;
+  background: #1d232d;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sph-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.sph-bar-sph { background: #3a7bd5; height: 4px; top: 0; }
+.sph-bar-swe { background: #6fa8ff; opacity: 0.5; height: 10px; }
+
+.sph-legend-inline {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.68rem;
+  color: #9aa4b2;
+}
+
+.sph-legend-inline span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.sph-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.sph-table-wrap {
+  overflow-x: auto;
+}
+
+.sph-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.68rem;
+}
+
+.sph-table th, .sph-table td {
+  padding: 0.3rem 0.4rem;
+  text-align: right;
+  border-bottom: 1px solid #1d232d;
+}
+
+.sph-table th:first-child, .sph-table td:first-child {
+  text-align: left;
+}
+
+.sph-table th {
+  color: #9aa4b2;
+  font-weight: 600;
+}
+
+.sph-table td.warn { color: #ff8a65; }
+
+.sph-discrepancy-card {
+  background: #1d232d;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.sph-discrepancy-card strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #e8ebf0;
+}
+
 .export-row {
   display: flex;
   gap: 0.5rem;

@@ -1,7 +1,9 @@
 .venv/
 __pycache__/
+node_modules/
 *.pyc
-backend/outputs/
-frontend/node_modules/
-frontend/dist/
-*.log
+.env
+backend/ml_checkpoints/*.pt
+data/dem/*.tif
+data/satellite/*.tif
+data/population/*.tif

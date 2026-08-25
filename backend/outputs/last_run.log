@@ -1,0 +1,37 @@
+﻿Loading DEM: D:\Projects\SIH 26\data\dem\kosi_aoi_srtm30m.tif
+  grid: 480 x 420 cells, dx=166.3m, dy=185.5m
+  breach site -> grid cell (row=47, col=269)
+
+Scenario: ACTUAL 2008 KUSAHA BREACH (documented discharge)
+  discharge = 3675 cumecs (source: breach_event.discharge_at_breach_cumecs, dated 2008-08-18)
+  NOT using barrage design discharge (27000 cumecs) for this run.
+
+Running SWE solver: duration=4.0h, snapshot every 15min...
+  done: 1440 timesteps, 17 snapshots, 94.5s wall time
+  [t0000] t=0min  flooded=0.00km2  max_depth=0.00m
+  [t0015] t=15min  flooded=2.13km2  max_depth=0.58m
+  [t0030] t=30min  flooded=7.90km2  max_depth=1.33m
+  [t0045] t=45min  flooded=15.40km2  max_depth=1.58m
+  [t0060] t=60min  flooded=23.11km2  max_depth=1.71m
+  [t0075] t=75min  flooded=30.55km2  max_depth=1.80m
+  [t0090] t=90min  flooded=38.14km2  max_depth=1.87m
+  [t0105] t=105min  flooded=45.49km2  max_depth=1.92m
+  [t0120] t=120min  flooded=53.57km2  max_depth=1.96m
+  [t0135] t=135min  flooded=61.72km2  max_depth=1.99m
+  [t0150] t=150min  flooded=69.56km2  max_depth=2.02m
+  [t0165] t=165min  flooded=77.58km2  max_depth=2.05m
+  [t0180] t=180min  flooded=86.19km2  max_depth=2.07m
+  [t0195] t=195min  flooded=94.06km2  max_depth=2.08m
+  [t0210] t=210min  flooded=101.69km2  max_depth=2.10m
+  [t0225] t=225min  flooded=109.74km2  max_depth=2.11m
+  [t0240] t=240min  flooded=116.93km2  max_depth=2.13m
+
+=== SANITY CHECKS ===
+[PASS] mass_conservation: volume on grid at final step (49,661,710 m3) vs. total volume injected by the breach hydrograph (49,594,125 m3): +0.14% delta. Water can only leave via open boundaries, never be created, so grid volume should be <= injected volume; a small positive delta here is expected numerical-scheme error (operator-split source terms are not exactly flux-conservative), not mass creation from nothing. 
+[PASS] nontrivial_flood_extent: simulated max flood extent is 1.88% of the AOI (116.9 km2 of 6221.5 km2). non-trivial extent, OK.
+[PASS] extent_not_saturated: simulated max flood extent is 1.88% of the AOI. OK, not saturating the domain.
+[N/A (context)] historical_context_only: Historical 2008 event: ~3700 km2 flooded across 5 Bihar districts (far larger area than this AOI, which was deliberately scoped down to 6222 km2 around the breach site for compute tractability -- see data/dam_config/kosi_case_study.json). This simulation's 116.9 km2 is NOT directly comparable to 3700 km2 and is expected to be smaller by design. This check is context only, not a pass/fail validation.
+[PASS] solver_stability: no instability flagged
+
+Outputs written to: D:\Projects\SIH 26\backend\outputs\swe_kosi_actual2008
+metadata.json: D:\Projects\SIH 26\backend\outputs\swe_kosi_actual2008\metadata.json

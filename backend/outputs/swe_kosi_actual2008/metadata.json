@@ -1,0 +1,257 @@
+{
+  "scenario_label": "ACTUAL 2008 KUSAHA BREACH (documented discharge)",
+  "scenario_discharge_source": "breach_event.discharge_at_breach_cumecs (actual documented 2008 breach flow)",
+  "discharge_cumecs": 3675,
+  "design_discharge_cumecs_NOT_USED": 27000,
+  "breach_latlon": {
+    "lat": 26.62,
+    "lon": 87.05
+  },
+  "breach_grid_cell": [
+    47,
+    269
+  ],
+  "breach_width_m": 100,
+  "breach_hydrograph_ramp_minutes": 30,
+  "grid": {
+    "rows": 480,
+    "cols": 420,
+    "dx_m": 166.3314821230193,
+    "dy_m": 185.53704399999998,
+    "target_res_deg": 0.0016667
+  },
+  "solver": {
+    "scheme": "explicit 2D Lax-Friedrichs finite-volume, point-implicit Manning friction",
+    "manning_n": 0.035,
+    "cfl": 0.4,
+    "flood_depth_threshold_m": 0.1,
+    "duration_s": 14400.0,
+    "snapshot_interval_s": 900.0,
+    "n_steps": 1440,
+    "wall_time_s": 78.5,
+    "unstable": false
+  },
+  "bounds": {
+    "west": 86.6,
+    "south": 25.899944459872255,
+    "east": 87.30008331019161,
+    "north": 26.7
+  },
+  "aoi_area_km2": 6221.5,
+  "max_flooded_area_km2": 116.93,
+  "max_depth_m": 2.13,
+  "injected_volume_m3": 49594125.0,
+  "final_grid_volume_m3": 49661710.0,
+  "historical_reference": {
+    "inundated_area_km2": 3700,
+    "note": "Full multi-district 2008 event; not directly comparable to this AOI-scoped simulation. See sanity_checks.historical_context_only."
+  },
+  "frames": [
+    {
+      "t_minutes": 0,
+      "t_seconds": 0.0,
+      "depth_tif": "frames/depth_t0000.tif",
+      "overlay_png": "overlays/depth_t0000.png",
+      "geojson": "geojson/flood_extent_t0000.geojson",
+      "flooded_area_km2": 0.0,
+      "max_depth_m": 0.0,
+      "mean_wet_depth_m": 0.0
+    },
+    {
+      "t_minutes": 15,
+      "t_seconds": 900.0,
+      "depth_tif": "frames/depth_t0015.tif",
+      "overlay_png": "overlays/depth_t0015.png",
+      "geojson": "geojson/flood_extent_t0015.geojson",
+      "flooded_area_km2": 2.129,
+      "max_depth_m": 0.582,
+      "mean_wet_depth_m": 0.231
+    },
+    {
+      "t_minutes": 30,
+      "t_seconds": 1800.0,
+      "depth_tif": "frames/depth_t0030.tif",
+      "overlay_png": "overlays/depth_t0030.png",
+      "geojson": "geojson/flood_extent_t0030.geojson",
+      "flooded_area_km2": 7.9,
+      "max_depth_m": 1.326,
+      "mean_wet_depth_m": 0.319
+    },
+    {
+      "t_minutes": 45,
+      "t_seconds": 2700.0,
+      "depth_tif": "frames/depth_t0045.tif",
+      "overlay_png": "overlays/depth_t0045.png",
+      "geojson": "geojson/flood_extent_t0045.geojson",
+      "flooded_area_km2": 15.399,
+      "max_depth_m": 1.581,
+      "mean_wet_depth_m": 0.346
+    },
+    {
+      "t_minutes": 60,
+      "t_seconds": 3600.0,
+      "depth_tif": "frames/depth_t0060.tif",
+      "overlay_png": "overlays/depth_t0060.png",
+      "geojson": "geojson/flood_extent_t0060.geojson",
+      "flooded_area_km2": 23.115,
+      "max_depth_m": 1.712,
+      "mean_wet_depth_m": 0.35
+    },
+    {
+      "t_minutes": 75,
+      "t_seconds": 4500.0,
+      "depth_tif": "frames/depth_t0075.tif",
+      "overlay_png": "overlays/depth_t0075.png",
+      "geojson": "geojson/flood_extent_t0075.geojson",
+      "flooded_area_km2": 30.552,
+      "max_depth_m": 1.801,
+      "mean_wet_depth_m": 0.355
+    },
+    {
+      "t_minutes": 90,
+      "t_seconds": 5400.0,
+      "depth_tif": "frames/depth_t0090.tif",
+      "overlay_png": "overlays/depth_t0090.png",
+      "geojson": "geojson/flood_extent_t0090.geojson",
+      "flooded_area_km2": 38.144,
+      "max_depth_m": 1.867,
+      "mean_wet_depth_m": 0.356
+    },
+    {
+      "t_minutes": 105,
+      "t_seconds": 6300.0,
+      "depth_tif": "frames/depth_t0105.tif",
+      "overlay_png": "overlays/depth_t0105.png",
+      "geojson": "geojson/flood_extent_t0105.geojson",
+      "flooded_area_km2": 45.489,
+      "max_depth_m": 1.918,
+      "mean_wet_depth_m": 0.357
+    },
+    {
+      "t_minutes": 120,
+      "t_seconds": 7200.0,
+      "depth_tif": "frames/depth_t0120.tif",
+      "overlay_png": "overlays/depth_t0120.png",
+      "geojson": "geojson/flood_extent_t0120.geojson",
+      "flooded_area_km2": 53.574,
+      "max_depth_m": 1.959,
+      "mean_wet_depth_m": 0.355
+    },
+    {
+      "t_minutes": 135,
+      "t_seconds": 8100.0,
+      "depth_tif": "frames/depth_t0135.tif",
+      "overlay_png": "overlays/depth_t0135.png",
+      "geojson": "geojson/flood_extent_t0135.geojson",
+      "flooded_area_km2": 61.721,
+      "max_depth_m": 1.993,
+      "mean_wet_depth_m": 0.353
+    },
+    {
+      "t_minutes": 150,
+      "t_seconds": 9000.0,
+      "depth_tif": "frames/depth_t0150.tif",
+      "overlay_png": "overlays/depth_t0150.png",
+      "geojson": "geojson/flood_extent_t0150.geojson",
+      "flooded_area_km2": 69.56,
+      "max_depth_m": 2.021,
+      "mean_wet_depth_m": 0.352
+    },
+    {
+      "t_minutes": 165,
+      "t_seconds": 9900.0,
+      "depth_tif": "frames/depth_t0165.tif",
+      "overlay_png": "overlays/depth_t0165.png",
+      "geojson": "geojson/flood_extent_t0165.geojson",
+      "flooded_area_km2": 77.584,
+      "max_depth_m": 2.046,
+      "mean_wet_depth_m": 0.351
+    },
+    {
+      "t_minutes": 180,
+      "t_seconds": 10800.0,
+      "depth_tif": "frames/depth_t0180.tif",
+      "overlay_png": "overlays/depth_t0180.png",
+      "geojson": "geojson/flood_extent_t0180.geojson",
+      "flooded_area_km2": 86.194,
+      "max_depth_m": 2.066,
+      "mean_wet_depth_m": 0.349
+    },
+    {
+      "t_minutes": 195,
+      "t_seconds": 11700.0,
+      "depth_tif": "frames/depth_t0195.tif",
+      "overlay_png": "overlays/depth_t0195.png",
+      "geojson": "geojson/flood_extent_t0195.geojson",
+      "flooded_area_km2": 94.063,
+      "max_depth_m": 2.084,
+      "mean_wet_depth_m": 0.349
+    },
+    {
+      "t_minutes": 210,
+      "t_seconds": 12600.0,
+      "depth_tif": "frames/depth_t0210.tif",
+      "overlay_png": "overlays/depth_t0210.png",
+      "geojson": "geojson/flood_extent_t0210.geojson",
+      "flooded_area_km2": 101.686,
+      "max_depth_m": 2.1,
+      "mean_wet_depth_m": 0.349
+    },
+    {
+      "t_minutes": 225,
+      "t_seconds": 13500.0,
+      "depth_tif": "frames/depth_t0225.tif",
+      "overlay_png": "overlays/depth_t0225.png",
+      "geojson": "geojson/flood_extent_t0225.geojson",
+      "flooded_area_km2": 109.74,
+      "max_depth_m": 2.113,
+      "mean_wet_depth_m": 0.348
+    },
+    {
+      "t_minutes": 240,
+      "t_seconds": 14400.0,
+      "depth_tif": "frames/depth_t0240.tif",
+      "overlay_png": "overlays/depth_t0240.png",
+      "geojson": "geojson/flood_extent_t0240.geojson",
+      "flooded_area_km2": 116.931,
+      "max_depth_m": 2.125,
+      "mean_wet_depth_m": 0.35
+    }
+  ],
+  "sanity_checks": [
+    {
+      "name": "mass_conservation",
+      "pass_": true,
+      "detail": "volume on grid at final step (49,661,710 m3) vs. total volume injected by the breach hydrograph (49,594,125 m3): +0.14% delta. Water can only leave via open boundaries, never be created, so grid volume should be <= injected volume; a small positive delta here is expected numerical-scheme error (operator-split source terms are not exactly flux-conservative), not mass creation from nothing. "
+    },
+    {
+      "name": "nontrivial_flood_extent",
+      "pass_": true,
+      "detail": "simulated max flood extent is 1.88% of the AOI (116.9 km2 of 6221.5 km2). non-trivial extent, OK."
+    },
+    {
+      "name": "extent_not_saturated",
+      "pass_": true,
+      "detail": "simulated max flood extent is 1.88% of the AOI. OK, not saturating the domain."
+    },
+    {
+      "name": "historical_context_only",
+      "pass_": null,
+      "detail": "Historical 2008 event: ~3700 km2 flooded across 5 Bihar districts (far larger area than this AOI, which was deliberately scoped down to 6222 km2 around the breach site for compute tractability -- see data/dam_config/kosi_case_study.json). This simulation's 116.9 km2 is NOT directly comparable to 3700 km2 and is expected to be smaller by design. This check is context only, not a pass/fail validation."
+    },
+    {
+      "name": "solver_stability",
+      "pass_": true,
+      "detail": "no instability flagged"
+    }
+  ],
+  "assumptions": [
+    "Manning's n = 0.035 uniform (rural/agricultural floodplain, not field-measured)",
+    "Breach hydrograph: linear ramp 0->peak over 30 min, then held at peak (no historical hydrograph documented)",
+    "Breach location is approximate (see data/dam_config/kosi_case_study.json breach_site.coordinates_note)",
+    "Breach width 100m is a plausible placeholder, not a documented historical value",
+    "Domain boundaries are open/zero-gradient on all sides (water can exit the AOI freely)",
+    "Pre-breach river channel treated as dry (h=0) initial condition -- simulating only the breach floodwater, not baseflow",
+    "Grid resolution downsampled to ~166m x 186m from the native 30m DEM for compute tractability"
+  ]
+}

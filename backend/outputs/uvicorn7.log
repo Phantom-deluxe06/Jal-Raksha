@@ -1,0 +1,8 @@
+[startup] ML surrogate warmed and ready
+INFO:     127.0.0.1:60149 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60150 - "GET /sph/result HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54763 - "GET /simulate/result/kosi_actual2008 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54763 - "GET /simulate/result/kosi_actual2008 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54686 - "GET /simulate/frame/kosi_actual2008/depth_t0000.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54763 - "GET /sph/result HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64742 - "GET /sph/result HTTP/1.1" 200 OK

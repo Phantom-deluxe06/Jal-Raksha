@@ -1,10 +1,13 @@
 # FloodSim-HADR (SIH26161)
 
 AI-powered dam-break inundation modelling platform. See the PRD for full
-scope. **Current status: Build Priorities #1 and #2 complete** — SWE
-simulation + 2D map + export, and an instant ML surrogate, both running
-end-to-end on real data. SPH, 3D view, and GEE integration are not started
-yet.
+scope. **Current status**: SWE simulation + 2D map + export (Build Priority
+#1), an instant ML surrogate (#2), a 3D terrain view, and a localized SPH
+solver with an SPH-vs-SWE comparison panel are all running end-to-end on
+real data. GEE real-time SAR integration (#5) is in progress. Note: SPH/3D
+were built in a separate work session on this repo — see git log for that
+history; this README's SWE/ML sections below predate that work and haven't
+been updated to cover it yet.
 
 ## Case study
 
@@ -46,6 +49,20 @@ npm run dev
 ```
 Open http://localhost:5173 (backend must already be running on :8000 — CORS
 is open for local dev).
+
+> **The backend does NOT auto-reload on code changes.** `uvicorn` here is
+> started without `--reload`, so after editing `backend/main.py` or any
+> module it imports (`backend/swe/`, `backend/ml/`, `backend/sph/`), the
+> running server keeps serving the old code silently — a new/changed route
+> can 404 or misbehave with no error pointing at the real cause. After any
+> backend edit: find and kill the old process, then start a fresh one.
+> ```
+> Get-CimInstance Win32_Process -Filter "CommandLine LIKE '%uvicorn%'" | Select-Object ProcessId
+> Stop-Process -Id <that PID> -Force
+> Start-Process -FilePath ".venv\Scripts\python.exe" -ArgumentList "-m","uvicorn","backend.main:app","--host","127.0.0.1","--port","8000" -WorkingDirectory "<repo root>" -WindowStyle Hidden
+> ```
+> The server also isn't kept running between work sessions — check
+> `curl http://127.0.0.1:8000/health` before assuming it's up.
 
 ## What the SWE stage does
 

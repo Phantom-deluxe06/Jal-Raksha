@@ -5,6 +5,7 @@ import Timeline from "./components/Timeline";
 import Legend from "./components/Legend";
 import InfoPanel from "./components/InfoPanel";
 import PredictionControls from "./components/PredictionControls";
+import SphComparison from "./components/SphComparison";
 import { fetchResult, frameUrl, triggerRun } from "./api";
 import "./App.css";
 
@@ -13,7 +14,7 @@ export default function App() {
   const [frameIndex, setFrameIndex] = useState(0);
   const [error, setError] = useState(null);
   const [running, setRunning] = useState(false);
-  const [mode, setMode] = useState("full"); // "full" | "instant"
+  const [mode, setMode] = useState("full"); // "full" | "instant" | "sph"
   const [viewMode, setViewMode] = useState("2d"); // "2d" | "3d"
   const [prediction, setPrediction] = useState(null);
   const [predictedLocation, setPredictedLocation] = useState(null);
@@ -53,7 +54,7 @@ export default function App() {
   const overlayUrl =
     mode === "full"
       ? frameUrl(frame.overlay_png)
-      : prediction
+      : mode === "instant" && prediction
         ? `data:image/png;base64,${prediction.overlay_png_base64}`
         : null;
 
@@ -107,11 +108,13 @@ export default function App() {
           <button className={mode === "instant" ? "active" : ""} onClick={() => setMode("instant")}>
             Instant AI Prediction
           </button>
+          <button className={mode === "sph" ? "active" : ""} onClick={() => setMode("sph")}>
+            SPH Comparison
+          </button>
         </div>
 
-        {mode === "full" ? (
-          <InfoPanel meta={meta} onRerun={handleRerun} running={running} />
-        ) : (
+        {mode === "full" && <InfoPanel meta={meta} onRerun={handleRerun} running={running} />}
+        {mode === "instant" && (
           <PredictionControls
             baseDischarge={meta.discharge_cumecs}
             baseLat={meta.breach_latlon.lat}
@@ -122,6 +125,7 @@ export default function App() {
             }}
           />
         )}
+        {mode === "sph" && <SphComparison />}
       </div>
     </div>
   );
