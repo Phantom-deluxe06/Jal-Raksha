@@ -117,7 +117,7 @@ export default function App() {
           </button>
         </div>
 
-        {mode === "full" && <InfoPanel meta={meta} onRerun={handleRerun} running={running} />}
+        {mode === "full" && <InfoPanel meta={meta} frame={frame} onRerun={handleRerun} running={running} />}
         {mode === "instant" && (
           <PredictionControls
             baseDischarge={meta.discharge_cumecs}

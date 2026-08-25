@@ -396,6 +396,47 @@ p.warn { color: #ff8a65; font-size: 0.8rem; }
   margin: 0;
 }
 
+.impact-block {
+  background: #1d232d;
+  border-radius: 10px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.impact-block h3 {
+  font-size: 0.82rem;
+  margin: 0 0 0.6rem;
+  color: #6fa8ff;
+}
+
+.impact-block .stat-grid {
+  margin-bottom: 0.6rem;
+}
+
+.impact-block .stat-grid > div {
+  background: #14181f;
+}
+
+.settlement-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.settlement-chip {
+  background: #263041;
+  color: #cfd8e3;
+  font-size: 0.68rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+}
+
+.impact-methodology {
+  margin: 0;
+  font-size: 0.68rem;
+}
+
 .export-row {
   display: flex;
   gap: 0.5rem;

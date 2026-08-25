@@ -1,0 +1,5824 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "source": "OpenStreetMap via Overpass API",
+    "license": "ODbL (openstreetmap.org/copyright)",
+    "query_bounds": {
+      "west": 86.6,
+      "south": 25.9,
+      "east": 87.3,
+      "north": 26.7
+    },
+    "note": "osm_population_tag is a crowd-sourced, unverified OSM attribute where present -- not used for any population statistic in this project. Population magnitude comes only from the WorldPop raster (data/population/); OSM is used here only for settlement names/locations."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7939722,
+          25.9831751
+        ]
+      },
+      "properties": {
+        "name": "Singheswar",
+        "place_type": "village",
+        "osm_id": 245741662,
+        "osm_population_tag": "1000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1498976,
+          26.0640591
+        ]
+      },
+      "properties": {
+        "name": "Bhargama",
+        "place_type": "village",
+        "osm_id": 245742023,
+        "osm_population_tag": "1000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2355105,
+          26.0850923
+        ]
+      },
+      "properties": {
+        "name": "Raniganj",
+        "place_type": "town",
+        "osm_id": 245742442,
+        "osm_population_tag": "5000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8872792,
+          26.1270382
+        ]
+      },
+      "properties": {
+        "name": "Tribeniganj",
+        "place_type": "town",
+        "osm_id": 245744268,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6808402,
+          26.212938
+        ]
+      },
+      "properties": {
+        "name": "Kishanpur",
+        "place_type": "village",
+        "osm_id": 245745111,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8359681,
+          26.2979997
+        ]
+      },
+      "properties": {
+        "name": "Raghopur",
+        "place_type": "village",
+        "osm_id": 245746440,
+        "osm_population_tag": "1000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2632847,
+          26.3049106
+        ]
+      },
+      "properties": {
+        "name": "Forbesganj",
+        "place_type": "town",
+        "osm_id": 245746477,
+        "osm_population_tag": "50500"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8445435,
+          26.308902
+        ]
+      },
+      "properties": {
+        "name": "Simrahi",
+        "place_type": "village",
+        "osm_id": 245746564,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.281617,
+          26.4623007
+        ]
+      },
+      "properties": {
+        "name": "\u0935\u093f\u0930\u093e\u091f\u0928\u0917\u0930",
+        "place_type": "city",
+        "osm_id": 329222054,
+        "osm_population_tag": "166674"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2641954,
+          26.398946
+        ]
+      },
+      "properties": {
+        "name": "Jogbani",
+        "place_type": "town",
+        "osm_id": 746629130,
+        "osm_population_tag": "5000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9616386,
+          26.5129021
+        ]
+      },
+      "properties": {
+        "name": "Bhimnagar",
+        "place_type": "hamlet",
+        "osm_id": 1437729448,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0084605,
+          26.5151843
+        ]
+      },
+      "properties": {
+        "name": "Birpur",
+        "place_type": "town",
+        "osm_id": 1437729453,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7915907,
+          25.9174142
+        ]
+      },
+      "properties": {
+        "name": "Madhepura",
+        "place_type": "town",
+        "osm_id": 1437729459,
+        "osm_population_tag": "5000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6008021,
+          26.1186598
+        ]
+      },
+      "properties": {
+        "name": "Supaul",
+        "place_type": "town",
+        "osm_id": 1772769991,
+        "osm_population_tag": "65437"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0045035,
+          26.2172122
+        ]
+      },
+      "properties": {
+        "name": "Chhatapur",
+        "place_type": "village",
+        "osm_id": 1773497891,
+        "osm_population_tag": "1000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7973505,
+          26.1579207
+        ]
+      },
+      "properties": {
+        "name": "Pipra",
+        "place_type": "village",
+        "osm_id": 1773537440,
+        "osm_population_tag": "1000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7261029,
+          25.9079184
+        ]
+      },
+      "properties": {
+        "name": "Mathahi",
+        "place_type": "town",
+        "osm_id": 2040071932,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1037915,
+          26.3392041
+        ]
+      },
+      "properties": {
+        "name": "Narpatganj",
+        "place_type": "village",
+        "osm_id": 2164595873,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8334674,
+          26.4829816
+        ]
+      },
+      "properties": {
+        "name": "Tikuliya",
+        "place_type": "village",
+        "osm_id": 2798524194,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.74855,
+          26.539598
+        ]
+      },
+      "properties": {
+        "name": "\u0930\u093e\u091c\u0935\u093f\u0930\u093e\u091c",
+        "place_type": "town",
+        "osm_id": 2803154322,
+        "osm_population_tag": "37738"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6529992,
+          26.6367085
+        ]
+      },
+      "properties": {
+        "name": "\u0926\u0947\u0935\u0927\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2812769955,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6202356,
+          26.6416056
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u0932\u094d\u092f\u093e\u0923\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2812769956,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7043789,
+          26.6303735
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u0920\u094c\u0928\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2812769957,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.609883,
+          26.6453344
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093f\u0938\u0928\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2820387327,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2801836,
+          26.56776
+        ]
+      },
+      "properties": {
+        "name": "\u0926\u0941\u0939\u0935\u0940",
+        "place_type": "town",
+        "osm_id": 2820894452,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6428223,
+          26.5746288
+        ]
+      },
+      "properties": {
+        "name": "\u0905\u0930\u094d\u0928\u093e\u0939\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163605,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6335572,
+          26.5000024
+        ]
+      },
+      "properties": {
+        "name": "\u0914\u0930\u0939\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163606,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.906906,
+          26.610542
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0926\u0917\u093e\u092e\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163607,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.674461,
+          26.464418
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0928\u0948\u0928\u093f\u092f\u093e\u0901",
+        "place_type": "hamlet",
+        "osm_id": 2837163608,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9124525,
+          26.5869326
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0948\u0930\u0935\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163609,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.819984,
+          26.628944
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093e\u0916\u0926\u094c\u0935\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163610,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.818497,
+          26.507353
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u092d\u0928\u0917\u093e\u092e\u093e\u0915\u091f\u094d\u091f\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163611,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6155474,
+          26.5653965
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0928\u094c\u0932\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163613,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6269,
+          26.578182
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0928\u094c\u0932\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163614,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8835985,
+          26.6024251
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0930\u092e\u091d\u093f\u092f\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163615,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6463974,
+          26.5340174
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u094d\u0930\u0939\u094d\u092e\u093e\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163616,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.665207,
+          26.5963
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0938\u0935\u0932\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163618,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.74128,
+          26.581326
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0938\u092c\u093f\u091f\u094d\u091f\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163619,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8069382,
+          26.5628815
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0925\u0928\u093e\u0939\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163620,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.830811,
+          26.540329
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u093e\u0917\u0935\u0924\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163623,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6751367,
+          26.6405871
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u093e\u0919\u094d\u0918\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163624,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8901477,
+          26.5501194
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u093e\u0930\u0926\u0939",
+        "place_type": "village",
+        "osm_id": 2837163625,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.602554,
+          26.511534
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u0941\u0924\u0939\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163626,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7537055,
+          26.4814598
+        ]
+      },
+      "properties": {
+        "name": "\u0935\u0940\u0930\u092a\u0941\u0930",
+        "place_type": "village",
+        "osm_id": 2837163627,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7815436,
+          26.4997306
+        ]
+      },
+      "properties": {
+        "name": "\u0935\u093f\u0937\u0939\u0930\u093f\u092f\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163628,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7323379,
+          26.4515269
+        ]
+      },
+      "properties": {
+        "name": "\u091b\u093f\u0928\u094d\u0928\u092e\u0938\u094d\u0924\u093e",
+        "place_type": "village",
+        "osm_id": 2837163629,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8449608,
+          26.5599049
+        ]
+      },
+      "properties": {
+        "name": "\u0921\u093e\u0922\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163630,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7861862,
+          26.5096378
+        ]
+      },
+      "properties": {
+        "name": "\u0926\u0947\u0909\u0930\u0940 \u092d\u0930\u0919\u094d\u0917\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163632,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8766708,
+          26.6493855
+        ]
+      },
+      "properties": {
+        "name": "\u0927\u0930\u092e\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163635,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.920784,
+          26.666998
+        ]
+      },
+      "properties": {
+        "name": "\u0927\u094b\u0927\u0928\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163636,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8367367,
+          26.5897142
+        ]
+      },
+      "properties": {
+        "name": "\u0926\u093f\u092e\u093e\u0928",
+        "place_type": "hamlet",
+        "osm_id": 2837163637,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6959534,
+          26.4709625
+        ]
+      },
+      "properties": {
+        "name": "\u092b\u0915\u093f\u0930\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163638,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.774658,
+          26.524574
+        ]
+      },
+      "properties": {
+        "name": "\u092b\u0930\u094d\u0938\u0948\u0920",
+        "place_type": "hamlet",
+        "osm_id": 2837163639,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6505967,
+          26.5189323
+        ]
+      },
+      "properties": {
+        "name": "\u0917\u092e\u0939\u0930\u093f\u092f\u093e \u092a\u0930\u0935\u093e\u0939\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163642,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7738114,
+          26.5971993
+        ]
+      },
+      "properties": {
+        "name": "\u0939\u0930\u093f\u0939\u0930\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163647,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8509293,
+          26.5066509
+        ]
+      },
+      "properties": {
+        "name": "\u0907\u0928\u093e\u0930\u0935\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163649,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6204875,
+          26.6012652
+        ]
+      },
+      "properties": {
+        "name": "\u0907\u0928\u0930\u0941\u0935\u093e \u092b\u0941\u0932\u092c\u093e\u0930\u093f\u092f\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163650,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7301483,
+          26.5025806
+        ]
+      },
+      "properties": {
+        "name": "\u0907\u091f\u0939\u0930\u0940 \u0935\u093f\u0937\u094d\u0923\u0941\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163651,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9349442,
+          26.6296577
+        ]
+      },
+      "properties": {
+        "name": "\u091c\u0917\u0924\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163652,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7236634,
+          26.5432235
+        ]
+      },
+      "properties": {
+        "name": "\u091c\u092e\u0941\u0928\u0940 \u092e\u0927\u0947\u092a\u0941\u0930\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163653,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8030318,
+          26.6267468
+        ]
+      },
+      "properties": {
+        "name": "\u091c\u0923\u094d\u0921\u094c\u0932",
+        "place_type": "hamlet",
+        "osm_id": 2837163654,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6571278,
+          26.4759264
+        ]
+      },
+      "properties": {
+        "name": "\u091d\u0941\u091f\u093e\u0915\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163655,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.865425,
+          26.526007
+        ]
+      },
+      "properties": {
+        "name": "\u091c\u094b\u0917\u093f\u0928\u093f\u092f\u093e \u0967",
+        "place_type": "hamlet",
+        "osm_id": 2837163656,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.88784,
+          26.535444
+        ]
+      },
+      "properties": {
+        "name": "\u091c\u094b\u0917\u093f\u0928\u093f\u092f\u093e \u0968",
+        "place_type": "hamlet",
+        "osm_id": 2837163657,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6152536,
+          26.5449016
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u0935\u093f\u0932\u093e\u0938\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163658,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7115784,
+          26.586298
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u091f\u0948\u092f\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163662,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7366105,
+          26.4774343
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u094b\u091a\u092c\u0916\u0930\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163666,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7447893,
+          26.4467107
+        ]
+      },
+      "properties": {
+        "name": "\u0932\u093e\u0932\u092a\u093e\u091f\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163669,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7720985,
+          26.4836371
+        ]
+      },
+      "properties": {
+        "name": "\u0932\u094c\u0928\u093f\u092f\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163670,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.830368,
+          26.611727
+        ]
+      },
+      "properties": {
+        "name": "\u0932\u094b\u0939\u091c\u093e\u0930\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163671,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8709793,
+          26.5555038
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u093e\u0927\u0935\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163673,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8285904,
+          26.5286236
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u0939\u093e\u0926\u0947\u0935\u093e",
+        "place_type": "village",
+        "osm_id": 2837163674,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8698273,
+          26.5942249
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u0948\u0928\u093e \u0915\u093e\u0926\u0947\u0930\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163675,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6298752,
+          26.6204948
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u0948\u0928\u093e \u0938\u0939\u0938\u094d\u0930\u092c\u093e\u0939\u0941",
+        "place_type": "village",
+        "osm_id": 2837163676,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6948701,
+          26.5541086
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u0932\u0947\u0915\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163677,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7435303,
+          26.5702858
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u093e\u0932\u0947\u0925",
+        "place_type": "hamlet",
+        "osm_id": 2837163678,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6852024,
+          26.6212145
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u094b\u0939\u0928\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163683,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6761323,
+          26.485745
+        ]
+      },
+      "properties": {
+        "name": "\u0928\u093e\u0930\u094d\u0918\u094b",
+        "place_type": "hamlet",
+        "osm_id": 2837163684,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.960785,
+          26.699089
+        ]
+      },
+      "properties": {
+        "name": "\u0913\u0926\u094d\u0930\u093e\u0939\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163685,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.790741,
+          26.561216
+        ]
+      },
+      "properties": {
+        "name": "\u092a\u0915\u0930\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163686,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.78981,
+          26.6144794
+        ]
+      },
+      "properties": {
+        "name": "\u092a\u093e\u0930\u0938\u092c\u0928\u0940",
+        "place_type": "hamlet",
+        "osm_id": 2837163688,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6132692,
+          26.5208199
+        ]
+      },
+      "properties": {
+        "name": "\u092a\u093e\u0924\u094b",
+        "place_type": "hamlet",
+        "osm_id": 2837163690,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.678154,
+          26.563137
+        ]
+      },
+      "properties": {
+        "name": "\u092a\u0924\u094d\u0925\u0930\u0917\u093e\u0922\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163691,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6589196,
+          26.6116338
+        ]
+      },
+      "properties": {
+        "name": "\u0930\u093e\u092e\u092a\u0941\u0930 \u091c\u092e\u0941\u0935\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163695,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8048519,
+          26.4626591
+        ]
+      },
+      "properties": {
+        "name": "\u0930\u093e\u092e\u092a\u0941\u0930 \u092e\u0932\u094d\u0939\u0928\u093f\u092f\u093e\u0901",
+        "place_type": "hamlet",
+        "osm_id": 2837163696,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8942184,
+          26.6500587
+        ]
+      },
+      "properties": {
+        "name": "\u0930\u0942\u092a\u0928\u0917\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837163698,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.664645,
+          26.633529
+        ]
+      },
+      "properties": {
+        "name": "\u0936\u092e\u094d\u092d\u0941\u0928\u093e\u0925",
+        "place_type": "town",
+        "osm_id": 2837163699,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7927891,
+          26.4755928
+        ]
+      },
+      "properties": {
+        "name": "\u0938\u0915\u0930\u092a\u0941\u0930\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837163700,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7664337,
+          26.6228161
+        ]
+      },
+      "properties": {
+        "name": "\u0938\u093f\u0924\u093e\u092a\u0941\u0930",
+        "place_type": "hamlet",
+        "osm_id": 2837164003,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.751007,
+          26.60771
+        ]
+      },
+      "properties": {
+        "name": "\u0924\u0947\u0930\u093e\u0939\u094b\u0924\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837164005,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8659806,
+          26.6264037
+        ]
+      },
+      "properties": {
+        "name": "\u0920\u0947\u0932\u093f\u092f\u093e",
+        "place_type": "hamlet",
+        "osm_id": 2837164006,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9573971,
+          26.523699
+        ]
+      },
+      "properties": {
+        "name": "Bantabari",
+        "place_type": "village",
+        "osm_id": 3253305876,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.149907,
+          26.6018952
+        ]
+      },
+      "properties": {
+        "name": "\u0907\u0928\u0930\u0941\u0935\u093e",
+        "place_type": "town",
+        "osm_id": 3261545305,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0877055,
+          26.4573668
+        ]
+      },
+      "properties": {
+        "name": "Ghurna",
+        "place_type": "village",
+        "osm_id": 3350296505,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.794495,
+          26.453411
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u0941\u0928\u094b\u0932\u0940",
+        "place_type": "hamlet",
+        "osm_id": 3391004311,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7161664,
+          26.6287262
+        ]
+      },
+      "properties": {
+        "name": "\u0930\u0941\u092a\u0928\u0940",
+        "place_type": "village",
+        "osm_id": 3391004321,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2731581,
+          26.6237356
+        ]
+      },
+      "properties": {
+        "name": "Khanar",
+        "place_type": "village",
+        "osm_id": 3801716747,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.917131,
+          26.4393734
+        ]
+      },
+      "properties": {
+        "name": "Ratanpura",
+        "place_type": "village",
+        "osm_id": 3815862722,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8746568,
+          25.9143885
+        ]
+      },
+      "properties": {
+        "name": "Budhma",
+        "place_type": "village",
+        "osm_id": 4816627643,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8570759,
+          25.9225248
+        ]
+      },
+      "properties": {
+        "name": "Pararia",
+        "place_type": "village",
+        "osm_id": 4816627644,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9063987,
+          25.916078
+        ]
+      },
+      "properties": {
+        "name": "Bhatkhori",
+        "place_type": "village",
+        "osm_id": 4816627645,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9119669,
+          25.9060614
+        ]
+      },
+      "properties": {
+        "name": "Parwa",
+        "place_type": "village",
+        "osm_id": 4816627646,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8364727,
+          25.9474597
+        ]
+      },
+      "properties": {
+        "name": "Shakarpur",
+        "place_type": "village",
+        "osm_id": 4816633442,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7627527,
+          25.9397934
+        ]
+      },
+      "properties": {
+        "name": "Sahugarh",
+        "place_type": "village",
+        "osm_id": 4818283827,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7320176,
+          25.9397914
+        ]
+      },
+      "properties": {
+        "name": "Gorhiari",
+        "place_type": "village",
+        "osm_id": 4857998691,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8294117,
+          25.9042027
+        ]
+      },
+      "properties": {
+        "name": "Manikpur",
+        "place_type": "village",
+        "osm_id": 4870335523,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7562375,
+          25.9140217
+        ]
+      },
+      "properties": {
+        "name": "Garthan",
+        "place_type": "village",
+        "osm_id": 4874498052,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7363652,
+          25.9203459
+        ]
+      },
+      "properties": {
+        "name": "Bhan",
+        "place_type": "village",
+        "osm_id": 4911293714,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2368667,
+          26.4082638
+        ]
+      },
+      "properties": {
+        "name": "Jogbani",
+        "place_type": "village",
+        "osm_id": 4927238301,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2244015,
+          26.3971107
+        ]
+      },
+      "properties": {
+        "name": "Kuchgaon",
+        "place_type": "village",
+        "osm_id": 4927238302,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1922085,
+          26.3987496
+        ]
+      },
+      "properties": {
+        "name": "Pathardewa",
+        "place_type": "village",
+        "osm_id": 4927238304,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1794247,
+          26.400391
+        ]
+      },
+      "properties": {
+        "name": "Jimrahi",
+        "place_type": "village",
+        "osm_id": 4927238305,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1675426,
+          26.3820212
+        ]
+      },
+      "properties": {
+        "name": "Bhorhar",
+        "place_type": "village",
+        "osm_id": 4927238306,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1507036,
+          26.3811465
+        ]
+      },
+      "properties": {
+        "name": "Hanumannagar",
+        "place_type": "village",
+        "osm_id": 4927238307,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1557335,
+          26.3895295
+        ]
+      },
+      "properties": {
+        "name": "Chainpur",
+        "place_type": "village",
+        "osm_id": 4927238308,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1482821,
+          26.3918896
+        ]
+      },
+      "properties": {
+        "name": "Nawabganj",
+        "place_type": "village",
+        "osm_id": 4927238309,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1251536,
+          26.3928827
+        ]
+      },
+      "properties": {
+        "name": "Tope Nawabganj",
+        "place_type": "village",
+        "osm_id": 4927238310,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1351404,
+          26.3962724
+        ]
+      },
+      "properties": {
+        "name": "Phulkah",
+        "place_type": "village",
+        "osm_id": 4927238311,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1182285,
+          26.4035255
+        ]
+      },
+      "properties": {
+        "name": "Amrori",
+        "place_type": "village",
+        "osm_id": 4927238312,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1270854,
+          26.4125282
+        ]
+      },
+      "properties": {
+        "name": "Manikpur",
+        "place_type": "village",
+        "osm_id": 4927238313,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1095174,
+          26.4306428
+        ]
+      },
+      "properties": {
+        "name": "Motitappu",
+        "place_type": "village",
+        "osm_id": 4927238314,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.068805,
+          26.416829
+        ]
+      },
+      "properties": {
+        "name": "Parsa",
+        "place_type": "village",
+        "osm_id": 4927238315,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1023372,
+          26.4239364
+        ]
+      },
+      "properties": {
+        "name": "Kamat Patraha",
+        "place_type": "village",
+        "osm_id": 4927238316,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0741993,
+          26.4333036
+        ]
+      },
+      "properties": {
+        "name": "Patraha",
+        "place_type": "village",
+        "osm_id": 4927238317,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0875393,
+          26.4394997
+        ]
+      },
+      "properties": {
+        "name": "Mal Pathraha",
+        "place_type": "village",
+        "osm_id": 4927238318,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0742357,
+          26.4662161
+        ]
+      },
+      "properties": {
+        "name": "Haripur Ghurna",
+        "place_type": "village",
+        "osm_id": 4927238319,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0739441,
+          26.4795561
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u0939\u0947\u0936\u092a\u091f\u094d\u091f\u0940",
+        "place_type": "village",
+        "osm_id": 4927238320,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0590004,
+          26.4871373
+        ]
+      },
+      "properties": {
+        "name": "Shankarpur",
+        "place_type": "village",
+        "osm_id": 4927238321,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0463986,
+          26.4984635
+        ]
+      },
+      "properties": {
+        "name": "Parmanandpur",
+        "place_type": "village",
+        "osm_id": 4927238322,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0413597,
+          26.4989828
+        ]
+      },
+      "properties": {
+        "name": "Nag Piprahi",
+        "place_type": "village",
+        "osm_id": 4927238323,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0473326,
+          26.4892284
+        ]
+      },
+      "properties": {
+        "name": "\u0917\u094c\u0938\u0941\u0930\u092a\u091f\u094d\u091f\u0940",
+        "place_type": "village",
+        "osm_id": 4927238324,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0358196,
+          26.4859618
+        ]
+      },
+      "properties": {
+        "name": "Bhagwanpur",
+        "place_type": "village",
+        "osm_id": 4927238325,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0259239,
+          26.4793009
+        ]
+      },
+      "properties": {
+        "name": "Mohanpur",
+        "place_type": "village",
+        "osm_id": 4927238326,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0408767,
+          26.4766767
+        ]
+      },
+      "properties": {
+        "name": "Patarwa",
+        "place_type": "village",
+        "osm_id": 4927238327,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0483941,
+          26.4674918
+        ]
+      },
+      "properties": {
+        "name": "Kochgaon",
+        "place_type": "village",
+        "osm_id": 4927238328,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0640667,
+          26.4603844
+        ]
+      },
+      "properties": {
+        "name": "Bairia Chaudhari",
+        "place_type": "village",
+        "osm_id": 4927238329,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0508726,
+          26.4562294
+        ]
+      },
+      "properties": {
+        "name": "Bairia Kamal",
+        "place_type": "village",
+        "osm_id": 4927238330,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0641396,
+          26.4417959
+        ]
+      },
+      "properties": {
+        "name": "Lalpurgot",
+        "place_type": "village",
+        "osm_id": 4927238331,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0630462,
+          26.4529126
+        ]
+      },
+      "properties": {
+        "name": "Padumpur",
+        "place_type": "village",
+        "osm_id": 4927238332,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0624266,
+          26.4464248
+        ]
+      },
+      "properties": {
+        "name": "Koyali",
+        "place_type": "village",
+        "osm_id": 4927238333,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0493782,
+          26.4271438
+        ]
+      },
+      "properties": {
+        "name": "Kusahar",
+        "place_type": "village",
+        "osm_id": 4927238334,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0454418,
+          26.4397913
+        ]
+      },
+      "properties": {
+        "name": "Ghoraghat",
+        "place_type": "village",
+        "osm_id": 4927238335,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0299879,
+          26.4469351
+        ]
+      },
+      "properties": {
+        "name": "Barhampur",
+        "place_type": "village",
+        "osm_id": 4927238336,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0414325,
+          26.4530948
+        ]
+      },
+      "properties": {
+        "name": "Narhi",
+        "place_type": "village",
+        "osm_id": 4927238337,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0350541,
+          26.4626624
+        ]
+      },
+      "properties": {
+        "name": "Balbhadarpur",
+        "place_type": "village",
+        "osm_id": 4927238338,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0267987,
+          26.4589812
+        ]
+      },
+      "properties": {
+        "name": "Hedlowa",
+        "place_type": "village",
+        "osm_id": 4927238339,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7989439,
+          25.955313
+        ]
+      },
+      "properties": {
+        "name": "Jajhat",
+        "place_type": "village",
+        "osm_id": 4952830853,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.24548,
+          26.617103
+        ]
+      },
+      "properties": {
+        "name": "\u092a\u091e\u094d\u091a\u093e\u092f\u0924 \u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5039696063,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.248699,
+          26.617402
+        ]
+      },
+      "properties": {
+        "name": "Madheli\u0307\u0304 Pa\u00f1chy\u0101t\u1e6dol",
+        "place_type": "village",
+        "osm_id": 5039696064,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.252941,
+          26.647228
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u0941\u0930\u094d\u0915\u0940",
+        "place_type": "village",
+        "osm_id": 5039702919,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1803945,
+          26.5810916
+        ]
+      },
+      "properties": {
+        "name": "Joganiya Jhoda",
+        "place_type": "village",
+        "osm_id": 5040853580,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1745593,
+          26.5768896
+        ]
+      },
+      "properties": {
+        "name": "Hauleya",
+        "place_type": "village",
+        "osm_id": 5040853581,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.183009,
+          26.5689766
+        ]
+      },
+      "properties": {
+        "name": "Jhoda Sitaramtol",
+        "place_type": "village",
+        "osm_id": 5040853582,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1802051,
+          26.572213
+        ]
+      },
+      "properties": {
+        "name": "Jhoda Batar",
+        "place_type": "village",
+        "osm_id": 5040853583,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1688756,
+          26.5696036
+        ]
+      },
+      "properties": {
+        "name": "\u0939\u094c\u0932\u093f\u092f\u093e",
+        "place_type": "village",
+        "osm_id": 5040853584,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1793715,
+          26.5652365
+        ]
+      },
+      "properties": {
+        "name": "Guruntol",
+        "place_type": "village",
+        "osm_id": 5040853585,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1654275,
+          26.5585889
+        ]
+      },
+      "properties": {
+        "name": "Hauleya Pachkauditol",
+        "place_type": "village",
+        "osm_id": 5040853586,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1766054,
+          26.5568773
+        ]
+      },
+      "properties": {
+        "name": "Dittha Khoriya",
+        "place_type": "village",
+        "osm_id": 5040853588,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1659407,
+          26.5911976
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093e\u092c\u093f\u092f\u093e \u091c\u092e\u0941\u0935\u093e",
+        "place_type": "hamlet",
+        "osm_id": 5040853589,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1543308,
+          26.5872746
+        ]
+      },
+      "properties": {
+        "name": "Koiritol",
+        "place_type": "hamlet",
+        "osm_id": 5040853590,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1511132,
+          26.5838781
+        ]
+      },
+      "properties": {
+        "name": "Mehatatol",
+        "place_type": "hamlet",
+        "osm_id": 5040853591,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1463199,
+          26.5811712
+        ]
+      },
+      "properties": {
+        "name": "Telitol",
+        "place_type": "hamlet",
+        "osm_id": 5040853592,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1416206,
+          26.5713666
+        ]
+      },
+      "properties": {
+        "name": "Miyatol",
+        "place_type": "village",
+        "osm_id": 5040855853,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1292791,
+          26.5760085
+        ]
+      },
+      "properties": {
+        "name": "Taparatol",
+        "place_type": "village",
+        "osm_id": 5040871479,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1339506,
+          26.5704987
+        ]
+      },
+      "properties": {
+        "name": "Khabatetol",
+        "place_type": "village",
+        "osm_id": 5040871480,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1337518,
+          26.5740626
+        ]
+      },
+      "properties": {
+        "name": "Shukrabaretol",
+        "place_type": "village",
+        "osm_id": 5040871481,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1388846,
+          26.5760933
+        ]
+      },
+      "properties": {
+        "name": "Yadavtol",
+        "place_type": "village",
+        "osm_id": 5040871482,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1354365,
+          26.5826504
+        ]
+      },
+      "properties": {
+        "name": "\u091d\u0930\u0928\u093e",
+        "place_type": "hamlet",
+        "osm_id": 5040871483,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.138434,
+          26.5865801
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093e\u092c\u093f\u092f\u093e",
+        "place_type": "hamlet",
+        "osm_id": 5040871484,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2244232,
+          26.5744207
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u093e\u092e\u0930\u0940",
+        "place_type": "village",
+        "osm_id": 5040892570,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.225367,
+          26.5720915
+        ]
+      },
+      "properties": {
+        "name": "Gadhitol",
+        "place_type": "village",
+        "osm_id": 5040892571,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2085822,
+          26.5757669
+        ]
+      },
+      "properties": {
+        "name": "Sakhubare",
+        "place_type": "village",
+        "osm_id": 5040892572,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2147107,
+          26.5766003
+        ]
+      },
+      "properties": {
+        "name": "Kolaharwa",
+        "place_type": "village",
+        "osm_id": 5040892573,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2035049,
+          26.5668986
+        ]
+      },
+      "properties": {
+        "name": "Musaharitol",
+        "place_type": "village",
+        "osm_id": 5040892574,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2182349,
+          26.5650928
+        ]
+      },
+      "properties": {
+        "name": "Charaiya",
+        "place_type": "village",
+        "osm_id": 5040892575,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2136475,
+          26.5564374
+        ]
+      },
+      "properties": {
+        "name": "Sadhetoki Jhagartol",
+        "place_type": "village",
+        "osm_id": 5040892576,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2098724,
+          26.5527827
+        ]
+      },
+      "properties": {
+        "name": "Bikiniyatol",
+        "place_type": "village",
+        "osm_id": 5040892577,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1975441,
+          26.5545654
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u093e\u091d\u093e\u0909",
+        "place_type": "village",
+        "osm_id": 5040892578,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1600265,
+          26.5488288
+        ]
+      },
+      "properties": {
+        "name": "Rautartol",
+        "place_type": "village",
+        "osm_id": 5040892579,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1571823,
+          26.5542089
+        ]
+      },
+      "properties": {
+        "name": "Singiya Maran",
+        "place_type": "village",
+        "osm_id": 5040892580,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1557693,
+          26.5438699
+        ]
+      },
+      "properties": {
+        "name": "Dhiktol",
+        "place_type": "village",
+        "osm_id": 5040892581,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1653525,
+          26.5411958
+        ]
+      },
+      "properties": {
+        "name": "Hattimuda",
+        "place_type": "village",
+        "osm_id": 5040892582,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1584142,
+          26.5261065
+        ]
+      },
+      "properties": {
+        "name": "Bhawanipur",
+        "place_type": "village",
+        "osm_id": 5040892583,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1594685,
+          26.5079545
+        ]
+      },
+      "properties": {
+        "name": "Pakkitol",
+        "place_type": "village",
+        "osm_id": 5040892584,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1511866,
+          26.5081613
+        ]
+      },
+      "properties": {
+        "name": "Sinubari",
+        "place_type": "village",
+        "osm_id": 5040892585,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1242456,
+          26.4978491
+        ]
+      },
+      "properties": {
+        "name": "\u0939\u0930\u093f\u0928\u0917\u0930 \u092c\u091c\u0930",
+        "place_type": "hamlet",
+        "osm_id": 5040892586,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1248688,
+          26.50444
+        ]
+      },
+      "properties": {
+        "name": "Musaharitol",
+        "place_type": "hamlet",
+        "osm_id": 5040892587,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1255488,
+          26.5119448
+        ]
+      },
+      "properties": {
+        "name": "Khadahitol",
+        "place_type": "hamlet",
+        "osm_id": 5040892588,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1336572,
+          26.5255079
+        ]
+      },
+      "properties": {
+        "name": "Gautampur",
+        "place_type": "hamlet",
+        "osm_id": 5040892589,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1356741,
+          26.5421906
+        ]
+      },
+      "properties": {
+        "name": "Jalpapur Batartol",
+        "place_type": "village",
+        "osm_id": 5040892590,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1245127,
+          26.5440593
+        ]
+      },
+      "properties": {
+        "name": "Labatoliya Miyatol",
+        "place_type": "village",
+        "osm_id": 5040892591,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.134814,
+          26.5584954
+        ]
+      },
+      "properties": {
+        "name": "Chaudharitol",
+        "place_type": "village",
+        "osm_id": 5040892592,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.125178,
+          26.5629538
+        ]
+      },
+      "properties": {
+        "name": "Mehatatol",
+        "place_type": "village",
+        "osm_id": 5040892594,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2189732,
+          26.5314202
+        ]
+      },
+      "properties": {
+        "name": "Musaharitol",
+        "place_type": "village",
+        "osm_id": 5040907842,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2175651,
+          26.5361785
+        ]
+      },
+      "properties": {
+        "name": "Thakurtol",
+        "place_type": "village",
+        "osm_id": 5040907843,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2156305,
+          26.5432872
+        ]
+      },
+      "properties": {
+        "name": "Thantol",
+        "place_type": "village",
+        "osm_id": 5040907844,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2228953,
+          26.5440472
+        ]
+      },
+      "properties": {
+        "name": "Tanmuna",
+        "place_type": "village",
+        "osm_id": 5040907845,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.229376,
+          26.5403933
+        ]
+      },
+      "properties": {
+        "name": "Bogaidastol",
+        "place_type": "village",
+        "osm_id": 5040907846,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2300404,
+          26.5441057
+        ]
+      },
+      "properties": {
+        "name": "Pokhreltol",
+        "place_type": "village",
+        "osm_id": 5040907847,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2427013,
+          26.5550787
+        ]
+      },
+      "properties": {
+        "name": "Simarbona",
+        "place_type": "village",
+        "osm_id": 5040907848,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2316839,
+          26.5490537
+        ]
+      },
+      "properties": {
+        "name": "\u0927\u094d\u092f\u093e\u0928\u092e\u093e\u091d\u0940\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5040907849,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2384626,
+          26.5499894
+        ]
+      },
+      "properties": {
+        "name": "Bargachhitol",
+        "place_type": "village",
+        "osm_id": 5040907850,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2341777,
+          26.5550714
+        ]
+      },
+      "properties": {
+        "name": "Sikhtiyatol",
+        "place_type": "village",
+        "osm_id": 5040907852,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2371078,
+          26.5642797
+        ]
+      },
+      "properties": {
+        "name": "\u091b\u094b\u092a\u093e \u091a\u0930\u093f\u092f\u093e",
+        "place_type": "village",
+        "osm_id": 5040907853,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2431521,
+          26.5720315
+        ]
+      },
+      "properties": {
+        "name": "Retitol",
+        "place_type": "village",
+        "osm_id": 5040907854,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2355644,
+          26.5686735
+        ]
+      },
+      "properties": {
+        "name": "\u091a\u0930\u0948\u092f\u093e",
+        "place_type": "village",
+        "osm_id": 5040907855,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1806651,
+          26.5063037
+        ]
+      },
+      "properties": {
+        "name": "Kolharwa",
+        "place_type": "village",
+        "osm_id": 5040920711,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1880032,
+          26.5110593
+        ]
+      },
+      "properties": {
+        "name": "Duhabijhoda",
+        "place_type": "village",
+        "osm_id": 5040920712,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1991404,
+          26.5112922
+        ]
+      },
+      "properties": {
+        "name": "Phaudarsthan",
+        "place_type": "village",
+        "osm_id": 5040920713,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2403264,
+          26.5309724
+        ]
+      },
+      "properties": {
+        "name": "\u092b\u0930\u094d\u0938\u0939\u0940",
+        "place_type": "village",
+        "osm_id": 5040920714,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2380622,
+          26.5288136
+        ]
+      },
+      "properties": {
+        "name": "Sitapur",
+        "place_type": "village",
+        "osm_id": 5040920715,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2307795,
+          26.5298307
+        ]
+      },
+      "properties": {
+        "name": "Pharsahi Nayatol",
+        "place_type": "village",
+        "osm_id": 5040920716,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2243093,
+          26.5315047
+        ]
+      },
+      "properties": {
+        "name": "Bedlaltol",
+        "place_type": "village",
+        "osm_id": 5040920717,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2224927,
+          26.5293955
+        ]
+      },
+      "properties": {
+        "name": "Chaudharitol",
+        "place_type": "village",
+        "osm_id": 5040920718,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.218915,
+          26.5293211
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u094b\u0917\u093e\u0908\u0921\u0938\u094d\u0924\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5040920719,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2188179,
+          26.525115
+        ]
+      },
+      "properties": {
+        "name": "Miltol",
+        "place_type": "village",
+        "osm_id": 5040920720,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2289548,
+          26.5229809
+        ]
+      },
+      "properties": {
+        "name": "Tamantol",
+        "place_type": "village",
+        "osm_id": 5040922421,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2139575,
+          26.5033502
+        ]
+      },
+      "properties": {
+        "name": "Gelabari",
+        "place_type": "village",
+        "osm_id": 5040922425,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2164665,
+          26.5177391
+        ]
+      },
+      "properties": {
+        "name": "\u0920\u094b\u0915\u093e\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5040922426,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.226367,
+          26.5132687
+        ]
+      },
+      "properties": {
+        "name": "Purba Kushaha",
+        "place_type": "village",
+        "osm_id": 5040922427,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1549224,
+          26.5629641
+        ]
+      },
+      "properties": {
+        "name": "Hauleya Rekhensintol",
+        "place_type": "village",
+        "osm_id": 5040925879,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1550805,
+          26.5666379
+        ]
+      },
+      "properties": {
+        "name": "\u0939\u094c\u0932\u093f\u092f\u093e",
+        "place_type": "village",
+        "osm_id": 5040925880,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2454053,
+          26.5993911
+        ]
+      },
+      "properties": {
+        "name": "Musahari\u0307\u0304\u1e6dol",
+        "place_type": "village",
+        "osm_id": 5041499189,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2440265,
+          26.6029487
+        ]
+      },
+      "properties": {
+        "name": "Pokhari\u0307\u0304\u1e6dol",
+        "place_type": "village",
+        "osm_id": 5041499190,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.145879,
+          26.59183
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u0917\u0930 \u091f\u093e\u0947\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5041507916,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.148966,
+          26.593371
+        ]
+      },
+      "properties": {
+        "name": "Pan\u1e0dit\u1e6dol",
+        "place_type": "hamlet",
+        "osm_id": 5041507917,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.143609,
+          26.590766
+        ]
+      },
+      "properties": {
+        "name": "Kusumg\u0101chhi\u0307\u0304\u1e6dol",
+        "place_type": "hamlet",
+        "osm_id": 5041507918,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1330273,
+          26.6045396
+        ]
+      },
+      "properties": {
+        "name": "Musahari\u0307\u0304\u1e6dol",
+        "place_type": "hamlet",
+        "osm_id": 5041513154,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.055117,
+          26.642483
+        ]
+      },
+      "properties": {
+        "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5041661745,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.047085,
+          26.638971
+        ]
+      },
+      "properties": {
+        "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5041661746,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.048466,
+          26.633142
+        ]
+      },
+      "properties": {
+        "name": "Mejar\u1e6dol",
+        "place_type": "village",
+        "osm_id": 5041661747,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.040848,
+          26.629996
+        ]
+      },
+      "properties": {
+        "name": "Mohanl\u0101l\u1e6dol",
+        "place_type": "village",
+        "osm_id": 5041661748,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.129158,
+          26.618403
+        ]
+      },
+      "properties": {
+        "name": "Jir\u0101t",
+        "place_type": "hamlet",
+        "osm_id": 5041673975,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.172097,
+          26.6085482
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0932\u093e\u0939\u093e",
+        "place_type": "hamlet",
+        "osm_id": 5042674785,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1736766,
+          26.6137157
+        ]
+      },
+      "properties": {
+        "name": "\u092b\u0941\u091c\u0932\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5042674786,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1833678,
+          26.611103
+        ]
+      },
+      "properties": {
+        "name": "\u0917\u0941\u0935\u093e\u0930\u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5042674787,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1842635,
+          26.6140489
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u0943\u0937\u094d\u0923 \u092e\u0941\u0915\u094d\u0924\u093f \u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5042674788,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1876949,
+          26.6168127
+        ]
+      },
+      "properties": {
+        "name": "\u0938\u0941\u0915\u0941\u092e\u094d\u092c\u093e\u0938\u0940 \u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5042674789,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1865475,
+          26.6188736
+        ]
+      },
+      "properties": {
+        "name": "\u091a\u094c\u0927\u0930\u0940 \u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5042674790,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1852727,
+          26.6206306
+        ]
+      },
+      "properties": {
+        "name": "Jhakanjhoda",
+        "place_type": "hamlet",
+        "osm_id": 5042674791,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1820147,
+          26.6235174
+        ]
+      },
+      "properties": {
+        "name": "Chamartol",
+        "place_type": "hamlet",
+        "osm_id": 5042674792,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1749707,
+          26.6197062
+        ]
+      },
+      "properties": {
+        "name": "\u090f\u0915\u094d\u0915\u093e\u0907\u0938\u094d\u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5042674793,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1654921,
+          26.6165752
+        ]
+      },
+      "properties": {
+        "name": "Paudel Tol",
+        "place_type": "hamlet",
+        "osm_id": 5042674794,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1685729,
+          26.6190256
+        ]
+      },
+      "properties": {
+        "name": "Ghimeretol",
+        "place_type": "hamlet",
+        "osm_id": 5042674795,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1706872,
+          26.6214381
+        ]
+      },
+      "properties": {
+        "name": "Shikaritol",
+        "place_type": "hamlet",
+        "osm_id": 5042674796,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1559058,
+          26.6033324
+        ]
+      },
+      "properties": {
+        "name": "\u092a\u0941\u0930\u094d\u0935\u0924\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5042703609,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.156772,
+          26.6079362
+        ]
+      },
+      "properties": {
+        "name": "\u0938\u094b\u092e\u094d\u092c\u0930\u0947 \u0939\u093e\u0924\u093f\u092f\u093e\u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5042703611,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1702775,
+          26.5973185
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0932\u093e\u0939\u093e",
+        "place_type": "hamlet",
+        "osm_id": 5042703612,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1595137,
+          26.5974039
+        ]
+      },
+      "properties": {
+        "name": "Koiritol",
+        "place_type": "hamlet",
+        "osm_id": 5042703613,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1752233,
+          26.6015699
+        ]
+      },
+      "properties": {
+        "name": "\u0927\u093e\u0928\u0941\u0915 \u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5042703614,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1685154,
+          26.6049026
+        ]
+      },
+      "properties": {
+        "name": "\u0936\u093e\u0930\u0926\u093e \u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5042703615,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0803947,
+          26.6310396
+        ]
+      },
+      "properties": {
+        "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5043466068,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0979523,
+          26.6360548
+        ]
+      },
+      "properties": {
+        "name": "Kair\u0101\u1e6dol",
+        "place_type": "village",
+        "osm_id": 5043466069,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1243501,
+          26.5910984
+        ]
+      },
+      "properties": {
+        "name": "Taparatol",
+        "place_type": "village",
+        "osm_id": 5048183047,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1249401,
+          26.5960008
+        ]
+      },
+      "properties": {
+        "name": "Khairatol",
+        "place_type": "village",
+        "osm_id": 5048183048,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1407115,
+          26.595406
+        ]
+      },
+      "properties": {
+        "name": "Basnettol",
+        "place_type": "hamlet",
+        "osm_id": 5048183049,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1406472,
+          26.6074549
+        ]
+      },
+      "properties": {
+        "name": "Koiritol",
+        "place_type": "hamlet",
+        "osm_id": 5048183050,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.125895,
+          26.6069849
+        ]
+      },
+      "properties": {
+        "name": "Bhokraha",
+        "place_type": "hamlet",
+        "osm_id": 5048183051,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1331262,
+          26.6110521
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u0939\u0924 \u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5048183052,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1362805,
+          26.6137763
+        ]
+      },
+      "properties": {
+        "name": "Bhaurtol",
+        "place_type": "hamlet",
+        "osm_id": 5048183053,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1419024,
+          26.613642
+        ]
+      },
+      "properties": {
+        "name": "Khatabetol",
+        "place_type": "hamlet",
+        "osm_id": 5048183054,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1445632,
+          26.6098627
+        ]
+      },
+      "properties": {
+        "name": "Bakkhutol",
+        "place_type": "hamlet",
+        "osm_id": 5048183055,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1942591,
+          26.5378394
+        ]
+      },
+      "properties": {
+        "name": "\u091b\u093f\u091f\u0939\u093e",
+        "place_type": "village",
+        "osm_id": 5048183056,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.184712,
+          26.5285878
+        ]
+      },
+      "properties": {
+        "name": "\u0938\u093e\u0928\u094b \u0926\u0941\u0939\u092c\u0940",
+        "place_type": "village",
+        "osm_id": 5048183057,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1835857,
+          26.5243638
+        ]
+      },
+      "properties": {
+        "name": "Dhurahatol",
+        "place_type": "village",
+        "osm_id": 5048183058,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1960294,
+          26.523844
+        ]
+      },
+      "properties": {
+        "name": "Baisi Naya Sahutol",
+        "place_type": "village",
+        "osm_id": 5048183059,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1980679,
+          26.5196969
+        ]
+      },
+      "properties": {
+        "name": "Musaharitol",
+        "place_type": "village",
+        "osm_id": 5048183060,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2108996,
+          26.5233256
+        ]
+      },
+      "properties": {
+        "name": "Purano Baisi Jhagartol",
+        "place_type": "village",
+        "osm_id": 5048183061,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1564668,
+          26.613383
+        ]
+      },
+      "properties": {
+        "name": "Dadatol",
+        "place_type": "hamlet",
+        "osm_id": 5048203309,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1646583,
+          26.6210181
+        ]
+      },
+      "properties": {
+        "name": "Nayabasti",
+        "place_type": "hamlet",
+        "osm_id": 5048203310,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1593904,
+          26.624212
+        ]
+      },
+      "properties": {
+        "name": "Kamsamaran Chaudharitol",
+        "place_type": "hamlet",
+        "osm_id": 5048203311,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1439409,
+          26.6224952
+        ]
+      },
+      "properties": {
+        "name": "Kuruwapari Chaudharitol",
+        "place_type": "hamlet",
+        "osm_id": 5048203312,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1234274,
+          26.6234639
+        ]
+      },
+      "properties": {
+        "name": "Bankulawa",
+        "place_type": "hamlet",
+        "osm_id": 5048203313,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2551783,
+          26.5077422
+        ]
+      },
+      "properties": {
+        "name": "Amahi",
+        "place_type": "village",
+        "osm_id": 5050409707,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2551131,
+          26.5160873
+        ]
+      },
+      "properties": {
+        "name": "Tetari",
+        "place_type": "village",
+        "osm_id": 5050409709,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2460524,
+          26.5224709
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u093f\u092f\u093e\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5050409710,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2554993,
+          26.524612
+        ]
+      },
+      "properties": {
+        "name": "Bauraha",
+        "place_type": "village",
+        "osm_id": 5050409711,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2508109,
+          26.5324737
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u093e\u0932\u0941\u0935\u093e \u0926\u0941\u0938\u0921\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5050409712,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2458863,
+          26.5402006
+        ]
+      },
+      "properties": {
+        "name": "Bhaluwa",
+        "place_type": "village",
+        "osm_id": 5050409713,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2527098,
+          26.5586086
+        ]
+      },
+      "properties": {
+        "name": "\u092a\u091b\u0940\u0930\u093e",
+        "place_type": "village",
+        "osm_id": 5050409714,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2517121,
+          26.5702056
+        ]
+      },
+      "properties": {
+        "name": "Dumraha",
+        "place_type": "village",
+        "osm_id": 5050409715,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2675371,
+          26.5730123
+        ]
+      },
+      "properties": {
+        "name": "\u091f\u0941\u091f\u093e\u0939\u093e",
+        "place_type": "village",
+        "osm_id": 5050409716,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2621941,
+          26.5733193
+        ]
+      },
+      "properties": {
+        "name": "\u092a\u091b\u093f\u0930\u093e",
+        "place_type": "village",
+        "osm_id": 5050409717,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2658956,
+          26.5789709
+        ]
+      },
+      "properties": {
+        "name": "Bagde",
+        "place_type": "village",
+        "osm_id": 5050409718,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2837055,
+          26.585764
+        ]
+      },
+      "properties": {
+        "name": "Basanpur",
+        "place_type": "village",
+        "osm_id": 5050409719,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2743714,
+          26.6205865
+        ]
+      },
+      "properties": {
+        "name": "Khanar",
+        "place_type": "village",
+        "osm_id": 5050409720,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2745216,
+          26.6135557
+        ]
+      },
+      "properties": {
+        "name": "Khanar Subbatol",
+        "place_type": "hamlet",
+        "osm_id": 5050410721,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2717482,
+          26.6072247
+        ]
+      },
+      "properties": {
+        "name": "Ranigau",
+        "place_type": "hamlet",
+        "osm_id": 5050410722,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2810983,
+          26.6040495
+        ]
+      },
+      "properties": {
+        "name": "Sisuwatol",
+        "place_type": "hamlet",
+        "osm_id": 5050410723,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2818923,
+          26.5998669
+        ]
+      },
+      "properties": {
+        "name": "Basanpur",
+        "place_type": "hamlet",
+        "osm_id": 5050410724,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2755623,
+          26.5865555
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093f\u0930 \u0917\u093e\u0909",
+        "place_type": "hamlet",
+        "osm_id": 5050410725,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2724348,
+          26.5957993
+        ]
+      },
+      "properties": {
+        "name": "\u0938\u094b\u0928\u093e\u092a\u0941\u0930",
+        "place_type": "village",
+        "osm_id": 5050410726,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2656059,
+          26.5860806
+        ]
+      },
+      "properties": {
+        "name": "Bengari",
+        "place_type": "hamlet",
+        "osm_id": 5050410727,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2607779,
+          26.5943795
+        ]
+      },
+      "properties": {
+        "name": "Chhatabeli",
+        "place_type": "hamlet",
+        "osm_id": 5050410728,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2506116,
+          26.5942923
+        ]
+      },
+      "properties": {
+        "name": "Saptariyatol",
+        "place_type": "village",
+        "osm_id": 5050410729,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2528601,
+          26.5840082
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093e\u0932\u0915\u0941\u0923\u094d\u0921",
+        "place_type": "village",
+        "osm_id": 5050410730,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.275514,
+          26.5585414
+        ]
+      },
+      "properties": {
+        "name": "Miyatol",
+        "place_type": "village",
+        "osm_id": 5050437966,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2682452,
+          26.5562285
+        ]
+      },
+      "properties": {
+        "name": "Prastoki",
+        "place_type": "village",
+        "osm_id": 5050437967,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2691679,
+          26.5482053
+        ]
+      },
+      "properties": {
+        "name": "Bhawanipur",
+        "place_type": "village",
+        "osm_id": 5050437968,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2673225,
+          26.5426001
+        ]
+      },
+      "properties": {
+        "name": "Mudheri",
+        "place_type": "village",
+        "osm_id": 5050437969,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2870388,
+          26.5266577
+        ]
+      },
+      "properties": {
+        "name": "\u092f\u093e\u0926\u0935\u091f\u094b\u0932",
+        "place_type": "village",
+        "osm_id": 5050437970,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2818801,
+          26.5296351
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093e\u0938\u092c\u093e\u0930\u0940",
+        "place_type": "village",
+        "osm_id": 5050437971,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2831315,
+          26.5261524
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u093f\u0932\u0928\u091a\u094b\u0915",
+        "place_type": "village",
+        "osm_id": 5050437972,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2813261,
+          26.5225159
+        ]
+      },
+      "properties": {
+        "name": "\u091f\u0919\u094d\u0915\u0940 \u0938\u093f\u0928\u0941\u0935\u093e\u0930\u0940",
+        "place_type": "village",
+        "osm_id": 5050437973,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2796487,
+          26.5206506
+        ]
+      },
+      "properties": {
+        "name": "\u091f\u0919\u094d\u0915\u0940\u091a\u094b\u0915",
+        "place_type": "village",
+        "osm_id": 5050437974,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2790861,
+          26.5247435
+        ]
+      },
+      "properties": {
+        "name": "Musaharichok",
+        "place_type": "village",
+        "osm_id": 5050437975,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2679085,
+          26.5275996
+        ]
+      },
+      "properties": {
+        "name": "Bagabon",
+        "place_type": "village",
+        "osm_id": 5050437976,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2712806,
+          26.516471
+        ]
+      },
+      "properties": {
+        "name": "Sakhamaha",
+        "place_type": "village",
+        "osm_id": 5050437977,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2735432,
+          26.5062416
+        ]
+      },
+      "properties": {
+        "name": "Kohobara Nayatol",
+        "place_type": "village",
+        "osm_id": 5050437978,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2608423,
+          26.5015132
+        ]
+      },
+      "properties": {
+        "name": "Jwalatol",
+        "place_type": "village",
+        "osm_id": 5050437980,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2829866,
+          26.6092488
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093e\u091f\u0947\u092e\u093e\u0930\u093e",
+        "place_type": "hamlet",
+        "osm_id": 5050466671,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2482681,
+          26.6085965
+        ]
+      },
+      "properties": {
+        "name": "Madheli",
+        "place_type": "village",
+        "osm_id": 5050466672,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2853684,
+          26.579278
+        ]
+      },
+      "properties": {
+        "name": "Dhatitol",
+        "place_type": "village",
+        "osm_id": 5050466673,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2875277,
+          26.5779499
+        ]
+      },
+      "properties": {
+        "name": "Miyatol",
+        "place_type": "village",
+        "osm_id": 5050466674,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2844189,
+          26.5702775
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u0932\u094d\u0939\u0924\u094d\u0924\u093f",
+        "place_type": "village",
+        "osm_id": 5050466675,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2822114,
+          26.5620813
+        ]
+      },
+      "properties": {
+        "name": "Raitol",
+        "place_type": "village",
+        "osm_id": 5050466676,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2732609,
+          26.5705702
+        ]
+      },
+      "properties": {
+        "name": "Khikhirtol",
+        "place_type": "village",
+        "osm_id": 5050466678,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2892737,
+          26.5886711
+        ]
+      },
+      "properties": {
+        "name": "Sakhuwatoki",
+        "place_type": "village",
+        "osm_id": 5050477428,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2934151,
+          26.5999916
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u093e\u0928\u0930\u091d\u0941\u0932\u093e",
+        "place_type": "village",
+        "osm_id": 5050477429,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2950459,
+          26.6210805
+        ]
+      },
+      "properties": {
+        "name": "Simarbona Uttartol",
+        "place_type": "village",
+        "osm_id": 5050477430,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2834158,
+          26.6252095
+        ]
+      },
+      "properties": {
+        "name": "Bhuskaluwa",
+        "place_type": "village",
+        "osm_id": 5050477431,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2871387,
+          26.6122128
+        ]
+      },
+      "properties": {
+        "name": "\u0938\u093f\u092e\u0930\u092c\u094b\u0928\u093e",
+        "place_type": "village",
+        "osm_id": 5050477432,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2940159,
+          26.501998
+        ]
+      },
+      "properties": {
+        "name": "Ghinaghat",
+        "place_type": "village",
+        "osm_id": 5050626023,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2881365,
+          26.5042783
+        ]
+      },
+      "properties": {
+        "name": "\u092e\u093e\u0928\u0917\u0922\u093c",
+        "place_type": "village",
+        "osm_id": 5050626024,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2826111,
+          26.5037359
+        ]
+      },
+      "properties": {
+        "name": "\u0906\u0926\u0930\u094d\u0936 \u0928\u093e\u092f\u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5050626025,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.298108,
+          26.5126957
+        ]
+      },
+      "properties": {
+        "name": "Jhapa Paschimtol",
+        "place_type": "village",
+        "osm_id": 5050626028,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.289249,
+          26.5181448
+        ]
+      },
+      "properties": {
+        "name": "Karaiya",
+        "place_type": "village",
+        "osm_id": 5050626029,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2847107,
+          26.5341599
+        ]
+      },
+      "properties": {
+        "name": "Basbarichok",
+        "place_type": "village",
+        "osm_id": 5050626030,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2903037,
+          26.5399894
+        ]
+      },
+      "properties": {
+        "name": "Gakuwa",
+        "place_type": "village",
+        "osm_id": 5050626031,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2869992,
+          26.5437327
+        ]
+      },
+      "properties": {
+        "name": "Nayatol",
+        "place_type": "village",
+        "osm_id": 5050626032,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.128266,
+          26.553595
+        ]
+      },
+      "properties": {
+        "name": "\u091c\u0932\u092a\u093e\u092a\u0941\u0930",
+        "place_type": "village",
+        "osm_id": 5061962840,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.23179,
+          26.5513436
+        ]
+      },
+      "properties": {
+        "name": "Mangal Chaudharitol",
+        "place_type": "village",
+        "osm_id": 5109127296,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8119764,
+          26.4585886
+        ]
+      },
+      "properties": {
+        "name": "\u0926\u0932\u093e\u092c\u093e \u092a\u0941\u0930\u094d\u092c\u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5109968986,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8166917,
+          26.4731704
+        ]
+      },
+      "properties": {
+        "name": "\u0926\u0932\u093e\u092c\u093e \u0909\u0924\u094d\u0924\u0930\u091f\u094b\u0932",
+        "place_type": "hamlet",
+        "osm_id": 5109968987,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2748964,
+          26.6622505
+        ]
+      },
+      "properties": {
+        "name": "\u0907\u091f\u0939\u0930\u0940",
+        "place_type": "city",
+        "osm_id": 5417397405,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8590707,
+          26.5044827
+        ]
+      },
+      "properties": {
+        "name": "\u0939\u0928\u0941\u092e\u093e\u0928\u0928\u0917\u0930 \u0915\u0919\u094d\u0915\u093e\u0932\u093f\u0928\u0940",
+        "place_type": "town",
+        "osm_id": 5922899535,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.8686819,
+          26.0306794
+        ]
+      },
+      "properties": {
+        "name": "Shankarpur",
+        "place_type": "village",
+        "osm_id": 6976831834,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7281254,
+          26.0548535
+        ]
+      },
+      "properties": {
+        "name": "Gamharia",
+        "place_type": "village",
+        "osm_id": 6976831976,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6990268,
+          25.9763619
+        ]
+      },
+      "properties": {
+        "name": "Ghailarh",
+        "place_type": "village",
+        "osm_id": 6976846215,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1214962,
+          25.9638324
+        ]
+      },
+      "properties": {
+        "name": "Bhargama",
+        "place_type": "village",
+        "osm_id": 6978712185,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9613147,
+          26.2976472
+        ]
+      },
+      "properties": {
+        "name": "Pratapganj",
+        "place_type": "village",
+        "osm_id": 7119661590,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9908619,
+          25.9961227
+        ]
+      },
+      "properties": {
+        "name": "Kumarkhand",
+        "place_type": "village",
+        "osm_id": 7119661591,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7363953,
+          26.3022063
+        ]
+      },
+      "properties": {
+        "name": "Bhaptiyahi",
+        "place_type": "village",
+        "osm_id": 7119670034,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0632224,
+          26.5995752
+        ]
+      },
+      "properties": {
+        "name": "Laukhi",
+        "place_type": "hamlet",
+        "osm_id": 8912053588,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2171988,
+          26.5146916
+        ]
+      },
+      "properties": {
+        "name": "Urau Basti",
+        "place_type": "village",
+        "osm_id": 9999027513,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9147697,
+          26.6416032
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u091e\u094d\u091a\u0928\u0930\u0942\u092a",
+        "place_type": "town",
+        "osm_id": 11286408742,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9017182,
+          26.5659473
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u0932\u0941\u0935\u093e",
+        "place_type": "hamlet",
+        "osm_id": 12039031134,
+        "osm_population_tag": "1000"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1386666,
+          26.4501816
+        ]
+      },
+      "properties": {
+        "name": "\u0926\u0947\u0935\u093e\u0928\u0917\u091e\u094d\u091c",
+        "place_type": "village",
+        "osm_id": 13153624540,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1910004,
+          26.4602692
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0930\u094d\u091c\u0941",
+        "place_type": "village",
+        "osm_id": 13153624541,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1225994,
+          26.5016217
+        ]
+      },
+      "properties": {
+        "name": "\u0939\u0930\u093f\u0928\u0917\u0930",
+        "place_type": "village",
+        "osm_id": 13153624542,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2153869,
+          26.5895472
+        ]
+      },
+      "properties": {
+        "name": "\u0917\u0922\u0940",
+        "place_type": "village",
+        "osm_id": 13153624543,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.1175845,
+          26.6042521
+        ]
+      },
+      "properties": {
+        "name": "\u092d\u094b\u0915\u094d\u0930\u093e\u0939\u093e \u0928\u0930\u0938\u093f\u0902\u0939",
+        "place_type": "village",
+        "osm_id": 13153624544,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0604583,
+          26.6019552
+        ]
+      },
+      "properties": {
+        "name": "\u0915\u094b\u0936\u0940",
+        "place_type": "village",
+        "osm_id": 13153624545,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.2017292,
+          26.674058
+        ]
+      },
+      "properties": {
+        "name": "\u0930\u093e\u092e\u0927\u0941\u0928\u0940",
+        "place_type": "town",
+        "osm_id": 13153624546,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.287046,
+          26.549632
+        ]
+      },
+      "properties": {
+        "name": "\u092c\u0941\u0922\u0940\u0917\u0919\u094d\u0917\u093e",
+        "place_type": "village",
+        "osm_id": 13157713643,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7810157,
+          26.6311965
+        ]
+      },
+      "properties": {
+        "name": "\u0905\u0917\u094d\u0928\u0940\u0938\u093e\u0907\u0930 \u0915\u0943\u0937\u094d\u0923\u093e\u0938\u0935\u0930\u0928",
+        "place_type": "village",
+        "osm_id": 13185347358,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.850978,
+          26.5744884
+        ]
+      },
+      "properties": {
+        "name": "\u0924\u093f\u0930\u0939\u0941\u0924",
+        "place_type": "village",
+        "osm_id": 13185347359,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7914938,
+          26.4787703
+        ]
+      },
+      "properties": {
+        "name": "\u0924\u093f\u0932\u093e\u0920\u0940 \u0915\u094b\u0908\u0932\u093e\u0921\u0940",
+        "place_type": "village",
+        "osm_id": 13185347360,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.7237678,
+          26.5043676
+        ]
+      },
+      "properties": {
+        "name": "\u0935\u093f\u0937\u094d\u0923\u0941\u092a\u0941\u0930",
+        "place_type": "village",
+        "osm_id": 13185347361,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6757896,
+          26.4939192
+        ]
+      },
+      "properties": {
+        "name": "\u0930\u093e\u091c\u0917\u0922",
+        "place_type": "village",
+        "osm_id": 13185347362,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.6220371,
+          26.5093698
+        ]
+      },
+      "properties": {
+        "name": "\u0921\u093e\u0915\u094d\u0928\u0947\u0936\u094d\u0935\u0930\u0940",
+        "place_type": "town",
+        "osm_id": 13185347363,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.623649,
+          26.6452344
+        ]
+      },
+      "properties": {
+        "name": "\u0916\u0921\u0915",
+        "place_type": "town",
+        "osm_id": 13185347368,
+        "osm_population_tag": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9642236,
+          25.9127635
+        ]
+      },
+      "properties": {
+        "name": "jorgama",
+        "place_type": "village",
+        "osm_id": 13840953213,
+        "osm_population_tag": null
+      }
+    }
+  ]
+}

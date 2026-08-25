@@ -138,6 +138,28 @@ assumptions" panel, not buried.
   both the CWC reading timestamp and this app's own last-sync timestamp
   side by side, plus a gauge against FRL/MWL reference levels.
 
+## Impact summary (population + settlements)
+
+`backend/swe/compute_population_impact.py` cross-references the real SWE
+depth grids against two more real datasets and enriches the existing SWE
+run's `metadata.json` (not a separate/inconsistent computation):
+
+- **Population at risk**: each frame's depth grid (~185m cells) is
+  area-averaged onto the WorldPop 2020 raster's native ~1km grid; a
+  population cell counts as "at risk" once its mean depth crosses 0.1m, or
+  "significantly affected" past 0.3m. Both thresholds reported per frame.
+- **Affected settlements**: 363 real, named villages/towns (OpenStreetMap,
+  `scripts/fetch_settlements.py`, no auth needed) tested point-in-polygon
+  against that same frame's own flood-extent polygon.
+- Both numbers grow monotonically with the simulation (0 → ~23,700 people,
+  0 → 7 settlements over the 4h run) and update live as the frontend
+  timeline scrubs, since they're precomputed per-frame, not queried live.
+- Methodology and its honest limitations (mean-depth thresholding
+  undercounts a partially-flooded population cell; settlement points are
+  place centroids, not building footprints) are documented in
+  `metadata.json`'s `population_impact_methodology` field and surfaced in
+  the frontend, not just in code comments.
+
 ## Next step
 
 Build Priority #5 (PRD section 7): Google Earth Engine real-time SAR layer

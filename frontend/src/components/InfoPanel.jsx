@@ -1,8 +1,9 @@
 import { exportUrl } from "../api";
 
-export default function InfoPanel({ meta, onRerun, running }) {
+export default function InfoPanel({ meta, frame, onRerun, running }) {
   if (!meta) return null;
   const failed = meta.sanity_checks.filter((c) => c.pass_ === false);
+  const hasImpact = frame && frame.population_at_risk !== undefined;
 
   return (
     <div className="info-panel">
@@ -18,6 +19,34 @@ export default function InfoPanel({ meta, onRerun, running }) {
         <div><span>Max depth</span><strong>{meta.max_depth_m} m</strong></div>
         <div><span>Grid resolution</span><strong>{Math.round(meta.grid.dx_m)}m × {Math.round(meta.grid.dy_m)}m</strong></div>
       </div>
+
+      {hasImpact && (
+        <div className="impact-block">
+          <h3>Impact at T+{frame.t_minutes}min</h3>
+          <div className="stat-grid">
+            <div><span>Flooded area</span><strong>{frame.flooded_area_km2.toLocaleString()} km²</strong></div>
+            <div><span>Est. population at risk (&gt;0.1m)</span><strong>{frame.population_at_risk.toLocaleString()}</strong></div>
+            <div><span>Significantly affected (&gt;0.3m)</span><strong>{frame["population_significantly_affected_gt0.3m"].toLocaleString()}</strong></div>
+            <div><span>Settlements in extent</span><strong>{frame.affected_settlements_count}</strong></div>
+          </div>
+          {frame.affected_settlements_count > 0 ? (
+            <div className="settlement-chips">
+              {frame.affected_settlements.map((s) => (
+                <span key={s.name} className="settlement-chip" title={s.place_type}>{s.name}</span>
+              ))}
+            </div>
+          ) : (
+            <p className="subtle">No named settlement points fall within the flooded extent at this timestep.</p>
+          )}
+          <p className="subtle impact-methodology">
+            Population from WorldPop 2020 (~1km grid, area-averaged against the flood depth grid);
+            settlements from OpenStreetMap, point-in-polygon against this timestep's own flood
+            extent. See <code>population_impact_methodology</code> in the run metadata for the full
+            method and its caveats (mean-depth thresholding near flood edges, settlement points vs.
+            footprints).
+          </p>
+        </div>
+      )}
 
       <details open={failed.length > 0}>
         <summary className={failed.length ? "warn" : ""}>

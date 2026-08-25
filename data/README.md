@@ -26,6 +26,7 @@ on why.
 | `satellite/` | `kosi_aoi_sentinel2_tci_20231228_40m.tif` (+ `preview.png`) | Sentinel-2 L2A true-colour (TCI), tiles 45RVJ/45RWJ/45RVK/45RWK, 2023-12-28, ESA/Copernicus via AWS Earth Search STAC (`sentinel-cogs` bucket); fetched at native 10m then downsampled to 40m (154MB -> 8.7MB) | `scripts/fetch_satellite.py` + `scripts/postprocess_satellite.py` |
 | `dam_config/` | `kosi_case_study.json` | Compiled from Wikipedia (Koshi Barrage, 2008 Bihar flood), IndiaWRIS, GFDRR needs-assessment report — see `sources` field in the JSON | (hand-authored) |
 | `river_network/` | *(empty)* | Not yet fetched — optional per PRD; flow direction can be derived from the DEM directly for the SWE solver. HydroRIVERS (hydrosheds.org) is the candidate source if a vector network is needed later. | — |
+| `settlements/` | `kosi_aoi_settlements.geojson` | 363 named villages/towns/hamlets/cities (OpenStreetMap `place` nodes) via the public Overpass API, ODbL-licensed | `scripts/fetch_settlements.py` |
 
 ## Important caveats
 
@@ -54,6 +55,10 @@ on why.
   wasn't possible without downloading the whole file. Swap in the 100m
   constrained product later if finer-grained impact stats are needed (see
   `scripts/fetch_population.py` for the dataset alias to change).
+- **Settlement population tags (where present) are unverified OSM crowd-sourced
+  data** and are not used for any population statistic in this project — used
+  only for names/locations. Population magnitude always comes from the
+  WorldPop raster.
 
 ## Re-fetching
 
@@ -62,6 +67,7 @@ on why.
 .venv\Scripts\python.exe scripts\fetch_population.py
 .venv\Scripts\python.exe scripts\fetch_satellite.py
 .venv\Scripts\python.exe scripts\postprocess_satellite.py
+.venv\Scripts\python.exe scripts\fetch_settlements.py
 ```
 
 All three are idempotent-ish (DEM/population skip re-downloading raw tiles
