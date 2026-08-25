@@ -1,7 +1,6 @@
 """
-Minimal FastAPI backend for the SWE vertical slice.
+FastAPI backend for FloodSim-HADR, covering all 5 PRD build priorities:
 
-Implements the subset of the PRD's Section 3 endpoints needed for this stage:
   POST /simulate/swe          -- (re)run the solver, near-sync (blocks until done)
   GET  /simulate/status/{id}  -- job status (this stage only has one job: "kosi_actual2008")
   GET  /simulate/result/{id}  -- run metadata + per-frame links
@@ -10,11 +9,13 @@ Implements the subset of the PRD's Section 3 endpoints needed for this stage:
 
   POST /predict/instant       -- U-Net surrogate prediction, warmed at startup so
                                   every request (not just steady-state ones) is fast
+  GET  /sph/result            -- SPH particle-solver metadata + SWE comparison metrics
+  GET  /sph/snapshot/{t}      -- SPH particle positions/velocities at one time-snapshot
   GET  /twin/state            -- last-synced real Kosi Barrage CWC gauge reading
   POST /twin/sync             -- trigger an immediate live re-sync
-
-SPH, comparison, and GEE endpoints are intentionally not implemented yet --
-out of scope for this stage.
+  GET  /realtime/water-extent -- live Sentinel-1 SAR water extent via Google Earth Engine
+  GET  /terrain/dem           -- SRTM DEM elevation grid (3D terrain view)
+  GET  /terrain/satellite     -- Sentinel-2 true-colour preview (3D terrain view)
 """
 import asyncio
 import base64
