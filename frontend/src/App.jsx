@@ -6,6 +6,7 @@ import Legend from "./components/Legend";
 import InfoPanel from "./components/InfoPanel";
 import PredictionControls from "./components/PredictionControls";
 import SphComparison from "./components/SphComparison";
+import LiveTwin from "./components/LiveTwin";
 import { fetchResult, frameUrl, triggerRun } from "./api";
 import "./App.css";
 
@@ -14,7 +15,7 @@ export default function App() {
   const [frameIndex, setFrameIndex] = useState(0);
   const [error, setError] = useState(null);
   const [running, setRunning] = useState(false);
-  const [mode, setMode] = useState("full"); // "full" | "instant" | "sph"
+  const [mode, setMode] = useState("full"); // "full" | "instant" | "sph" | "twin"
   const [viewMode, setViewMode] = useState("2d"); // "2d" | "3d"
   const [prediction, setPrediction] = useState(null);
   const [predictedLocation, setPredictedLocation] = useState(null);
@@ -111,6 +112,9 @@ export default function App() {
           <button className={mode === "sph" ? "active" : ""} onClick={() => setMode("sph")}>
             SPH Comparison
           </button>
+          <button className={mode === "twin" ? "active" : ""} onClick={() => setMode("twin")}>
+            Live Twin
+          </button>
         </div>
 
         {mode === "full" && <InfoPanel meta={meta} onRerun={handleRerun} running={running} />}
@@ -126,6 +130,7 @@ export default function App() {
           />
         )}
         {mode === "sph" && <SphComparison />}
+        {mode === "twin" && <LiveTwin />}
       </div>
     </div>
   );

@@ -297,6 +297,105 @@ p.warn { color: #ff8a65; font-size: 0.8rem; }
   color: #e8ebf0;
 }
 
+.twin-badge-row {
+  display: flex;
+}
+
+.twin-type-badge {
+  background: #263041;
+  color: #6fa8ff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+}
+
+.twin-reading-row {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.twin-stat-grid {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.twin-gauge {
+  position: relative;
+  width: 46px;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.twin-gauge-track {
+  position: relative;
+  width: 14px;
+  background: #1d232d;
+  border-radius: 7px;
+  height: 140px;
+}
+
+.twin-gauge-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: rgba(111, 168, 255, 0.25);
+  border-top: 1px solid #6fa8ff;
+  border-bottom: 1px solid #6fa8ff;
+}
+
+.twin-gauge-marker {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  height: 4px;
+  background: #3a7bd5;
+  border-radius: 2px;
+  transform: translateY(50%);
+  box-shadow: 0 0 4px rgba(58, 123, 213, 0.8);
+}
+
+.twin-gauge-labels {
+  position: relative;
+  height: 140px;
+  font-size: 0.6rem;
+  color: #9aa4b2;
+  white-space: nowrap;
+}
+
+.twin-gauge-label {
+  position: absolute;
+  transform: translateY(50%);
+  left: 4px;
+}
+
+.twin-gauge-label-current {
+  color: #6fa8ff;
+  font-weight: 700;
+}
+
+.twin-timestamps {
+  background: #1d232d;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.72rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  color: #cfd8e3;
+}
+
+.twin-timestamps span {
+  color: #9aa4b2;
+  margin-right: 0.3rem;
+}
+
+.twin-cadence {
+  margin: 0;
+}
+
 .export-row {
   display: flex;
   gap: 0.5rem;

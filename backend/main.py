@@ -10,10 +10,13 @@ Implements the subset of the PRD's Section 3 endpoints needed for this stage:
 
   POST /predict/instant       -- U-Net surrogate prediction, warmed at startup so
                                   every request (not just steady-state ones) is fast
+  GET  /twin/state            -- last-synced real Kosi Barrage CWC gauge reading
+  POST /twin/sync             -- trigger an immediate live re-sync
 
 SPH, comparison, and GEE endpoints are intentionally not implemented yet --
 out of scope for this stage.
 """
+import asyncio
 import base64
 import io
 import json
@@ -63,6 +66,34 @@ def _warm_surrogate():
         print("[startup] ML surrogate warmed and ready")
     except FileNotFoundError:
         print("[startup] ML surrogate not trained yet -- /predict/instant will fail until backend/ml/train.py is run")
+
+
+# The real CWC source (see digital_twin/cwc_client.py) itself only updates
+# ~once daily (empirically measured in digital_twin/sync.py) -- polling more
+# often than this just hammers their server for no new information. This
+# interval only re-checks for a new day's reading; it does not, and cannot,
+# make the underlying data more frequent than it actually is.
+DIGITAL_TWIN_POLL_INTERVAL_S = 3600
+
+
+async def _digital_twin_poll_loop():
+    from digital_twin.sync import sync_now
+    loop = asyncio.get_event_loop()
+    while True:
+        try:
+            await loop.run_in_executor(None, sync_now)
+        except Exception as e:  # never let a bad sync kill the poll loop
+            print(f"[digital_twin] background sync raised unexpectedly: {e}")
+        await asyncio.sleep(DIGITAL_TWIN_POLL_INTERVAL_S)
+
+
+@app.on_event("startup")
+async def _start_digital_twin_sync():
+    asyncio.create_task(_digital_twin_poll_loop())
+    print(f"[startup] Digital Twin background sync started (checks every "
+          f"{DIGITAL_TWIN_POLL_INTERVAL_S/3600:.0f}h; source itself updates ~daily -- "
+          f"this only catches a new day's reading sooner than waiting for a manual sync, "
+          f"it does not make the source itself update faster)")
 
 
 def _run_job():
@@ -242,6 +273,24 @@ def get_sph_snapshot(t_seconds: int):
     if not snap_path.exists():
         raise HTTPException(404, f"SPH snapshot at t={t_seconds}s not found")
     return JSONResponse(json.loads(snap_path.read_text()))
+
+
+@app.get("/twin/state")
+def twin_state():
+    from digital_twin.sync import STATE_PATH
+    if not STATE_PATH.exists():
+        raise HTTPException(404, "no digital twin sync has run yet -- POST /twin/sync or wait for the background poll")
+    return JSONResponse(json.loads(STATE_PATH.read_text()))
+
+
+@app.post("/twin/sync")
+def twin_sync():
+    from digital_twin.sync import sync_now
+    result = sync_now()
+    latest_attempt = result["sync_log"][0]
+    if not latest_attempt["success"] and result.get("last_good_sync") is None:
+        raise HTTPException(502, f"sync failed and no previous successful sync exists: {latest_attempt['error']}")
+    return JSONResponse(result)
 
 
 @app.get("/health")

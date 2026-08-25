@@ -115,7 +115,31 @@ assumptions" panel, not buried.
   its own grid resolution so it's clear the two modes aren't pixel-for-pixel
   comparable (different grid, see above).
 
+## Digital Twin sync (Kosi Barrage CWC gauge)
+
+- **Real source, found by investigation, not assumed**: the Central Water
+  Commission's public Flood Forecasting System (`ffs.india-water.gov.in`) is
+  an Angular dashboard backed by an undocumented but unauthenticated JSON
+  API. Its station `062-MGD4PTN` ("KOSI BARRAGE", type Inflow) matches our
+  case study's barrage coordinates. See `backend/digital_twin/cwc_client.py`.
+- **Cadence is measured, not assumed**: `sync.py` pulls 14 days of history
+  and computes the median interval between readings every sync — currently
+  ~24h (one reading/day, ~08:00 IST). Two other datatypes this station
+  reports (FIN, FOL) were found stale (last updated 2021) during
+  investigation and are explicitly excluded from "current state", not
+  silently shown as live.
+- **Never fabricates on failure**: a failed sync leaves the last
+  successfully-synced state untouched and logs the failure (`sync_log` in
+  `backend/outputs/digital_twin/state.json`) rather than overwriting good
+  data with an error or a stale guess.
+- Background poll (hourly, since the source itself is daily — see
+  `main.py`) + `POST /twin/sync` for an on-demand pull + `GET /twin/state`.
+  Frontend: a "Live Twin" tab, separate from the simulation modes, showing
+  both the CWC reading timestamp and this app's own last-sync timestamp
+  side by side, plus a gauge against FRL/MWL reference levels.
+
 ## Next step
 
-Build Priority #3/#4 (PRD section 7): 3D terrain visualization, then the SPH
-model + comparison view.
+Build Priority #5 (PRD section 7): Google Earth Engine real-time SAR layer
+— blocked on the user completing interactive `earthengine authenticate`
+(requires a local browser login I cannot perform).

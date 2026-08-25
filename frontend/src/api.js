@@ -57,4 +57,22 @@ export async function fetchSphSnapshot(t_seconds) {
   return res.json();
 }
 
+export async function fetchTwinState() {
+  const res = await fetch(`${API_BASE}/twin/state`);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `twin state fetch failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function triggerTwinSync() {
+  const res = await fetch(`${API_BASE}/twin/sync`, { method: "POST" });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `twin sync failed: ${res.status}`);
+  }
+  return res.json();
+}
+
 
