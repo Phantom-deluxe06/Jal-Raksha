@@ -12,7 +12,7 @@ import * as GeoTIFF from "geotiff";
 // default) was flagged as making the terrain read as a "miniature model."
 const VERTICAL_EXAGGERATION = 1.3;
 
-export default function CesiumViewer({ bounds }) {
+export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
   const containerRef = useRef(null);
   const viewerRef = useRef(null);
   const [terrainError, setTerrainError] = useState(null);
@@ -21,7 +21,6 @@ export default function CesiumViewer({ bounds }) {
   const satelliteLayerRef = useRef(null);
   
   const [showFlood, setShowFlood] = useState(true);
-  const floodPrimitiveRef = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current || viewerRef.current) return;
@@ -135,147 +134,166 @@ export default function CesiumViewer({ bounds }) {
     }
   }, [showSatellite]);
 
-  // Phase 4: 3D Flood Surface
+  // Phase 5: Pre-generate all 17 meshes on load
+  const [meshesLoaded, setMeshesLoaded] = useState(false);
+  const primitivesRef = useRef([]);
+
   useEffect(() => {
     const viewer = viewerRef.current;
-    if (!viewer || !bounds) return;
+    if (!viewer || !bounds || !frames || frames.length === 0) return;
 
     let isMounted = true;
 
-    async function loadFloodMesh() {
+    async function loadAllMeshes() {
       try {
         const demRes = await fetch("http://127.0.0.1:8000/terrain/dem?downsample=1");
         const demData = await demRes.json();
         
-        const tifRes = await fetch("http://127.0.0.1:8000/simulate/frame/kosi_actual2008/depth_t0120.tif");
-        const tifBuffer = await tifRes.arrayBuffer();
-        const tiff = await GeoTIFF.fromArrayBuffer(tifBuffer);
-        const image = await tiff.getImage();
-        const depthData = (await image.readRasters())[0];
-
-        if (!isMounted) return;
-
         const { rows, cols } = demData;
         const dLat = (bounds.north - bounds.south) / rows;
         const dLon = (bounds.east - bounds.west) / cols;
 
-        let numFlooded = 0;
-        for (let i = 0; i < depthData.length; i++) {
-          if (depthData[i] > 0.1) numFlooded++;
-        }
+        const primitives = [];
+        const materialAppearance = new Cesium.MaterialAppearance({
+          material: Cesium.Material.fromType('Color', {
+            color: new Cesium.Color(0.12, 0.53, 0.90, 0.6)
+          }),
+          translucent: true
+        });
 
-        if (numFlooded === 0) return;
+        for (let i = 0; i < frames.length; i++) {
+          if (!isMounted) return;
+          
+          const tifName = frames[i].depth_tif.split('/').pop();
+          const tifRes = await fetch(`http://127.0.0.1:8000/simulate/frame/kosi_actual2008/${tifName}`);
+          const tifBuffer = await tifRes.arrayBuffer();
+          const tiff = await GeoTIFF.fromArrayBuffer(tifBuffer);
+          const image = await tiff.getImage();
+          const depthData = (await image.readRasters())[0];
 
-        const tStart = performance.now();
+          let numFlooded = 0;
+          for (let j = 0; j < depthData.length; j++) {
+            if (depthData[j] > 0.1) numFlooded++;
+          }
 
-        const positions = new Float64Array(numFlooded * 4 * 3);
-        const indices = new Uint32Array(numFlooded * 6);
+          if (numFlooded === 0) {
+            primitives.push(null);
+            continue;
+          }
 
-        let vertexOffset = 0;
-        let indexOffset = 0;
+          const positions = new Float64Array(numFlooded * 4 * 3);
+          const indices = new Uint32Array(numFlooded * 6);
 
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const idx = r * cols + c;
-            const depth = depthData[idx];
-            
-            if (depth > 0.1) {
-              const elev = demData.elevations[idx] + depth;
+          let vertexOffset = 0;
+          let indexOffset = 0;
+
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              const idx = r * cols + c;
+              const depth = depthData[idx];
               
-              const latN = bounds.north - r * dLat;
-              const latS = bounds.north - (r + 1) * dLat;
-              const lonW = bounds.west + c * dLon;
-              const lonE = bounds.west + (c + 1) * dLon;
+              if (depth > 0.1) {
+                const elev = demData.elevations[idx] + depth;
+                
+                const latN = bounds.north - r * dLat;
+                const latS = bounds.north - (r + 1) * dLat;
+                const lonW = bounds.west + c * dLon;
+                const lonE = bounds.west + (c + 1) * dLon;
 
-              const p0 = Cesium.Cartesian3.fromDegrees(lonW, latN, elev);
-              const p1 = Cesium.Cartesian3.fromDegrees(lonE, latN, elev);
-              const p2 = Cesium.Cartesian3.fromDegrees(lonE, latS, elev);
-              const p3 = Cesium.Cartesian3.fromDegrees(lonW, latS, elev);
+                const p0 = Cesium.Cartesian3.fromDegrees(lonW, latN, elev);
+                const p1 = Cesium.Cartesian3.fromDegrees(lonE, latN, elev);
+                const p2 = Cesium.Cartesian3.fromDegrees(lonE, latS, elev);
+                const p3 = Cesium.Cartesian3.fromDegrees(lonW, latS, elev);
 
-              positions[vertexOffset * 3] = p0.x;
-              positions[vertexOffset * 3 + 1] = p0.y;
-              positions[vertexOffset * 3 + 2] = p0.z;
+                positions[vertexOffset * 3] = p0.x;
+                positions[vertexOffset * 3 + 1] = p0.y;
+                positions[vertexOffset * 3 + 2] = p0.z;
 
-              positions[(vertexOffset + 1) * 3] = p1.x;
-              positions[(vertexOffset + 1) * 3 + 1] = p1.y;
-              positions[(vertexOffset + 1) * 3 + 2] = p1.z;
+                positions[(vertexOffset + 1) * 3] = p1.x;
+                positions[(vertexOffset + 1) * 3 + 1] = p1.y;
+                positions[(vertexOffset + 1) * 3 + 2] = p1.z;
 
-              positions[(vertexOffset + 2) * 3] = p2.x;
-              positions[(vertexOffset + 2) * 3 + 1] = p2.y;
-              positions[(vertexOffset + 2) * 3 + 2] = p2.z;
+                positions[(vertexOffset + 2) * 3] = p2.x;
+                positions[(vertexOffset + 2) * 3 + 1] = p2.y;
+                positions[(vertexOffset + 2) * 3 + 2] = p2.z;
 
-              positions[(vertexOffset + 3) * 3] = p3.x;
-              positions[(vertexOffset + 3) * 3 + 1] = p3.y;
-              positions[(vertexOffset + 3) * 3 + 2] = p3.z;
+                positions[(vertexOffset + 3) * 3] = p3.x;
+                positions[(vertexOffset + 3) * 3 + 1] = p3.y;
+                positions[(vertexOffset + 3) * 3 + 2] = p3.z;
 
-              indices[indexOffset] = vertexOffset;
-              indices[indexOffset + 1] = vertexOffset + 3;
-              indices[indexOffset + 2] = vertexOffset + 1;
-              indices[indexOffset + 3] = vertexOffset + 1;
-              indices[indexOffset + 4] = vertexOffset + 3;
-              indices[indexOffset + 5] = vertexOffset + 2;
+                indices[indexOffset] = vertexOffset;
+                indices[indexOffset + 1] = vertexOffset + 3;
+                indices[indexOffset + 2] = vertexOffset + 1;
+                indices[indexOffset + 3] = vertexOffset + 1;
+                indices[indexOffset + 4] = vertexOffset + 3;
+                indices[indexOffset + 5] = vertexOffset + 2;
 
-              vertexOffset += 4;
-              indexOffset += 6;
+                vertexOffset += 4;
+                indexOffset += 6;
+              }
             }
           }
+
+          const geometry = new Cesium.Geometry({
+            attributes: {
+              position: new Cesium.GeometryAttribute({
+                componentDatatype: Cesium.ComponentDatatype.DOUBLE,
+                componentsPerAttribute: 3,
+                values: positions
+              })
+            },
+            indices: indices,
+            primitiveType: Cesium.PrimitiveType.TRIANGLES,
+            boundingSphere: Cesium.BoundingSphere.fromVertices(positions)
+          });
+          
+          Cesium.GeometryPipeline.computeNormal(geometry);
+
+          const instance = new Cesium.GeometryInstance({ geometry });
+
+          const primitive = new Cesium.Primitive({
+            geometryInstances: instance,
+            appearance: materialAppearance,
+            asynchronous: false
+          });
+
+          primitive.show = false; // Start hidden
+          viewer.scene.primitives.add(primitive);
+          primitives.push(primitive);
         }
 
-        const geometry = new Cesium.Geometry({
-          attributes: {
-            position: new Cesium.GeometryAttribute({
-              componentDatatype: Cesium.ComponentDatatype.DOUBLE,
-              componentsPerAttribute: 3,
-              values: positions
-            })
-          },
-          indices: indices,
-          primitiveType: Cesium.PrimitiveType.TRIANGLES,
-          boundingSphere: Cesium.BoundingSphere.fromVertices(positions)
-        });
-        
-        Cesium.GeometryPipeline.computeNormal(geometry);
-
-        const instance = new Cesium.GeometryInstance({ geometry });
-
-        const primitive = new Cesium.Primitive({
-          geometryInstances: instance,
-          appearance: new Cesium.MaterialAppearance({
-            material: Cesium.Material.fromType('Color', {
-              color: new Cesium.Color(0.12, 0.53, 0.90, 0.6)
-            }),
-            translucent: true
-          }),
-          asynchronous: false // Sync creation blocks UI but guarantees rendering order in some cases.
-        });
-
-        floodPrimitiveRef.current = viewer.scene.primitives.add(primitive);
-        setShowFlood(s => { primitive.show = s; return s; });
-        
-        const tEnd = performance.now();
-        console.log(`[Phase 4 Profile] 3D Flood Mesh Generation: ${(tEnd - tStart).toFixed(2)}ms for ${numFlooded} flooded cells.`);
-
+        if (!isMounted) return;
+        primitivesRef.current = primitives;
+        setMeshesLoaded(true);
       } catch(err) {
-        console.error("Failed to load 3D flood surface:", err);
+        console.error("Failed to load 3D flood surfaces:", err);
       }
     }
 
-    loadFloodMesh();
+    loadAllMeshes();
 
     return () => {
       isMounted = false;
-      if (floodPrimitiveRef.current && viewer && !viewer.isDestroyed()) {
-        try { viewer.scene.primitives.remove(floodPrimitiveRef.current); } catch(e){}
-        floodPrimitiveRef.current = null;
+      if (viewer && !viewer.isDestroyed()) {
+        primitivesRef.current.forEach(p => {
+          if (p) {
+            try { viewer.scene.primitives.remove(p); } catch(e){}
+          }
+        });
       }
+      primitivesRef.current = [];
+      setMeshesLoaded(false);
     };
-  }, [bounds]);
+  }, [bounds, frames]);
 
+  // Sync visibility with timeline
   useEffect(() => {
-    if (floodPrimitiveRef.current) {
-      floodPrimitiveRef.current.show = showFlood;
-    }
-  }, [showFlood]);
+    primitivesRef.current.forEach((primitive, i) => {
+      if (primitive) {
+        primitive.show = (i === frameIndex) && showFlood;
+      }
+    });
+  }, [frameIndex, showFlood, meshesLoaded]);
 
   return (
     <div className="cesium-viewer-container" style={{ position: "relative", width: "100%", height: "100%" }}>

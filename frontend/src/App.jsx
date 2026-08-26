@@ -111,9 +111,8 @@ export default function App() {
                     realtimeExtent={mode === "realtime" ? realtimeData : null}
                   />
                 ) : (
-                  <CesiumViewer bounds={activeBounds} />
+                  <CesiumViewer bounds={activeBounds} frames={meta.frames} frameIndex={frameIndex} />
                 )}
-
                 {(mode === "full" || mode === "instant") && <Legend />}
                 {mode === "full" && <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />}
               </div>

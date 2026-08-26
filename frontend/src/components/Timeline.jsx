@@ -18,7 +18,7 @@ export default function Timeline({ frames, index, onChange }) {
         }
         return next;
       });
-    }, 700);
+    }, 1000);
     return () => clearInterval(timerRef.current);
   }, [playing, frames.length, onChange]);
 
