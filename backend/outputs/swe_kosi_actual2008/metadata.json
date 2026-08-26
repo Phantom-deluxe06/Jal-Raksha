@@ -28,7 +28,7 @@
     "duration_s": 14400.0,
     "snapshot_interval_s": 900.0,
     "n_steps": 1440,
-    "wall_time_s": 78.5,
+    "wall_time_s": 217.2,
     "unstable": false
   },
   "bounds": {
@@ -55,11 +55,7 @@
       "geojson": "geojson/flood_extent_t0000.geojson",
       "flooded_area_km2": 0.0,
       "max_depth_m": 0.0,
-      "mean_wet_depth_m": 0.0,
-      "population_at_risk": 0,
-      "population_significantly_affected_gt0.3m": 0,
-      "affected_settlements": [],
-      "affected_settlements_count": 0
+      "mean_wet_depth_m": 0.0
     },
     {
       "t_minutes": 15,
@@ -69,11 +65,7 @@
       "geojson": "geojson/flood_extent_t0015.geojson",
       "flooded_area_km2": 2.129,
       "max_depth_m": 0.582,
-      "mean_wet_depth_m": 0.231,
-      "population_at_risk": 0,
-      "population_significantly_affected_gt0.3m": 0,
-      "affected_settlements": [],
-      "affected_settlements_count": 0
+      "mean_wet_depth_m": 0.231
     },
     {
       "t_minutes": 30,
@@ -83,20 +75,7 @@
       "geojson": "geojson/flood_extent_t0030.geojson",
       "flooded_area_km2": 7.9,
       "max_depth_m": 1.326,
-      "mean_wet_depth_m": 0.319,
-      "population_at_risk": 0,
-      "population_significantly_affected_gt0.3m": 0,
-      "affected_settlements": [
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 2
+      "mean_wet_depth_m": 0.319
     },
     {
       "t_minutes": 45,
@@ -106,28 +85,7 @@
       "geojson": "geojson/flood_extent_t0045.geojson",
       "flooded_area_km2": 15.399,
       "max_depth_m": 1.581,
-      "mean_wet_depth_m": 0.346,
-      "population_at_risk": 0,
-      "population_significantly_affected_gt0.3m": 0,
-      "affected_settlements": [
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 4
+      "mean_wet_depth_m": 0.346
     },
     {
       "t_minutes": 60,
@@ -137,32 +95,7 @@
       "geojson": "geojson/flood_extent_t0060.geojson",
       "flooded_area_km2": 23.115,
       "max_depth_m": 1.712,
-      "mean_wet_depth_m": 0.35,
-      "population_at_risk": 0,
-      "population_significantly_affected_gt0.3m": 0,
-      "affected_settlements": [
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 5
+      "mean_wet_depth_m": 0.35
     },
     {
       "t_minutes": 75,
@@ -172,36 +105,7 @@
       "geojson": "geojson/flood_extent_t0075.geojson",
       "flooded_area_km2": 30.552,
       "max_depth_m": 1.801,
-      "mean_wet_depth_m": 0.355,
-      "population_at_risk": 1360,
-      "population_significantly_affected_gt0.3m": 0,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 6
+      "mean_wet_depth_m": 0.355
     },
     {
       "t_minutes": 90,
@@ -211,36 +115,7 @@
       "geojson": "geojson/flood_extent_t0090.geojson",
       "flooded_area_km2": 38.144,
       "max_depth_m": 1.867,
-      "mean_wet_depth_m": 0.356,
-      "population_at_risk": 3784,
-      "population_significantly_affected_gt0.3m": 0,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 6
+      "mean_wet_depth_m": 0.356
     },
     {
       "t_minutes": 105,
@@ -250,36 +125,7 @@
       "geojson": "geojson/flood_extent_t0105.geojson",
       "flooded_area_km2": 45.489,
       "max_depth_m": 1.918,
-      "mean_wet_depth_m": 0.357,
-      "population_at_risk": 7263,
-      "population_significantly_affected_gt0.3m": 1360,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 6
+      "mean_wet_depth_m": 0.357
     },
     {
       "t_minutes": 120,
@@ -289,40 +135,7 @@
       "geojson": "geojson/flood_extent_t0120.geojson",
       "flooded_area_km2": 53.574,
       "max_depth_m": 1.959,
-      "mean_wet_depth_m": 0.355,
-      "population_at_risk": 7714,
-      "population_significantly_affected_gt0.3m": 1360,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.355
     },
     {
       "t_minutes": 135,
@@ -332,40 +145,7 @@
       "geojson": "geojson/flood_extent_t0135.geojson",
       "flooded_area_km2": 61.721,
       "max_depth_m": 1.993,
-      "mean_wet_depth_m": 0.353,
-      "population_at_risk": 12156,
-      "population_significantly_affected_gt0.3m": 1360,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.353
     },
     {
       "t_minutes": 150,
@@ -375,40 +155,7 @@
       "geojson": "geojson/flood_extent_t0150.geojson",
       "flooded_area_km2": 69.56,
       "max_depth_m": 2.021,
-      "mean_wet_depth_m": 0.352,
-      "population_at_risk": 12156,
-      "population_significantly_affected_gt0.3m": 4240,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.352
     },
     {
       "t_minutes": 165,
@@ -418,40 +165,7 @@
       "geojson": "geojson/flood_extent_t0165.geojson",
       "flooded_area_km2": 77.584,
       "max_depth_m": 2.046,
-      "mean_wet_depth_m": 0.351,
-      "population_at_risk": 17958,
-      "population_significantly_affected_gt0.3m": 4240,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.351
     },
     {
       "t_minutes": 180,
@@ -461,40 +175,7 @@
       "geojson": "geojson/flood_extent_t0180.geojson",
       "flooded_area_km2": 86.194,
       "max_depth_m": 2.066,
-      "mean_wet_depth_m": 0.349,
-      "population_at_risk": 18444,
-      "population_significantly_affected_gt0.3m": 4240,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.349
     },
     {
       "t_minutes": 195,
@@ -504,40 +185,7 @@
       "geojson": "geojson/flood_extent_t0195.geojson",
       "flooded_area_km2": 94.063,
       "max_depth_m": 2.084,
-      "mean_wet_depth_m": 0.349,
-      "population_at_risk": 19918,
-      "population_significantly_affected_gt0.3m": 7657,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.349
     },
     {
       "t_minutes": 210,
@@ -547,40 +195,7 @@
       "geojson": "geojson/flood_extent_t0210.geojson",
       "flooded_area_km2": 101.686,
       "max_depth_m": 2.1,
-      "mean_wet_depth_m": 0.349,
-      "population_at_risk": 21729,
-      "population_significantly_affected_gt0.3m": 8193,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.349
     },
     {
       "t_minutes": 225,
@@ -590,40 +205,7 @@
       "geojson": "geojson/flood_extent_t0225.geojson",
       "flooded_area_km2": 109.74,
       "max_depth_m": 2.113,
-      "mean_wet_depth_m": 0.348,
-      "population_at_risk": 22251,
-      "population_significantly_affected_gt0.3m": 8193,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.348
     },
     {
       "t_minutes": 240,
@@ -633,40 +215,7 @@
       "geojson": "geojson/flood_extent_t0240.geojson",
       "flooded_area_km2": 116.931,
       "max_depth_m": 2.125,
-      "mean_wet_depth_m": 0.35,
-      "population_at_risk": 23743,
-      "population_significantly_affected_gt0.3m": 9572,
-      "affected_settlements": [
-        {
-          "name": "\u0928\u0947\u0935\u093e\u0930\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "\u091d\u093e\u0919\u0927\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Mejar\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "Mohanl\u0101l\u1e6dol",
-          "place_type": "village"
-        },
-        {
-          "name": "\u0938\u093f\u0938\u094c\u091f\u094b\u0932",
-          "place_type": "village"
-        },
-        {
-          "name": "Laukhi",
-          "place_type": "hamlet"
-        },
-        {
-          "name": "\u0915\u094b\u0936\u0940",
-          "place_type": "village"
-        }
-      ],
-      "affected_settlements_count": 7
+      "mean_wet_depth_m": 0.35
     }
   ],
   "sanity_checks": [
@@ -704,13 +253,5 @@
     "Domain boundaries are open/zero-gradient on all sides (water can exit the AOI freely)",
     "Pre-breach river channel treated as dry (h=0) initial condition -- simulating only the breach floodwater, not baseflow",
     "Grid resolution downsampled to ~166m x 186m from the native 30m DEM for compute tractability"
-  ],
-  "population_impact_methodology": {
-    "population_source": "data/population/kosi_aoi_worldpop_2020.tif (WorldPop India 2020, ~1km)",
-    "settlement_source": "data/settlements/kosi_aoi_settlements.geojson (OpenStreetMap via Overpass API, 363 named places)",
-    "method": "Each frame's depth grid (~185m cells) is resampled via area-average onto the population raster's exact ~1km grid; a population cell counts as affected once its areal-mean depth crosses the threshold. Settlement exposure is a point-in-polygon test of real OSM place points against that frame's own flood-extent polygon (same one used for GeoJSON/Shapefile/KML export).",
-    "at_risk_threshold_m": 0.1,
-    "significant_threshold_m": 0.3,
-    "caveat": "Areal-mean thresholding is conservative near a flood's edge: a population cell only partially covered by flooding may not cross the mean-depth threshold even though part of its population is genuinely exposed. Settlement points are place labels/centroids, not building footprints -- a settlement can be genuinely affected at its edges without its OSM point falling inside the mapped extent, or vice versa for a large settlement with an outlying centroid."
-  }
+  ]
 }

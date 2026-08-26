@@ -161,10 +161,11 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
           translucent: true
         });
 
-        for (let i = 0; i < frames.length; i++) {
-          if (!isMounted) return;
-          
-          const tifName = frames[i].depth_tif.split('/').pop();
+        const tStartAll = performance.now();
+        let totalMemoryBytes = 0;
+
+        const meshPromises = frames.map(async (frame, i) => {
+          const tifName = frame.depth_tif.split('/').pop();
           const tifRes = await fetch(`http://127.0.0.1:8000/simulate/frame/kosi_actual2008/${tifName}`);
           const tifBuffer = await tifRes.arrayBuffer();
           const tiff = await GeoTIFF.fromArrayBuffer(tifBuffer);
@@ -176,10 +177,7 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
             if (depthData[j] > 0.1) numFlooded++;
           }
 
-          if (numFlooded === 0) {
-            primitives.push(null);
-            continue;
-          }
+          if (numFlooded === 0) return null;
 
           const positions = new Float64Array(numFlooded * 4 * 3);
           const indices = new Uint32Array(numFlooded * 6);
@@ -257,10 +255,27 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
             asynchronous: false
           });
 
-          primitive.show = false; // Start hidden
-          viewer.scene.primitives.add(primitive);
-          primitives.push(primitive);
-        }
+          return { primitive, memoryBytes: (numFlooded * 12 * 8) + (numFlooded * 6 * 4) };
+        });
+
+        const generatedData = await Promise.all(meshPromises);
+        
+        if (!isMounted) return;
+
+        generatedData.forEach((data) => {
+          if (data) {
+            totalMemoryBytes += data.memoryBytes;
+            data.primitive.show = false;
+            viewer.scene.primitives.add(data.primitive);
+            primitives.push(data.primitive);
+          } else {
+            primitives.push(null);
+          }
+        });
+
+        const tEndAll = performance.now();
+        console.log(`[Phase 5 Profile] Pre-generated ${frames.length} meshes in ${(tEndAll - tStartAll).toFixed(2)}ms`);
+        console.log(`[Phase 5 Profile] Estimated Geometry Memory Footprint: ${(totalMemoryBytes / 1024 / 1024).toFixed(2)} MB`);
 
         if (!isMounted) return;
         primitivesRef.current = primitives;
