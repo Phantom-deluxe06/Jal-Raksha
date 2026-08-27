@@ -10,7 +10,7 @@
     "current_reading": {
       "water_level_m": 75.38,
       "data_time_ist": "2026-08-27T08:00:00",
-      "age_hours": 1.6,
+      "age_hours": 4.4,
       "is_live": true,
       "reference_levels_m": {
         "frl": 74.69,
@@ -25,13 +25,13 @@
       "FIN": {
         "latest_value": 5476.92,
         "latest_data_time_ist": "2021-08-18T08:00:00",
-        "age_hours": 44041.6,
+        "age_hours": 44044.4,
         "live": false
       },
       "FOL": {
         "latest_value": 141.6,
         "latest_data_time_ist": "2021-08-18T08:00:00",
-        "age_hours": 44041.6,
+        "age_hours": 44044.4,
         "live": false
       }
     },
@@ -45,9 +45,19 @@
       "url": "https://ffs.india-water.gov.in",
       "note": "Unofficial/undocumented public JSON API discovered by inspecting the CWC dashboard's own network requests -- no auth required, but no published API contract either; could change without notice."
     },
-    "synced_at_utc": "2026-08-27T04:06:00.084658"
+    "synced_at_utc": "2026-08-27T06:56:40.220585"
   },
   "sync_log": [
+    {
+      "attempted_at_utc": "2026-08-27T06:56:40.220585",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T06:34:52.154703",
+      "success": true,
+      "error": null
+    },
     {
       "attempted_at_utc": "2026-08-27T04:06:00.084658",
       "success": true,
@@ -136,16 +146,6 @@
     },
     {
       "attempted_at_utc": "2026-08-25T03:53:00.136672",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T02:52:53.844153",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T01:52:51.619045",
       "success": true,
       "error": null
     }

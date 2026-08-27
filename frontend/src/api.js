@@ -84,4 +84,28 @@ export async function fetchRealtimeWaterExtent() {
   return res.json();
 }
 
+export async function queryPointDepth(lat, lon, threshold = 0.1) {
+  const res = await fetch(`${API_BASE}/simulate/query-point/${JOB_ID}?lat=${lat}&lon=${lon}&threshold=${threshold}`);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `point query failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function compareSarWithSimulation({ timestep_minutes = null, sar_extent = null } = {}) {
+  const res = await fetch(`${API_BASE}/realtime/compare`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ timestep_minutes, sar_extent }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `comparison failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+
+
 

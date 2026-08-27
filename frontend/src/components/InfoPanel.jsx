@@ -1,6 +1,17 @@
 import { exportUrl } from "../api";
+import PointInspector from "./PointInspector";
 
-export default function InfoPanel({ meta, frame, onRerun, running }) {
+export default function InfoPanel({
+  meta,
+  frame,
+  onRerun,
+  running,
+  selectedPointData,
+  loadingPoint,
+  frameIndex = 0,
+  onSelectTimestep,
+  onClearPoint,
+}) {
   if (!meta) return null;
   const failed = meta.sanity_checks.filter((c) => c.pass_ === false);
   const hasImpact = frame && frame.population_at_risk !== undefined;
@@ -13,16 +24,40 @@ export default function InfoPanel({ meta, frame, onRerun, running }) {
         not the barrage's {meta.design_discharge_cumecs_NOT_USED} m³/s design figure)
       </p>
 
+      {/* Point Inspector Section */}
+      {selectedPointData || loadingPoint ? (
+        <PointInspector
+          pointData={selectedPointData}
+          loading={loadingPoint}
+          frameIndex={frameIndex}
+          onSelectTimestep={onSelectTimestep}
+          onClear={onClearPoint}
+        />
+      ) : (
+        <div className="map-inspection-prompt">
+          <span className="prompt-icon">📍</span>
+          <div>
+            <strong>Interactive Point Inspection</strong>
+            <p>Click any point on the flood map to query water depth, flow velocity, arrival time, and full temporal series.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Current Timestep Domain Overview */}
+      <div className="section-title">
+        <span>Domain Summary (T+{frame.t_minutes} min)</span>
+      </div>
+
       <div className="stat-grid">
-        <div><span>AOI area</span><strong>{meta.aoi_area_km2.toLocaleString()} km²</strong></div>
-        <div><span>Max flooded area</span><strong>{meta.max_flooded_area_km2.toLocaleString()} km²</strong></div>
-        <div><span>Max depth</span><strong>{meta.max_depth_m} m</strong></div>
-        <div><span>Grid resolution</span><strong>{Math.round(meta.grid.dx_m)}m × {Math.round(meta.grid.dy_m)}m</strong></div>
+        <div><span>Flooded area (current)</span><strong>{frame.flooded_area_km2.toLocaleString()} km²</strong></div>
+        <div><span>Max depth (current)</span><strong>{frame.max_depth_m} m</strong></div>
+        <div><span>Domain max depth</span><strong>{meta.max_depth_m} m</strong></div>
+        <div><span>Domain total area</span><strong>{meta.aoi_area_km2.toLocaleString()} km²</strong></div>
       </div>
 
       {hasImpact && (
         <div className="impact-block">
-          <h3>Impact at T+{frame.t_minutes}min</h3>
+          <h3>Population & Settlement Impact (T+{frame.t_minutes}min)</h3>
           <div className="stat-grid">
             <div><span>Flooded area</span><strong>{frame.flooded_area_km2.toLocaleString()} km²</strong></div>
             <div><span>Est. population at risk (&gt;0.1m)</span><strong>{frame.population_at_risk.toLocaleString()}</strong></div>

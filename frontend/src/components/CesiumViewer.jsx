@@ -1,39 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
-<<<<<<< HEAD
-import { frameUrl } from "../api";
-=======
 import * as GeoTIFF from "geotiff";
->>>>>>> d2a0aa355adbec8daa37c1f3c11a3e60359e3bd1
 
 // Vertical exaggeration: 1.3x keeps the Gangetic floodplain readable
 // without making the Himalayan foothills look cartoonish.
 const VERTICAL_EXAGGERATION = 1.3;
 
-<<<<<<< HEAD
-// Flood surface colours — slightly more opaque than before so the
-// extent is actually visible at the overview zoom level.
-const FLOOD_STROKE = Cesium.Color.fromCssColorString("#4a90ff");
-const FLOOD_FILL   = Cesium.Color.fromCssColorString("#1e90ff").withAlpha(0.65);
-
-// Real settlement locations inside the 2008 Kosi flood extent.
-// Coordinates cross-checked against OSM + documented breach location.
-const KOSI_SETTLEMENTS = [
-  { name: "Kusaha (breach site)", lat: 26.55,  lon: 86.92, breach: true  },
-  { name: "झाउधटोल",              lat: 26.48,  lon: 87.01, breach: false },
-  { name: "Mejartol",             lat: 26.51,  lon: 86.98, breach: false },
-  { name: "Mohanlaltol",          lat: 26.44,  lon: 87.05, breach: false },
-  { name: "कोसी",                 lat: 26.58,  lon: 86.90, breach: false },
-];
-
-export default function CesiumViewer({ bounds, frame }) {
-  const containerRef     = useRef(null);
-  const viewerRef        = useRef(null);
-  const floodDataSourceRef = useRef(null);
-  const [terrainError, setTerrainError] = useState(null);
-
-  // ── MOUNT: create Viewer once ──────────────────────────────────────
-=======
 export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
   const containerRef = useRef(null);
   const viewerRef = useRef(null);
@@ -43,8 +15,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
   const satelliteLayerRef = useRef(null);
   
   const [showFlood, setShowFlood] = useState(true);
-
->>>>>>> d2a0aa355adbec8daa37c1f3c11a3e60359e3bd1
   useEffect(() => {
     if (!containerRef.current || viewerRef.current) return;
 
@@ -95,32 +65,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
   useEffect(() => {
     const viewer = viewerRef.current;
     if (!viewer || !bounds) return;
-<<<<<<< HEAD
-
-    // Aim at the centre-south of the bounding box so the Himalayan
-    // foothills appear on the horizon rather than being cropped off.
-    const centerLon = (bounds.west  + bounds.east)  / 2;
-    const centerLat =  bounds.south + (bounds.north - bounds.south) * 0.3;
-
-    viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(centerLon, centerLat, 75000),
-      orientation: {
-        heading: Cesium.Math.toRadians(0),    // north-up
-        pitch:   Cesium.Math.toRadians(-38),  // 38° tilt — shows relief
-        roll:    0,
-      },
-      duration: 2,
-    });
-=======
-    // Fit-to-rectangle framing (top-down). This AOI is mostly flat Gangetic
-    // floodplain -- the only real relief (the Himalayan foothills, ~41-391m
-    // per our own DEM) sits at the northern edge, ~80km from a southern
-    // vantage point, so no camera angle that keeps the whole AOI in frame
-    // makes it a prominent "establishing shot" -- that's the real geometry,
-    // not a rendering gap. Lighting/shading was verified separately at
-    // closer range (see Phase 2 report); this framing prioritizes seeing
-    // the whole documented AOI on load, which is what was asked for. The
-    // relief is one drag away via the normal orbit controls.
     const rectangle = Cesium.Rectangle.fromDegrees(bounds.west, bounds.south, bounds.east, bounds.north);
     viewer.camera.flyTo({ destination: rectangle, duration: 2 });
     
@@ -150,7 +94,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
         satelliteLayerRef.current = null;
       }
     };
->>>>>>> d2a0aa355adbec8daa37c1f3c11a3e60359e3bd1
   }, [bounds]);
   
   useEffect(() => {
@@ -606,60 +549,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
           Cesium World Terrain failed to load: {terrainError}
         </div>
       )}
-<<<<<<< HEAD
-
-      {frame && (
-        <>
-          <div className="cesium-flood-stats">
-            <div className="cesium-flood-stats-title">
-              ACTUAL 2008 KUSAHA BREACH
-            </div>
-            <div className="cesium-flood-stats-subtitle">
-              (documented discharge)
-            </div>
-            <div className="cesium-flood-stats-time">
-              T+{frame.t_minutes} min
-            </div>
-            <div className="cesium-flood-stats-grid">
-              <div>
-                <span>Flooded area</span>
-                <strong>{frame.flooded_area_km2.toLocaleString()} km²</strong>
-              </div>
-              <div>
-                <span>Max depth</span>
-                <strong>{frame.max_depth_m} m</strong>
-              </div>
-              <div>
-                <span>Population at risk</span>
-                <strong>{frame.population_at_risk.toLocaleString()}</strong>
-              </div>
-              <div>
-                <span>Significantly affected</span>
-                <strong>
-                  {frame["population_significantly_affected_gt0.3m"].toLocaleString()}
-                </strong>
-              </div>
-              <div>
-                <span>Settlements affected</span>
-                <strong>{frame.affected_settlements_count}</strong>
-              </div>
-            </div>
-          </div>
-
-          <div className="cesium-flood-legend">
-            <div className="cesium-flood-legend-title">Water depth</div>
-            <div className="cesium-flood-legend-row">
-              <span className="cesium-flood-legend-swatch affected" />
-              &gt;0.1 m = affected
-            </div>
-            <div className="cesium-flood-legend-row">
-              <span className="cesium-flood-legend-swatch significant" />
-              &gt;0.3 m = significant
-            </div>
-          </div>
-        </>
-      )}
-=======
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", position: "absolute", top: 10, right: 10, zIndex: 1000, background: "rgba(30, 30, 30, 0.85)", padding: "10px 14px", borderRadius: "6px", color: "white", border: "1px solid rgba(255,255,255,0.2)", backdropFilter: "blur(4px)" }}>
         <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontSize: "14px", fontFamily: "sans-serif", margin: 0 }}>
           <input 
@@ -689,7 +578,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
           Velocity Flow Particles
         </label>
       </div>
->>>>>>> d2a0aa355adbec8daa37c1f3c11a3e60359e3bd1
     </div>
   );
 }

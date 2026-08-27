@@ -10,7 +10,7 @@ import LiveTwin from "./components/LiveTwin";
 import RealtimeSar from "./components/RealtimeSar";
 import SideNav from "./components/SideNav";
 import Overview from "./components/Overview";
-import { fetchResult, frameUrl, triggerRun } from "./api";
+import { fetchResult, frameUrl, triggerRun, queryPointDepth } from "./api";
 import "./App.css";
 
 const MAP_MODES = new Set(["full", "instant", "realtime"]);
@@ -26,6 +26,20 @@ export default function App() {
   const [predictedLocation, setPredictedLocation] = useState(null);
   const [realtimeData, setRealtimeData] = useState(null);
 
+  // Point Inspection State
+  const [selectedPoint, setSelectedPoint] = useState(null);
+  const [selectedPointData, setSelectedPointData] = useState(null);
+  const [loadingPoint, setLoadingPoint] = useState(false);
+
+  // Real-Time SAR Validation State
+  const [sarComparison, setSarComparison] = useState(null);
+  const [sarLayers, setSarLayers] = useState({
+    showSim: true,
+    showSar: true,
+    showDiff: false,
+    baseSatellite: false,
+  });
+
   const load = () => {
     fetchResult().then(setMeta).catch((e) => setError(e.message));
   };
@@ -38,11 +52,38 @@ export default function App() {
     try {
       await triggerRun();
       load();
+      if (selectedPoint) {
+        handlePointClick(selectedPoint);
+      }
     } catch (e) {
       setError(e.message);
     } finally {
       setRunning(false);
     }
+  };
+
+  const handlePointClick = async ({ lat, lon }) => {
+    setSelectedPoint({ lat, lon });
+    setLoadingPoint(true);
+    try {
+      const data = await queryPointDepth(lat, lon);
+      setSelectedPointData(data);
+    } catch (e) {
+      console.error("Point query failed:", e);
+      setSelectedPointData({
+        in_bounds: false,
+        lat,
+        lon,
+        message: e.message || "Failed to query simulation grid",
+      });
+    } finally {
+      setLoadingPoint(false);
+    }
+  };
+
+  const handleClearPoint = () => {
+    setSelectedPoint(null);
+    setSelectedPointData(null);
   };
 
   if (error) {
@@ -66,7 +107,7 @@ export default function App() {
 
   const frame = meta.frames[frameIndex];
   const overlayUrl =
-    mode === "full"
+    mode === "full" || mode === "realtime"
       ? frameUrl(frame.overlay_png)
       : mode === "instant" && prediction
         ? `data:image/png;base64,${prediction.overlay_png_base64}`
@@ -105,25 +146,46 @@ export default function App() {
                   <FloodMap
                     bounds={activeBounds}
                     overlayUrl={overlayUrl}
-                    overlayKey={mode === "full" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
+                    overlayKey={mode === "full" || mode === "realtime" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
                     breachLatLon={meta.breach_latlon}
                     predictedLocation={mode === "instant" ? predictedLocation : null}
                     realtimeExtent={mode === "realtime" ? realtimeData : null}
+                    sarComparison={mode === "realtime" ? sarComparison : null}
+                    sarLayers={mode === "realtime" ? sarLayers : { showSim: true, showSar: false, showDiff: false, baseSatellite: false }}
+                    onPointClick={mode === "full" ? handlePointClick : undefined}
+                    selectedPoint={selectedPoint}
+                    selectedPointData={selectedPointData}
+                    loadingPoint={loadingPoint}
+                    frameIndex={frameIndex}
                   />
                 ) : (
-<<<<<<< HEAD
-                  <CesiumViewer bounds={activeBounds} frame={mode === "full" ? frame : null} />
-=======
-                  <CesiumViewer bounds={activeBounds} frames={meta.frames} frameIndex={frameIndex} />
->>>>>>> d2a0aa355adbec8daa37c1f3c11a3e60359e3bd1
+                  <CesiumViewer
+                    bounds={activeBounds}
+                    frames={meta.frames}
+                    frameIndex={frameIndex}
+                  />
                 )}
                 {(mode === "full" || mode === "instant") && <Legend />}
-                {mode === "full" && <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />}
+                {(mode === "full" || mode === "realtime") && (
+                  <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />
+                )}
               </div>
             )}
 
             <div className={showMap ? "side-panel" : "dashboard-panel"}>
-              {mode === "full" && <InfoPanel meta={meta} frame={frame} onRerun={handleRerun} running={running} />}
+              {mode === "full" && (
+                <InfoPanel
+                  meta={meta}
+                  frame={frame}
+                  onRerun={handleRerun}
+                  running={running}
+                  selectedPointData={selectedPointData}
+                  loadingPoint={loadingPoint}
+                  frameIndex={frameIndex}
+                  onSelectTimestep={setFrameIndex}
+                  onClearPoint={handleClearPoint}
+                />
+              )}
               {mode === "instant" && (
                 <PredictionControls
                   baseDischarge={meta.discharge_cumecs}
@@ -137,7 +199,16 @@ export default function App() {
               )}
               {mode === "sph" && <SphComparison />}
               {mode === "twin" && <LiveTwin />}
-              {mode === "realtime" && <RealtimeSar onData={setRealtimeData} />}
+              {mode === "realtime" && (
+                <RealtimeSar
+                  onData={setRealtimeData}
+                  onComparisonChange={setSarComparison}
+                  sarLayers={sarLayers}
+                  setSarLayers={setSarLayers}
+                  frameIndex={frameIndex}
+                  frames={meta.frames}
+                />
+              )}
             </div>
           </div>
         )}

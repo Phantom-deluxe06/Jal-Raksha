@@ -1249,3 +1249,737 @@ p.warn { color: var(--warn); font-size: 0.8rem; }
 }
 
 .terrain3d-loading .spinner { margin: 0 auto 0.8rem; }
+
+/* ============================================================
+   Task 1: Flood Depth + Temporal Point Inspection Styles
+   ============================================================ */
+
+.map-inspection-prompt {
+  background: var(--surface-2);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.map-inspection-prompt .prompt-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.map-inspection-prompt strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.map-inspection-prompt p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.point-inspector {
+  background: var(--surface-2);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 1.1rem;
+  margin-bottom: 1.4rem;
+  box-shadow: var(--shadow-card);
+  animation: fade-up 0.25s ease-out;
+}
+
+.point-inspector.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  gap: 0.8rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.inspector-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--surface-4);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.inspector-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.inspector-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.inspector-title h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.inspector-coords {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  margin-top: 0.15rem;
+}
+
+.clear-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.clear-btn:hover {
+  background: var(--surface-3);
+  color: var(--text-primary);
+}
+
+.grid-meta-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-3);
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.9rem;
+  font-family: var(--font-mono);
+}
+
+.grid-meta-pill strong {
+  color: var(--text-primary);
+}
+
+.timestep-card {
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  margin-bottom: 0.9rem;
+}
+
+.timestep-card.wet {
+  border-color: rgba(74, 144, 255, 0.35);
+  background: rgba(74, 144, 255, 0.06);
+}
+
+.timestep-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+}
+
+.status-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.status-pill.wet {
+  background: rgba(74, 144, 255, 0.2);
+  color: #70aeff;
+  border: 1px solid rgba(74, 144, 255, 0.4);
+}
+
+.status-pill.dry {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-subtle);
+}
+
+.stat-grid.compact {
+  gap: 0.5rem;
+}
+
+.stat-grid.compact div {
+  padding: 0.45rem 0.6rem;
+}
+
+.temporal-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.summary-item {
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.summary-label {
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-item strong {
+  font-size: 0.92rem;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.arrival-value.arrived {
+  color: var(--warn);
+}
+
+.arrival-value.safe {
+  color: var(--success);
+}
+
+.sparkline-section {
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 0.9rem;
+}
+
+.sparkline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.6rem;
+}
+
+.depth-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 58px;
+  padding-top: 6px;
+}
+
+.depth-bar-wrapper {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  position: relative;
+}
+
+.depth-bar-wrapper:hover {
+  opacity: 0.8;
+}
+
+.depth-bar-wrapper.active .depth-bar {
+  outline: 2px solid #ffffff;
+  outline-offset: 1px;
+}
+
+.depth-bar {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  min-height: 4px;
+  transition: height 0.2s ease, background-color 0.2s ease;
+}
+
+.depth-bar-label {
+  font-size: 0.58rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  margin-top: 3px;
+  transform: scale(0.9);
+}
+
+.timeseries-details {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+}
+
+.timeseries-details summary {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.timeseries-details summary:hover {
+  color: var(--text-primary);
+}
+
+.timeseries-table-container {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 0 0.5rem 0.5rem;
+}
+
+.timeseries-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.74rem;
+}
+
+.timeseries-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface-1);
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.timeseries-table td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.timeseries-table tbody tr {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.timeseries-table tbody tr:hover {
+  background: var(--surface-3);
+}
+
+.timeseries-table tbody tr.active-row {
+  background: rgba(74, 144, 255, 0.15);
+  font-weight: 600;
+}
+
+.mini-status {
+  display: inline-block;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.mini-status.wet {
+  background: rgba(74, 144, 255, 0.2);
+  color: #70aeff;
+}
+
+.mini-status.dry {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-tertiary);
+}
+
+/* ============================================================
+   Leaflet Popup Customization for Point Inspection
+   ============================================================ */
+.flood-query-popup .leaflet-popup-content-wrapper {
+  background: rgba(16, 20, 28, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-float);
+  padding: 0;
+}
+
+.flood-query-popup .leaflet-popup-content {
+  margin: 0.75rem 0.9rem;
+  line-height: 1.4;
+}
+
+.flood-query-popup .leaflet-popup-tip {
+  background: rgba(16, 20, 28, 0.95);
+}
+
+.popup-query-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.popup-query-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 0.85rem;
+  font-family: var(--font-display);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.35rem;
+}
+
+.popup-sim-time {
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.popup-coords {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+}
+
+.popup-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+}
+
+.popup-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-metric-row.subtle {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  margin-top: 0.2rem;
+  border-top: 1px dashed var(--border-subtle);
+  padding-top: 0.25rem;
+}
+
+.popup-loading {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  padding: 0.4rem 0;
+}
+
+.popup-oob {
+  font-size: 0.75rem;
+  color: var(--warn);
+}
+
+/* ============================================================
+   Task 5: Real-Time SAR Observation & Spatial Validation Styles
+   ============================================================ */
+
+.sar-layer-toolbar {
+  background: var(--surface-2);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  margin-bottom: 1.2rem;
+}
+
+.layer-toolbar-title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.6rem;
+}
+
+.layer-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.layer-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.65rem;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.layer-btn:hover {
+  background: var(--surface-4);
+  color: var(--text-primary);
+}
+
+.layer-btn.active {
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+.layer-btn.active.sim {
+  border-color: rgba(74, 144, 255, 0.4);
+  background: rgba(74, 144, 255, 0.1);
+}
+
+.layer-btn.active.sar {
+  border-color: rgba(255, 159, 28, 0.4);
+  background: rgba(255, 159, 28, 0.1);
+}
+
+.layer-btn.active.diff {
+  border-color: rgba(61, 220, 151, 0.4);
+  background: rgba(61, 220, 151, 0.1);
+}
+
+.layer-btn.active.sat {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.layer-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.layer-dot.sim { background: #4a90ff; }
+.layer-dot.sar { background: #ff9f1c; }
+.layer-dot.diff { background: #3ddc97; }
+.layer-dot.sat { background: #ffffff; }
+
+.comparison-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+  box-shadow: var(--shadow-card);
+}
+
+.comparison-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.comparison-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-family: var(--font-display);
+  color: var(--text-primary);
+}
+
+.comparison-tag {
+  background: var(--surface-4);
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.comparison-metrics {
+  margin-bottom: 0.85rem;
+}
+
+.metric-box {
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.metric-box span {
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+}
+
+.metric-box strong {
+  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.metric-box.agreement strong { color: var(--success); }
+.metric-box.sim-only strong { color: var(--accent); }
+.metric-box.obs-only strong { color: var(--accent-sar); }
+
+.diff-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: var(--surface-3);
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.diff-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.diff-chip {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.temporal-notice-box {
+  background: rgba(255, 159, 28, 0.08);
+  border: 1px solid rgba(255, 159, 28, 0.3);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.temporal-notice-box .notice-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.temporal-notice-box strong {
+  display: block;
+  font-size: 0.84rem;
+  color: #ffb854;
+  margin-bottom: 0.25rem;
+}
+
+.temporal-notice-box p {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.auth-advisory-card {
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+
+.auth-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.auth-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.auth-msg {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.8rem;
+}
+
+.auth-steps {
+  background: var(--surface-3);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.78rem;
+}
+
+.auth-steps strong {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--text-primary);
+}
+
+.auth-steps ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.auth-steps li {
+  margin-bottom: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.73rem;
+}
+
+.auth-note {
+  font-size: 0.74rem;
+  margin-bottom: 1rem;
+}
+
+.provenance-details {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  margin-top: 1rem;
+}
+
+.provenance-details summary {
+  padding: 0.65rem 0.85rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.provenance-details summary:hover {
+  color: var(--text-primary);
+}
+
+.provenance-details ul {
+  padding: 0.5rem 1rem 0.8rem 1.8rem;
+  margin: 0;
+  font-size: 0.76rem;
+}
+
+.provenance-details li {
+  margin-bottom: 0.4rem;
+}
+
+

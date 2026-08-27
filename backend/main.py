@@ -65,8 +65,8 @@ def _warm_surrogate():
         from ml import config as ml_cfg
         predict(ml_cfg.BASE_DISCHARGE_CUMECS, *ml_cfg.BASE_BREACH_LATLON)
         print("[startup] ML surrogate warmed and ready")
-    except FileNotFoundError:
-        print("[startup] ML surrogate not trained yet -- /predict/instant will fail until backend/ml/train.py is run")
+    except (FileNotFoundError, ModuleNotFoundError, ImportError) as e:
+        print(f"[startup] ML surrogate not available ({e}) -- /predict/instant will fail until dependencies are installed")
 
 
 # The real CWC source (see digital_twin/cwc_client.py) itself only updates
@@ -108,6 +108,11 @@ def _run_job():
         )
         with _job_lock:
             _job_state["status"] = "complete"
+        try:
+            from swe.swe_query import SimulationQueryEngine
+            SimulationQueryEngine.invalidate_cache(JOB_ID)
+        except Exception:
+            pass
     except subprocess.CalledProcessError as e:
         with _job_lock:
             _job_state["status"] = "failed"
@@ -158,6 +163,20 @@ def simulate_frame(job_id: str, filename: str):
             # always includes the right header -- confirmed via direct curl).
             return FileResponse(candidate, headers={"Cache-Control": "no-store"})
     raise HTTPException(404, f"frame file not found: {filename}")
+
+
+@app.get("/simulate/query-point/{job_id}")
+def query_point(job_id: str, lat: float, lon: float, threshold: float = 0.1):
+    if job_id != JOB_ID:
+        raise HTTPException(404, "unknown job_id")
+    try:
+        from swe.swe_query import SimulationQueryEngine
+        engine = SimulationQueryEngine.get_engine(job_id)
+        return JSONResponse(engine.query_point(lat, lon, threshold_m=threshold))
+    except FileNotFoundError:
+        raise HTTPException(404, "simulation results not found -- run the simulation first")
+    except Exception as e:
+        raise HTTPException(500, f"point query error: {str(e)}")
 
 
 @app.get("/export/{job_id}")
@@ -300,23 +319,90 @@ def twin_sync():
     return JSONResponse(result)
 
 
+class CompareRequest(BaseModel):
+    timestep_minutes: int | None = None
+    sar_extent: dict | None = None
+
+
 @app.get("/realtime/water-extent")
 def realtime_water_extent():
-    """Live Sentinel-1 SAR water-extent query via Google Earth Engine --
-    queries GEE fresh on every call (no caching, no hardcoded scene date).
-    Typically takes several seconds (real GEE query + vectorization
-    latency, not an artificial delay) -- see query_duration_s in the
-    response and report it in the frontend rather than hiding it."""
-    from realtime.gee_water_extent import fetch_latest_water_extent, GeeError
+    """Live Sentinel-1 SAR water-extent query via Google Earth Engine.
+    Queries GEE fresh on every call and returns detected water polygons and metadata."""
+    from realtime.gee_water_extent import fetch_latest_water_extent, GeeAuthError, GeeError
     try:
         result = fetch_latest_water_extent()
+        return JSONResponse(result)
+    except GeeAuthError as e:
+        return JSONResponse(
+            status_code=401,
+            content={
+                "error_type": "AUTH_REQUIRED",
+                "message": str(e),
+                "instructions": e.instructions,
+            },
+        )
     except GeeError as e:
         raise HTTPException(502, str(e))
+
+
+@app.post("/realtime/compare")
+def compare_realtime_sar(req: CompareRequest):
+    """Compare SWE flood simulation extent against Sentinel-1 SAR observed water extent.
+    Computes intersection, difference polygons, IoU, Precision, and Recall."""
+    from realtime.sar_validation import compare_model_and_observation
+    from realtime.gee_water_extent import fetch_latest_water_extent, GeeError
+
+    # 1. Determine simulation extent GeoJSON
+    meta_path = JOB_OUT_DIR / "metadata.json"
+    if not meta_path.exists():
+        raise HTTPException(404, "Simulation results not found -- run the simulation first")
+    meta = json.loads(meta_path.read_text())
+
+    sim_geojson = None
+    timestep_label = "Maximum Modeled Extent"
+
+    if req.timestep_minutes is not None:
+        target_frame = next((f for f in meta.get("frames", []) if f["t_minutes"] == req.timestep_minutes), None)
+        if target_frame:
+            geojson_path = JOB_OUT_DIR / target_frame["geojson"]
+            if geojson_path.exists():
+                sim_geojson = json.loads(geojson_path.read_text())
+                timestep_label = f"T+{req.timestep_minutes} min Extent"
+
+    if sim_geojson is None:
+        max_export = JOB_OUT_DIR / "export" / "flood_extent_max.geojson"
+        if max_export.exists():
+            sim_geojson = json.loads(max_export.read_text())
+        else:
+            raise HTTPException(404, "Flood extent GeoJSON not found")
+
+    # 2. Determine SAR observed water extent
+    sar_geojson = req.sar_extent
+    sar_meta = None
+    if not sar_geojson:
+        try:
+            sar_data = fetch_latest_water_extent()
+            sar_geojson = sar_data
+            sar_meta = sar_data.get("source")
+        except Exception as e:
+            raise HTTPException(502, f"Could not fetch SAR observation for comparison: {e}")
+    else:
+        sar_meta = sar_geojson.get("source")
+
+    # 3. Perform spatial comparison
+    result = compare_model_and_observation(
+        sim_geojson=sim_geojson,
+        obs_geojson=sar_geojson,
+        scenario_label=meta.get("scenario_label", "ACTUAL 2008 KUSAHA BREACH"),
+        timestep_label=timestep_label,
+        sar_metadata=sar_meta,
+    )
     return JSONResponse(result)
 
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
 
 
