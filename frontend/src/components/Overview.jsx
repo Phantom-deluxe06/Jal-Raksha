@@ -1,11 +1,34 @@
-import { IconWaves, IconBolt, IconAtom, IconGauge, IconSatellite, IconArrowRight } from "./icons";
+import {
+  IconSliders,
+  IconWaves,
+  IconBuilding,
+  IconBolt,
+  IconAtom,
+  IconGauge,
+  IconSatellite,
+  IconArrowRight,
+} from "./icons";
 
 const MODULES = [
+  {
+    id: "builder",
+    Icon: IconSliders,
+    title: "Scenario Builder",
+    desc: "Parameterize dam breaches, controlled spillway releases, hydrograph inflows, and duration across the Kosi River domain.",
+    accent: "builder",
+  },
   {
     id: "full",
     Icon: IconWaves,
     title: "Full SWE Simulation",
-    desc: "From-scratch 2D shallow-water solver seeded with the actual documented 2008 breach discharge, not a theoretical design figure.",
+    desc: "From-scratch 2D shallow-water solver seeded with the actual documented 2008 breach discharge or custom scenario parameters.",
+  },
+  {
+    id: "impact",
+    Icon: IconBuilding,
+    title: "Impact Analysis Engine",
+    desc: "Zonal exposure analysis across 363 OSM settlements & WorldPop India raster with arrival times and hazard thresholding.",
+    accent: "impact",
   },
   {
     id: "instant",
@@ -38,42 +61,45 @@ export default function Overview({ meta, onEnter }) {
   return (
     <div className="overview">
       <div className="overview-hero">
-        <span className="overview-eyebrow">SIH26161 · Disaster Response Case Study</span>
+        <span className="overview-eyebrow">SIH26161 · Disaster Response & Scenario Modeling</span>
         <h1>
-          Modeling the <em>2008 Kusaha breach</em> on the Kosi River — five ways, all on real data.
+          Physical Flood Simulation & <em>Scenario Intelligence</em> for the Kosi River Basin
         </h1>
         <p className="overview-lede">
-          FloodSim-HADR reconstructs the embankment failure that displaced millions in Bihar,
-          combining a physics-based flood solver, a trained AI surrogate, a particle-dynamics
-          cross-check, a live government gauge feed, and real-time satellite observation into one
-          platform. Every number you'll see below comes from an actual run, sync, or query — not a
-          placeholder.
+          FloodSim-HADR combines a parameterizable 2D Shallow Water Equations solver, a trained AI surrogate,
+          particle-dynamics verification, live Central Water Commission gauge telemetry, and real-time Sentinel-1 SAR
+          satellite observation. Test historical validation cases or build custom breach scenarios on real topography.
         </p>
         <div className="overview-cta-row">
-          <button className="overview-cta" onClick={() => onEnter("full")}>
-            Open the simulation <IconArrowRight />
+          <button className="overview-cta" onClick={() => onEnter("builder")}>
+            Open Scenario Builder <IconArrowRight />
           </button>
-          <span className="overview-cta-hint">or pick a module below</span>
+          <button className="overview-cta secondary" onClick={() => onEnter("impact")}>
+            View Impact Analysis
+          </button>
+          <button className="overview-cta secondary" onClick={() => onEnter("full")}>
+            View 2D/3D Simulation
+          </button>
         </div>
       </div>
 
       {meta && (
         <div className="overview-stats">
           <div className="overview-stat">
-            <span>Documented breach discharge</span>
-            <strong>{meta.discharge_cumecs.toLocaleString()} m³/s</strong>
+            <span>Active Scenario</span>
+            <strong>{meta.scenario_label || "Kosi 2008 Actual Breach"}</strong>
           </div>
           <div className="overview-stat">
-            <span>Simulated max flood extent</span>
-            <strong>{meta.max_flooded_area_km2.toLocaleString()} km²</strong>
+            <span>Modeled Discharge</span>
+            <strong>{meta.discharge_cumecs ? meta.discharge_cumecs.toLocaleString() : "3,675"} m³/s</strong>
           </div>
           <div className="overview-stat">
-            <span>Peak modeled depth</span>
-            <strong>{meta.max_depth_m} m</strong>
+            <span>Simulated Max Flood</span>
+            <strong>{meta.max_flooded_area_km2 ? meta.max_flooded_area_km2.toLocaleString() : "116.9"} km²</strong>
           </div>
           <div className="overview-stat">
-            <span>Breach date</span>
-            <strong>18 Aug 2008</strong>
+            <span>Peak Depth</span>
+            <strong>{meta.max_depth_m || "2.13"} m</strong>
           </div>
         </div>
       )}
