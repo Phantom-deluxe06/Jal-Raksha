@@ -56,6 +56,8 @@ class SolverParams:
 class SimulationResult:
     times_s: list = field(default_factory=list)
     depth_frames: list = field(default_factory=list)  # list of (rows, cols) float32 arrays
+    u_frames: list = field(default_factory=list)      # list of u velocity float32 arrays
+    v_frames: list = field(default_factory=list)      # list of v velocity float32 arrays
     max_depth: np.ndarray = None
     n_steps: int = 0
     unstable: bool = False
@@ -97,6 +99,8 @@ def run_swe(
     result = SimulationResult()
     result.times_s.append(0.0)
     result.depth_frames.append(h.copy().astype(np.float32))
+    result.u_frames.append(np.zeros_like(h, dtype=np.float32))
+    result.v_frames.append(np.zeros_like(h, dtype=np.float32))
 
     t = 0.0
     next_snapshot = snapshot_interval_s
@@ -184,6 +188,13 @@ def run_swe(
         if t >= next_snapshot or t >= duration_s:
             result.times_s.append(t)
             result.depth_frames.append(h.copy().astype(np.float32))
+            
+            h_safe_export = np.maximum(h, params.h_dry)
+            u_export = np.where(h > params.h_dry, hu / h_safe_export, 0.0).astype(np.float32)
+            v_export = np.where(h > params.h_dry, hv / h_safe_export, 0.0).astype(np.float32)
+            result.u_frames.append(u_export)
+            result.v_frames.append(v_export)
+            
             next_snapshot += snapshot_interval_s
 
     result.n_steps = step

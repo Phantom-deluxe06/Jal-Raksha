@@ -106,6 +106,8 @@ def main():
 
     frames_meta = []
     for i, (t_s, depth) in enumerate(zip(result.times_s, result.depth_frames)):
+        u = result.u_frames[i]
+        v = result.v_frames[i]
         t_min = round(t_s / 60)
         tag = f"t{t_min:04d}"
 
@@ -117,6 +119,14 @@ def main():
         )
         with rasterio.open(tif_path, "w", **meta) as dst:
             dst.write(depth, 1)
+
+        u_tif_path = OUT_DIR / "frames" / f"u_{tag}.tif"
+        with rasterio.open(u_tif_path, "w", **meta) as dst:
+            dst.write(u, 1)
+
+        v_tif_path = OUT_DIR / "frames" / f"v_{tag}.tif"
+        with rasterio.open(v_tif_path, "w", **meta) as dst:
+            dst.write(v, 1)
 
         rgba = colorize_depth(depth, dry_threshold=FLOOD_DEPTH_THRESHOLD_M)
         png_path = OUT_DIR / "overlays" / f"depth_{tag}.png"
@@ -133,6 +143,8 @@ def main():
             t_minutes=t_min,
             t_seconds=t_s,
             depth_tif=f"frames/depth_{tag}.tif",
+            u_tif=f"frames/u_{tag}.tif",
+            v_tif=f"frames/v_{tag}.tif",
             overlay_png=f"overlays/depth_{tag}.png",
             geojson=f"geojson/flood_extent_{tag}.geojson",
             flooded_area_km2=round(flooded_km2, 3),

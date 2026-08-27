@@ -138,6 +138,13 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
   const [meshesLoaded, setMeshesLoaded] = useState(false);
   const primitivesRef = useRef([]);
 
+  // Phase 6: Velocity Flow Visualization
+  const [showVelocity, setShowVelocity] = useState(true);
+  const framesDataRef = useRef([]);
+  const demDataRef = useRef(null);
+  const particleCollectionRef = useRef(null);
+  const particlesRef = useRef([]);
+
   useEffect(() => {
     const viewer = viewerRef.current;
     if (!viewer || !bounds || !frames || frames.length === 0) return;
@@ -165,12 +172,21 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
         let totalMemoryBytes = 0;
 
         const meshPromises = frames.map(async (frame, i) => {
-          const tifName = frame.depth_tif.split('/').pop();
-          const tifRes = await fetch(`http://127.0.0.1:8000/simulate/frame/kosi_actual2008/${tifName}`);
-          const tifBuffer = await tifRes.arrayBuffer();
-          const tiff = await GeoTIFF.fromArrayBuffer(tifBuffer);
-          const image = await tiff.getImage();
-          const depthData = (await image.readRasters())[0];
+          const fetchTif = async (tifPath) => {
+            if (!tifPath) return null;
+            const tifName = tifPath.split('/').pop();
+            const res = await fetch(`http://127.0.0.1:8000/simulate/frame/kosi_actual2008/${tifName}`);
+            const buffer = await res.arrayBuffer();
+            const tiff = await GeoTIFF.fromArrayBuffer(buffer);
+            const image = await tiff.getImage();
+            return (await image.readRasters())[0];
+          };
+
+          const [depthData, uData, vData] = await Promise.all([
+            fetchTif(frame.depth_tif),
+            fetchTif(frame.u_tif),
+            fetchTif(frame.v_tif)
+          ]);
 
           let numFlooded = 0;
           for (let j = 0; j < depthData.length; j++) {
@@ -255,7 +271,7 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
             asynchronous: false
           });
 
-          return { primitive, memoryBytes: (numFlooded * 12 * 8) + (numFlooded * 6 * 4) };
+          return { primitive, memoryBytes: (numFlooded * 12 * 8) + (numFlooded * 6 * 4), depthData, uData, vData };
         });
 
         const generatedData = await Promise.all(meshPromises);
@@ -279,6 +295,8 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
 
         if (!isMounted) return;
         primitivesRef.current = primitives;
+        framesDataRef.current = generatedData;
+        demDataRef.current = demData;
         setMeshesLoaded(true);
       } catch(err) {
         console.error("Failed to load 3D flood surfaces:", err);
@@ -310,6 +328,152 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
     });
   }, [frameIndex, showFlood, meshesLoaded]);
 
+  useEffect(() => {
+    if (particleCollectionRef.current) {
+      particleCollectionRef.current.show = showVelocity;
+    }
+  }, [showVelocity]);
+
+  // Phase 6: Velocity Flow Visualization
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    if (!viewer || !meshesLoaded || !framesDataRef.current[frameIndex]) return;
+
+    if (!particleCollectionRef.current) {
+      particleCollectionRef.current = new Cesium.PointPrimitiveCollection();
+      viewer.scene.primitives.add(particleCollectionRef.current);
+    }
+    
+    const points = particleCollectionRef.current;
+    points.removeAll();
+    points.show = showVelocity;
+
+    const frameData = framesDataRef.current[frameIndex];
+    if (!frameData) return;
+
+    const { depthData, uData, vData } = frameData;
+    const demData = demDataRef.current;
+    if (!demData) return;
+
+    const { rows, cols } = demData;
+    const dLat = (bounds.north - bounds.south) / rows;
+    const dLon = (bounds.east - bounds.west) / cols;
+
+    const newParticles = [];
+
+    const getColor = (mag) => {
+      if (mag < 0.5) return Cesium.Color.CYAN;
+      if (mag < 1.0) return Cesium.Color.YELLOW;
+      if (mag < 1.5) return Cesium.Color.ORANGE;
+      return Cesium.Color.RED;
+    };
+
+    // Seed particles
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const idx = r * cols + c;
+        const depth = depthData[idx];
+        if (depth > 0.1) {
+          const u = uData[idx];
+          const v = vData[idx];
+          const mag = Math.sqrt(u * u + v * v);
+          if (mag < 0.01) continue; // Skip practically stationary cells
+          
+          const lat = bounds.north - (r + 0.5) * dLat;
+          const lon = bounds.west + (c + 0.5) * dLon;
+          const elev = demData.elevations[idx] + depth + 1.5; // Render slightly above water
+
+          const lifespan = 2.0; // seconds
+          const age = Math.random() * lifespan;
+
+          const point = points.add({
+            position: Cesium.Cartesian3.fromDegrees(lon, lat, elev),
+            color: getColor(mag),
+            pixelSize: 5,
+          });
+
+          newParticles.push({
+            startLon: lon,
+            startLat: lat,
+            elev: elev,
+            currentLon: lon,
+            currentLat: lat,
+            age: age,
+            lifespan: lifespan,
+            primitive: point
+          });
+        }
+      }
+    }
+    particlesRef.current = newParticles;
+
+    let lastTime = performance.now();
+
+    const onPreUpdate = () => {
+      if (!points.show) {
+        lastTime = performance.now();
+        return;
+      }
+      
+      const now = performance.now();
+      const dt = (now - lastTime) / 1000.0;
+      lastTime = now;
+      
+      // Limit dt and scale for visualization speed
+      const safeDt = Math.min(dt, 0.1) * 3.0; 
+
+      const fData = framesDataRef.current[frameIndex];
+      if (!fData) return;
+      const { uData: activeU, vData: activeV, depthData: activeDepth } = fData;
+      const particles = particlesRef.current;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.age += safeDt;
+
+        if (p.age >= p.lifespan) {
+          p.currentLon = p.startLon;
+          p.currentLat = p.startLat;
+          p.age = 0;
+        } else {
+          const cIdx = Math.floor((p.currentLon - bounds.west) / dLon);
+          const rIdx = Math.floor((bounds.north - p.currentLat) / dLat);
+          
+          if (rIdx >= 0 && rIdx < rows && cIdx >= 0 && cIdx < cols) {
+            const arrIdx = rIdx * cols + cIdx;
+            const depth = activeDepth[arrIdx];
+            if (depth > 0.1) {
+              const u = activeU[arrIdx];
+              const v = activeV[arrIdx];
+              
+              const latRad = p.currentLat * Math.PI / 180.0;
+              const dLonSec = u / (111320.0 * Math.cos(latRad));
+              const dLatSec = v / 111320.0;
+
+              p.currentLon += dLonSec * safeDt;
+              p.currentLat += dLatSec * safeDt;
+            } else {
+              p.currentLon = p.startLon;
+              p.currentLat = p.startLat;
+              p.age = 0;
+            }
+          } else {
+            p.currentLon = p.startLon;
+            p.currentLat = p.startLat;
+            p.age = 0;
+          }
+        }
+        p.primitive.position = Cesium.Cartesian3.fromDegrees(p.currentLon, p.currentLat, p.elev);
+      }
+    };
+
+    viewer.scene.preUpdate.addEventListener(onPreUpdate);
+
+    return () => {
+      viewer.scene.preUpdate.removeEventListener(onPreUpdate);
+    };
+  }, [frameIndex, meshesLoaded, bounds]); // EXCLUDE showVelocity so it doesn't trigger a full re-seed
+
   return (
     <div className="cesium-viewer-container" style={{ position: "relative", width: "100%", height: "100%" }}>
       <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
@@ -336,6 +500,15 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
             style={{ margin: 0, width: "16px", height: "16px", cursor: "pointer" }}
           />
           3D Water Surface
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontSize: "14px", fontFamily: "sans-serif", margin: 0 }}>
+          <input 
+            type="checkbox" 
+            checked={showVelocity} 
+            onChange={(e) => setShowVelocity(e.target.checked)}
+            style={{ margin: 0, width: "16px", height: "16px", cursor: "pointer" }}
+          />
+          Velocity Flow Particles
         </label>
       </div>
     </div>
