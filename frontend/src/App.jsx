@@ -10,39 +10,61 @@ import LiveTwin from "./components/LiveTwin";
 import RealtimeSar from "./components/RealtimeSar";
 import SideNav from "./components/SideNav";
 import Overview from "./components/Overview";
-import { fetchResult, frameUrl, triggerRun } from "./api";
+import ScenarioBuilder from "./components/ScenarioBuilder";
+import ImpactDashboard from "./components/ImpactDashboard";
+import { fetchResult, frameUrl, triggerRun, fetchImpactAnalysis, DEFAULT_JOB_ID } from "./api";
 import "./App.css";
 
 const MAP_MODES = new Set(["full", "instant", "realtime"]);
 
 export default function App() {
+  const [activeJobId, setActiveJobId] = useState(DEFAULT_JOB_ID);
   const [meta, setMeta] = useState(null);
+  const [impactData, setImpactData] = useState(null);
+  const [selectedSettlement, setSelectedSettlement] = useState(null);
   const [frameIndex, setFrameIndex] = useState(0);
   const [error, setError] = useState(null);
   const [running, setRunning] = useState(false);
-  const [mode, setMode] = useState("overview"); // "overview" | "full" | "instant" | "sph" | "twin" | "realtime"
+  const [mode, setMode] = useState("overview"); // "overview" | "builder" | "full" | "impact" | "instant" | "sph" | "twin" | "realtime"
   const [viewMode, setViewMode] = useState("2d"); // "2d" | "3d"
   const [prediction, setPrediction] = useState(null);
   const [predictedLocation, setPredictedLocation] = useState(null);
   const [realtimeData, setRealtimeData] = useState(null);
+  const [sarDifferenceData, setSarDifferenceData] = useState(null);
 
-  const load = () => {
-    fetchResult().then(setMeta).catch((e) => setError(e.message));
+  const load = (jobId = activeJobId) => {
+    fetchResult(jobId)
+      .then((data) => {
+        setMeta(data);
+        setFrameIndex(0);
+        setError(null);
+        // Load impact data
+        fetchImpactAnalysis(jobId)
+          .then(setImpactData)
+          .catch((err) => console.warn("Impact analysis note:", err.message));
+      })
+      .catch((e) => setError(e.message));
   };
 
-  useEffect(load, []);
+  useEffect(() => {
+    load(activeJobId);
+  }, [activeJobId]);
 
   const handleRerun = async () => {
     setRunning(true);
     setError(null);
     try {
       await triggerRun();
-      load();
+      load(activeJobId);
     } catch (e) {
       setError(e.message);
     } finally {
       setRunning(false);
     }
+  };
+
+  const handleScenarioSelect = (newJobId) => {
+    setActiveJobId(newJobId);
   };
 
   if (error) {
@@ -51,6 +73,9 @@ export default function App() {
         <h2>Could not reach the simulation backend</h2>
         <p>{error}</p>
         <p>Is the FastAPI server running? <code>uvicorn backend.main:app --port 8000</code></p>
+        <button className="chip-btn" onClick={() => load(activeJobId)} style={{ marginTop: "12px" }}>
+          Retry Connection
+        </button>
       </div>
     );
   }
@@ -59,21 +84,31 @@ export default function App() {
     return (
       <div className="loading-screen">
         <div className="spinner" />
-        <p>Loading simulation results…</p>
+        <p>Loading simulation scenario ({activeJobId})…</p>
       </div>
     );
   }
 
-  const frame = meta.frames[frameIndex];
+  const frame = meta.frames && meta.frames.length > frameIndex ? meta.frames[frameIndex] : meta.frames[0];
   const overlayUrl =
-    mode === "full"
-      ? frameUrl(frame.overlay_png)
+    (mode === "full" || mode === "realtime") && frame
+      ? frameUrl(frame.overlay_png, activeJobId)
       : mode === "instant" && prediction
         ? `data:image/png;base64,${prediction.overlay_png_base64}`
         : null;
 
   const activeBounds = mode === "instant" && prediction ? prediction.bounds : meta.bounds;
   const showMap = MAP_MODES.has(mode);
+
+  // Settlement list formatted for current frame
+  const settlementsForMap = (impactData?.settlements || []).map((s) => {
+    const depthObj = s.depth_time_series && s.depth_time_series[frameIndex];
+    return {
+      ...s,
+      current_depth_m: depthObj ? depthObj.depth_m : 0.0,
+      is_exposed_current: depthObj ? depthObj.depth_m >= 0.1 : false,
+    };
+  });
 
   return (
     <div className="app-shell">
@@ -82,6 +117,22 @@ export default function App() {
       <div className="app-main">
         {mode === "overview" ? (
           <Overview key="overview" meta={meta} onEnter={setMode} />
+        ) : mode === "builder" ? (
+          <ScenarioBuilder
+            key="builder"
+            activeJobId={activeJobId}
+            onScenarioSelect={handleScenarioSelect}
+            onEnterView={setMode}
+          />
+        ) : mode === "impact" ? (
+          <ImpactDashboard
+            key="impact"
+            jobId={activeJobId}
+            meta={meta}
+            frameIndex={frameIndex}
+            onSelectSettlement={(s) => setSelectedSettlement(s)}
+            onEnterView={setMode}
+          />
         ) : (
           <div key={mode} className={`workspace ${showMap ? "workspace-map" : "workspace-dashboard"}`}>
             {showMap && (
@@ -105,30 +156,48 @@ export default function App() {
                   <FloodMap
                     bounds={activeBounds}
                     overlayUrl={overlayUrl}
-                    overlayKey={mode === "full" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
+                    overlayKey={mode === "full" || mode === "realtime" ? (frame?.overlay_png + activeJobId) : (prediction?.inference_s + String(predictedLocation))}
                     breachLatLon={meta.breach_latlon}
                     predictedLocation={mode === "instant" ? predictedLocation : null}
                     realtimeExtent={mode === "realtime" ? realtimeData : null}
+                    sarDifferenceExtent={mode === "realtime" ? sarDifferenceData : null}
+                    settlements={settlementsForMap}
+                    selectedSettlement={selectedSettlement}
+                    onSelectSettlement={setSelectedSettlement}
+                    showSettlements={mode === "full"}
+                    allowLayerToggles={true}
                   />
                 ) : (
-<<<<<<< HEAD
-                  <CesiumViewer bounds={activeBounds} frame={mode === "full" ? frame : null} />
-=======
-                  <CesiumViewer bounds={activeBounds} frames={meta.frames} frameIndex={frameIndex} />
->>>>>>> d2a0aa355adbec8daa37c1f3c11a3e60359e3bd1
+                  <CesiumViewer
+                    bounds={activeBounds}
+                    frames={meta.frames}
+                    frameIndex={frameIndex}
+                    jobId={activeJobId}
+                  />
                 )}
                 {(mode === "full" || mode === "instant") && <Legend />}
-                {mode === "full" && <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />}
+                {mode === "full" && meta.frames && (
+                  <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />
+                )}
               </div>
             )}
 
             <div className={showMap ? "side-panel" : "dashboard-panel"}>
-              {mode === "full" && <InfoPanel meta={meta} frame={frame} onRerun={handleRerun} running={running} />}
+              {mode === "full" && (
+                <InfoPanel
+                  meta={meta}
+                  frame={frame}
+                  jobId={activeJobId}
+                  onRerun={handleRerun}
+                  running={running}
+                  onOpenBuilder={() => setMode("builder")}
+                />
+              )}
               {mode === "instant" && (
                 <PredictionControls
-                  baseDischarge={meta.discharge_cumecs}
-                  baseLat={meta.breach_latlon.lat}
-                  baseLon={meta.breach_latlon.lon}
+                  baseDischarge={meta.discharge_cumecs || 3675}
+                  baseLat={meta.breach_latlon?.lat || 26.62}
+                  baseLon={meta.breach_latlon?.lon || 87.05}
                   onResult={(result, loc) => {
                     setPrediction(result);
                     setPredictedLocation(loc);
@@ -137,7 +206,15 @@ export default function App() {
               )}
               {mode === "sph" && <SphComparison />}
               {mode === "twin" && <LiveTwin />}
-              {mode === "realtime" && <RealtimeSar onData={setRealtimeData} />}
+              {mode === "realtime" && (
+                <RealtimeSar
+                  jobId={activeJobId}
+                  meta={meta}
+                  frameIndex={frameIndex}
+                  onData={setRealtimeData}
+                  onDifferenceData={setSarDifferenceData}
+                />
+              )}
             </div>
           </div>
         )}
@@ -145,3 +222,4 @@ export default function App() {
     </div>
   );
 }
+

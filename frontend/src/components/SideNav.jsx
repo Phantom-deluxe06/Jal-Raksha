@@ -1,8 +1,19 @@
-import { IconHome, IconWaves, IconBolt, IconAtom, IconGauge, IconSatellite } from "./icons";
+import {
+  IconHome,
+  IconSliders,
+  IconWaves,
+  IconBuilding,
+  IconBolt,
+  IconAtom,
+  IconGauge,
+  IconSatellite,
+} from "./icons";
 
 const ITEMS = [
   { id: "overview", label: "Overview", Icon: IconHome },
+  { id: "builder", label: "Scenario Builder", Icon: IconSliders, accent: "builder" },
   { id: "full", label: "Full SWE Sim", Icon: IconWaves },
+  { id: "impact", label: "Impact Analysis", Icon: IconBuilding, accent: "impact" },
   { id: "instant", label: "Instant AI", Icon: IconBolt },
   { id: "sph", label: "SPH Compare", Icon: IconAtom },
   { id: "twin", label: "Live Twin", Icon: IconGauge },
@@ -16,7 +27,7 @@ export default function SideNav({ mode, setMode }) {
         <span className="brand-mark">FS</span>
         <span className="brand-text">
           <strong>FloodSim</strong>
-          <em>HADR · Kosi 2008</em>
+          <em>HADR · Scenario System</em>
         </span>
       </button>
 
@@ -35,7 +46,7 @@ export default function SideNav({ mode, setMode }) {
 
       <div className="side-nav-footer">
         <span className="live-dot" />
-        Real data, no mocks
+        Real spatial data & physics
       </div>
     </nav>
   );
