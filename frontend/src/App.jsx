@@ -111,7 +111,7 @@ export default function App() {
                     realtimeExtent={mode === "realtime" ? realtimeData : null}
                   />
                 ) : (
-                  <CesiumViewer bounds={activeBounds} />
+                  <CesiumViewer bounds={activeBounds} frame={mode === "full" ? frame : null} />
                 )}
 
                 {(mode === "full" || mode === "instant") && <Legend />}

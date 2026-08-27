@@ -1016,6 +1016,101 @@ p.warn { color: var(--warn); font-size: 0.8rem; }
   height: 100%;
 }
 
+.cesium-flood-stats {
+  position: absolute;
+  top: 56px;
+  right: 14px;
+  z-index: 100;
+  width: 240px;
+  background: rgba(16, 20, 28, 0.94);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.9rem;
+  box-shadow: var(--shadow-float);
+}
+
+.cesium-flood-stats-title {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+
+.cesium-flood-stats-time {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.cesium-flood-stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.cesium-flood-stats-grid > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.74rem;
+}
+
+.cesium-flood-stats-grid span {
+  color: var(--text-tertiary);
+}
+
+.cesium-flood-stats-grid strong {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cesium-flood-legend {
+  position: absolute;
+  bottom: 80px;
+  left: 14px;
+  z-index: 100;
+  background: rgba(16, 20, 28, 0.94);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-float);
+}
+
+.cesium-flood-legend-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.cesium-flood-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+}
+
+.cesium-flood-legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.cesium-flood-legend-swatch.affected { background: rgba(74, 144, 255, 0.5); border: 1px solid #4a90ff; }
+.cesium-flood-legend-swatch.significant { background: rgba(74, 144, 255, 0.85); border: 1px solid #2f6fe0; }
+
 .cesium-terrain-error {
   position: absolute;
   top: 14px;
