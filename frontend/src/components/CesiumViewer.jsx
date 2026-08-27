@@ -1,18 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import * as Cesium from "cesium";
 import * as GeoTIFF from "geotiff";
-<<<<<<< HEAD
-=======
 import { frameUrl } from "../api";
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 
 // Vertical exaggeration: 1.3x keeps the Gangetic floodplain readable
 // without making the Himalayan foothills look cartoonish.
 const VERTICAL_EXAGGERATION = 1.3;
 
-<<<<<<< HEAD
-export default function CesiumViewer({ bounds, frames = [], frameIndex = 0 }) {
-=======
 // Flood surface colours — slightly more opaque so extent is clear
 const FLOOD_STROKE = Cesium.Color.fromCssColorString("#4a90ff");
 const FLOOD_FILL = Cesium.Color.fromCssColorString("#1e90ff").withAlpha(0.65);
@@ -27,17 +21,12 @@ const KOSI_SETTLEMENTS = [
 ];
 
 export default function CesiumViewer({ bounds, frames = [], frameIndex = 0, jobId = "kosi_actual2008" }) {
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
   const containerRef = useRef(null);
   const viewerRef = useRef(null);
   const [terrainError, setTerrainError] = useState(null);
 
   const [showSatellite, setShowSatellite] = useState(true);
   const satelliteLayerRef = useRef(null);
-<<<<<<< HEAD
-  
-  const [showFlood, setShowFlood] = useState(true);
-=======
 
   const [showFlood, setShowFlood] = useState(true);
   const [meshesLoaded, setMeshesLoaded] = useState(false);
@@ -52,7 +41,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0, jobI
   const frame = frames && frames.length > frameIndex ? frames[frameIndex] : null;
 
   // Mount: create Viewer once
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
   useEffect(() => {
     if (!containerRef.current || viewerRef.current) return;
 
@@ -97,10 +85,7 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0, jobI
   useEffect(() => {
     const viewer = viewerRef.current;
     if (!viewer || !bounds) return;
-<<<<<<< HEAD
-=======
 
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
     const rectangle = Cesium.Rectangle.fromDegrees(bounds.west, bounds.south, bounds.east, bounds.north);
     viewer.camera.flyTo({ destination: rectangle, duration: 2 });
 
@@ -517,13 +502,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0, jobI
           Cesium World Terrain failed to load: {terrainError}
         </div>
       )}
-<<<<<<< HEAD
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px", position: "absolute", top: 10, right: 10, zIndex: 1000, background: "rgba(30, 30, 30, 0.85)", padding: "10px 14px", borderRadius: "6px", color: "white", border: "1px solid rgba(255,255,255,0.2)", backdropFilter: "blur(4px)" }}>
-        <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontSize: "14px", fontFamily: "sans-serif", margin: 0 }}>
-          <input 
-            type="checkbox" 
-            checked={showSatellite} 
-=======
 
       {/* Layer Toggles */}
       <div
@@ -547,7 +525,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0, jobI
           <input
             type="checkbox"
             checked={showSatellite}
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
             onChange={(e) => setShowSatellite(e.target.checked)}
             style={{ margin: 0, width: "16px", height: "16px", cursor: "pointer" }}
           />
@@ -572,8 +549,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0, jobI
           Velocity Flow Particles
         </label>
       </div>
-<<<<<<< HEAD
-=======
 
       {/* Flood Stats Overlay */}
       {frame && (
@@ -603,7 +578,6 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0, jobI
           </div>
         </div>
       )}
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
     </div>
   );
 }

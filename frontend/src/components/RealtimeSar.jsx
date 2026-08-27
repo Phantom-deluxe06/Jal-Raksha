@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-<<<<<<< HEAD
-import { fetchRealtimeWaterExtent, compareSarWithSimulation } from "../api";
-=======
 import {
   fetchRealtimeWaterExtent,
   fetchSarComparison,
@@ -9,7 +6,6 @@ import {
   DEFAULT_JOB_ID,
 } from "../api";
 import { IconSatellite, IconCheck, IconArrowRight } from "./icons";
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 
 function formatUtcAsLocal(isoUtc) {
   if (!isoUtc) return "—";
@@ -21,28 +17,14 @@ function formatUtcAsLocal(isoUtc) {
 }
 
 export default function RealtimeSar({
-<<<<<<< HEAD
-  onData,
-  onComparisonChange,
-  sarLayers,
-  setSarLayers,
-  frameIndex = 0,
-  frames = [],
-}) {
-  const [data, setData] = useState(null);
-  const [comparison, setComparison] = useState(null);
-  const [error, setError] = useState(null);
-  const [authError, setAuthError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [comparing, setComparing] = useState(false);
-
-  const activeTimestep = frames[frameIndex]?.t_minutes ?? null;
-=======
   jobId = DEFAULT_JOB_ID,
   meta,
   frameIndex = 0,
   onData,
   onDifferenceData,
+  sarLayers,
+  setSarLayers,
+  onComparisonChange,
 }) {
   const [authStatus, setAuthStatus] = useState(null);
   const [data, setData] = useState(null);
@@ -50,7 +32,6 @@ export default function RealtimeSar({
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [comparing, setComparing] = useState(false);
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 
   // Query Parameters
   const [searchMode, setSearchMode] = useState("latest"); // "latest" | "custom_dates"
@@ -70,10 +51,6 @@ export default function RealtimeSar({
   const loadData = () => {
     setLoading(true);
     setError(null);
-<<<<<<< HEAD
-    setAuthError(null);
-    fetchRealtimeWaterExtent()
-=======
     const params = {
       threshold_db: thresholdDb,
     };
@@ -86,49 +63,17 @@ export default function RealtimeSar({
     }
 
     fetchRealtimeWaterExtent(params)
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
       .then((result) => {
         setData(result);
         onData?.(result);
-        runComparison(result, activeTimestep);
       })
       .catch((e) => {
-        if (e.message && e.message.includes("401")) {
-          setAuthError({
-            message: "Google Earth Engine service account credentials required.",
-            instructions: [
-              "1. Place your GCP Service Account JSON key at backend/credentials/service_account.json",
-              "2. Or set GOOGLE_APPLICATION_CREDENTIALS environment variable",
-              "3. Or run 'gcloud auth application-default login' in terminal",
-            ],
-          });
-        } else {
-          setError(e.message || "Failed to query Sentinel-1 SAR via Earth Engine.");
-        }
+        setError(e.message);
         onData?.(null);
       })
       .finally(() => setLoading(false));
   };
 
-<<<<<<< HEAD
-  const runComparison = async (sarData, timestep) => {
-    setComparing(true);
-    try {
-      const compResult = await compareSarWithSimulation({
-        timestep_minutes: timestep,
-        sar_extent: sarData,
-      });
-      setComparison(compResult);
-      onComparisonChange?.(compResult);
-    } catch (e) {
-      console.warn("Spatial comparison calculation note:", e);
-    } finally {
-      setComparing(false);
-    }
-  };
-
-  useEffect(load, []);
-=======
   useEffect(() => {
     loadData();
   }, []);
@@ -152,6 +97,7 @@ export default function RealtimeSar({
     fetchSarComparison(jobId, options)
       .then((res) => {
         setComparison(res);
+        onComparisonChange?.(res);
         if (res.difference_geojson && onDifferenceData) {
           onDifferenceData(res.difference_geojson);
         }
@@ -163,109 +109,8 @@ export default function RealtimeSar({
   };
 
   const isAuthMissing = authStatus && !authStatus.authenticated;
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-
-  useEffect(() => {
-    if (data) {
-      runComparison(data, activeTimestep);
-    }
-  }, [activeTimestep]);
-
-  const toggleLayer = (key) => {
-    setSarLayers?.((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
 
   return (
-<<<<<<< HEAD
-    <div className="sph-panel">
-      <div className="twin-badge-row">
-        <span className="twin-type-badge realtime-badge">SATELLITE OBSERVATION & VALIDATION</span>
-      </div>
-      <h2>Sentinel-1 SAR — Live Observation vs Model</h2>
-      <p className="subtle">
-        Real Sentinel-1 C-band radar observations queried live from Google Earth Engine, spatially compared with the SWE simulation output.
-      </p>
-
-      {/* Layer Toggle Toolbar */}
-      <div className="sar-layer-toolbar">
-        <div className="layer-toolbar-title">Map Layers</div>
-        <div className="layer-buttons-grid">
-          <button
-            className={`layer-btn ${sarLayers?.showSim ? "active sim" : ""}`}
-            onClick={() => toggleLayer("showSim")}
-          >
-            <span className="layer-dot sim" />
-            SWE Simulation
-          </button>
-
-          <button
-            className={`layer-btn ${sarLayers?.showSar ? "active sar" : ""}`}
-            onClick={() => toggleLayer("showSar")}
-          >
-            <span className="layer-dot sar" />
-            SAR Water Extent
-          </button>
-
-          <button
-            className={`layer-btn ${sarLayers?.showDiff ? "active diff" : ""}`}
-            onClick={() => toggleLayer("showDiff")}
-          >
-            <span className="layer-dot diff" />
-            Difference Map
-          </button>
-
-          <button
-            className={`layer-btn ${sarLayers?.baseSatellite ? "active sat" : ""}`}
-            onClick={() => toggleLayer("baseSatellite")}
-          >
-            <span className="layer-dot sat" />
-            Satellite Basemap
-          </button>
-        </div>
-      </div>
-
-      {loading && (
-        <div className="panel-loading">
-          <span className="spinner" />
-          Querying Google Earth Engine for newest Sentinel-1 GRD scene…
-        </div>
-      )}
-
-      {/* Authentication Advisory Modal / Card */}
-      {authError && (
-        <div className="auth-advisory-card">
-          <div className="auth-header">
-            <span className="auth-icon">🔑</span>
-            <h3>Earth Engine Authentication Setup</h3>
-          </div>
-          <p className="auth-msg">{authError.message}</p>
-          <div className="auth-steps">
-            <strong>Setup Instructions:</strong>
-            <ul>
-              {authError.instructions.map((step, i) => (
-                <li key={i}>{step}</li>
-              ))}
-            </ul>
-          </div>
-          <p className="subtle auth-note">
-            The platform executes real Earth Engine queries without fabricated fallbacks. Once credentials are in place, click Retry below.
-          </p>
-          <button className="predict-btn" onClick={load} disabled={loading}>
-            Retry Earth Engine Query
-          </button>
-        </div>
-      )}
-
-      {error && !authError && (
-        <div className="error-card">
-          <p className="warn">{error}</p>
-          <button className="predict-btn" onClick={load} disabled={loading}>
-            Retry query
-          </button>
-=======
     <div className="sar-module-panel">
       {/* Header & Auth Banner */}
       <div className="sar-header">
@@ -284,6 +129,24 @@ export default function RealtimeSar({
           Direct satellite radar observation over the Kosi study area via Google Earth Engine (COPERNICUS/S1_GRD).
           Smooth water surfaces act as specular reflectors, yielding low VV-band backscatter.
         </p>
+        <div className="sar-layer-toolbar" style={{ marginTop: '10px' }}>
+          <label>
+            <input type="checkbox" checked={sarLayers?.showSim} onChange={(e) => setSarLayers(s => ({...s, showSim: e.target.checked}))} />
+            Sim Depth
+          </label>
+          <label>
+            <input type="checkbox" checked={sarLayers?.showSar} onChange={(e) => setSarLayers(s => ({...s, showSar: e.target.checked}))} />
+            SAR Outline
+          </label>
+          <label>
+            <input type="checkbox" checked={sarLayers?.showDiff} onChange={(e) => setSarLayers(s => ({...s, showDiff: e.target.checked}))} />
+            Difference Map
+          </label>
+          <label className="toggle-satellite">
+            <input type="checkbox" checked={sarLayers?.baseSatellite} onChange={(e) => setSarLayers(s => ({...s, baseSatellite: e.target.checked}))} />
+            Optical Base
+          </label>
+        </div>
       </div>
 
       {/* Developer Authentication Guide Modal / Alert */}
@@ -303,7 +166,6 @@ export default function RealtimeSar({
               <pre>{authStatus.instructions || "1. Create GCP Service Account\n2. Download key to backend/credentials/service_account.json"}</pre>
             </div>
           )}
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
         </div>
       )}
 
@@ -399,110 +261,7 @@ export default function RealtimeSar({
       {/* Observation Statistics & Data Provenance */}
       {data && !loading && (
         <>
-          {/* Spatial Comparison Metrics */}
-          {comparison && (
-            <div className="comparison-card">
-              <div className="comparison-header">
-                <h3>Model vs Satellite Observation</h3>
-                <span className="comparison-tag">{comparison.timestep_label}</span>
-              </div>
-
-              <div className="stat-grid comparison-metrics">
-                <div className="metric-box agreement">
-                  <span>Agreement (Sim ∩ Obs)</span>
-                  <strong>{comparison.metrics.agreement_area_km2} km²</strong>
-                </div>
-                <div className="metric-box sim-only">
-                  <span>Simulated Only</span>
-                  <strong>{comparison.metrics.simulated_only_area_km2} km²</strong>
-                </div>
-                <div className="metric-box obs-only">
-                  <span>Observed SAR Only</span>
-                  <strong>{comparison.metrics.observed_only_area_km2} km²</strong>
-                </div>
-                <div className="metric-box">
-                  <span>IoU Metric</span>
-                  <strong>{(comparison.metrics.iou * 100).toFixed(1)}%</strong>
-                </div>
-                <div className="metric-box">
-                  <span>Precision</span>
-                  <strong>{(comparison.metrics.precision * 100).toFixed(1)}%</strong>
-                </div>
-                <div className="metric-box">
-                  <span>Recall</span>
-                  <strong>{(comparison.metrics.recall * 100).toFixed(1)}%</strong>
-                </div>
-              </div>
-
-              {/* Difference Map Legend */}
-              <div className="diff-legend">
-                <div className="diff-legend-item">
-                  <span className="diff-chip" style={{ background: "#3ddc97" }} />
-                  <span>Agreement (Flooded in Model & SAR)</span>
-                </div>
-                <div className="diff-legend-item">
-                  <span className="diff-chip" style={{ background: "#4a90ff" }} />
-                  <span>Model Only (Simulated Breach Corridor)</span>
-                </div>
-                <div className="diff-legend-item">
-                  <span className="diff-chip" style={{ background: "#ff9f1c" }} />
-                  <span>SAR Only (Current Kosi Main Channel)</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Satellite Acquisition Stats */}
           <div className="stat-grid">
-<<<<<<< HEAD
-            <div><span>Observed water area</span><strong>{data.water_area_km2 ?? "—"} km²</strong></div>
-            <div><span>Available scenes (30d)</span><strong>{data.source.scenes_available_last_30d}</strong></div>
-            <div><span>Query duration</span><strong>{data.query_duration_s}s</strong></div>
-            <div><span>Orbit pass</span><strong>{data.source.orbit_pass}</strong></div>
-          </div>
-
-          <div className="twin-timestamps">
-            <div><span>Satellite pass acquired:</span> {formatUtcAsLocal(data.source.acquired_utc)}</div>
-            <div><span>Live queried by app:</span> {formatUtcAsLocal(data.queried_at_utc)}</div>
-          </div>
-
-          {/* Temporal Advisory Warning */}
-          <div className="temporal-notice-box">
-            <span className="notice-icon">⏳</span>
-            <div>
-              <strong>Temporal Advisory Notice</strong>
-              <p>
-                The Sentinel-1 SAR observation reflects <em>recent surface water conditions</em> ({formatUtcAsLocal(data.source.acquired_utc)}), whereas the SWE simulation models the <em>18 August 2008 historical breach</em>. The comparison highlights differences between the active permanent river channel and the 2008 breach avulsion pathway.
-              </p>
-            </div>
-          </div>
-
-          <button className="predict-btn" onClick={load} disabled={loading || comparing}>
-            Refresh Live SAR Query
-          </button>
-
-          {/* Provenance & Methodology */}
-          <details className="provenance-details">
-            <summary>Data Provenance & Detection Methodology</summary>
-            <ul className="assumptions">
-              <li>
-                <strong>Satellite:</strong> {data.source.satellite} ({data.source.sensor})
-              </li>
-              <li>
-                <strong>Collection:</strong> <code>{data.source.collection}</code> (Scene: <code>{data.source.scene_id}</code>)
-              </li>
-              <li>
-                <strong>Polarization & Mode:</strong> {data.source.polarization}, {data.source.instrument_mode}
-              </li>
-              <li>
-                <strong>Water Extraction:</strong> {data.detection_method.technique} (Threshold: {data.detection_method.threshold_db} dB at {data.detection_method.reduce_scale_m}m vector scale)
-              </li>
-              <li>
-                <strong>Explanation:</strong> {data.detection_method.explanation}
-              </li>
-              <li className="warn">
-                <strong>Caveat:</strong> {data.detection_method.caveat}
-=======
             <div>
               <span>Detected Water Area</span>
               <strong>{data.water_area_km2 !== null ? `${data.water_area_km2.toLocaleString()} km²` : "—"}</strong>
@@ -625,14 +384,13 @@ export default function RealtimeSar({
                 <strong>Polarisation & Mode:</strong> {data.source.polarization} polarization in Interferometric Wide (IW) swath mode.
               </li>
               <li>
-                <strong>Detection Method:</strong> {data.detection_method.technique} ($\sigma_0 &lt; {data.detection_method.threshold_db}\text{ dB}$) evaluated at {data.detection_method.reduce_scale_m}m spatial resolution.
+                <strong>Detection Method:</strong> {data.detection_method.technique} ($\sigma_0 &lt; {data.detection_method.threshold_db}\text{"{"} dB {"}"}$) evaluated at {data.detection_method.reduce_scale_m}m spatial resolution.
               </li>
               <li>
                 <strong>Active Simulation Scenario:</strong> {meta?.scenario_label || "Kosi 2008 — Historical Validation"} ({jobId})
               </li>
               <li className="warn">
                 <strong>Methodological Caveat:</strong> {data.detection_method.caveat}
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
               </li>
             </ul>
           </details>

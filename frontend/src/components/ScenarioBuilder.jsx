@@ -442,7 +442,7 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
                 <div className="form-group">
                   <label>Initial Bed Condition</label>
                   <select disabled value="dry_bed">
-                    <option value="dry_bed">Dry-bed ($h_0 = 0.0\text{ m}$) — Standard Overland</option>
+                    <option value="dry_bed">Dry-bed ($h_0 = 0.0\text{"{ m}"}$) — Standard Overland</option>
                   </select>
                 </div>
                 <div className="form-group">

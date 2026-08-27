@@ -150,9 +150,8 @@ export async function fetchRealtimeWaterExtent(params = {}) {
   return res.json();
 }
 
-<<<<<<< HEAD
-export async function queryPointDepth(lat, lon, threshold = 0.1) {
-  const res = await fetch(`${API_BASE}/simulate/query-point/${JOB_ID}?lat=${lat}&lon=${lon}&threshold=${threshold}`);
+export async function queryPointDepth(lat, lon, jobId = DEFAULT_JOB_ID, threshold = 0.1) {
+  const res = await fetch(`${API_BASE}/simulate/query-point/${jobId}?lat=${lat}&lon=${lon}&threshold=${threshold}`);
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(body.detail || `point query failed: ${res.status}`);
@@ -160,22 +159,6 @@ export async function queryPointDepth(lat, lon, threshold = 0.1) {
   return res.json();
 }
 
-export async function compareSarWithSimulation({ timestep_minutes = null, sar_extent = null } = {}) {
-  const res = await fetch(`${API_BASE}/realtime/compare`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ timestep_minutes, sar_extent }),
-  });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.detail || `comparison failed: ${res.status}`);
-  }
-  return res.json();
-}
-
-
-
-=======
 export async function fetchSarComparison(jobId = DEFAULT_JOB_ID, options = {}) {
   const payload = {
     job_id: jobId,
@@ -198,5 +181,3 @@ export async function fetchSarComparison(jobId = DEFAULT_JOB_ID, options = {}) {
   }
   return res.json();
 }
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-

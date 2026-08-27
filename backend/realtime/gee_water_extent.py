@@ -2,21 +2,13 @@
 Real-time Sentinel-1 SAR water-extent layer and Model-vs-Observation validation over the Kosi AOI,
 via Google Earth Engine.
 
-<<<<<<< HEAD
-Water detection: VV-band backscatter thresholding. Smooth open-water
-surfaces act as specular reflectors and return very little energy to the
-radar, so they appear as a dark band in VV backscatter -- a standard,
-widely-documented SAR water-detection technique.
-=======
 Features:
   1. Multi-mode authentication (Service Account JSON or standard EE User token) with clear setup guides.
   2. Live Sentinel-1 GRD retrieval based on study area, date/time, and orbit pass.
   3. Specular reflection VV-band SAR backscatter thresholding (standard UN-SPIDER flood mapping method).
   4. Spatial alignment & comparative validation against 2D SWE simulation (Intersection, Sim-only, Obs-only, IoU, Precision, Recall, F1).
   5. Honest failure handling with temporal discrepancy alerts.
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 """
-import os
 import datetime as dt
 import json
 import os
@@ -30,19 +22,6 @@ from shapely.geometry import MultiPolygon, Polygon, shape
 from shapely.ops import unary_union
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-<<<<<<< HEAD
-CREDENTIALS_PATH = ROOT / "backend" / "credentials" / "service_account.json"
-CONFIG_PATH = ROOT / "data" / "dam_config" / "kosi_case_study.json"
-GEE_PROJECT = os.environ.get("GEE_PROJECT", "floodsim-hadr")
-SERVICE_ACCOUNT = os.environ.get(
-    "GEE_SERVICE_ACCOUNT",
-    "floodsim-gee-servic@floodsim-hadr.iam.gserviceaccount.com"
-)
-
-# Standard literature value for smooth-water VV backscatter in dB (e.g. UN-SPIDER's
-# published Sentinel-1 flood-mapping recipe). Not tuned against ground truth for
-# this specific AOI -- see the caveat surfaced in the response payload.
-=======
 CREDENTIALS_DIR = ROOT / "backend" / "credentials"
 CREDENTIALS_PATH = CREDENTIALS_DIR / "service_account.json"
 SERVICE_ACCOUNT_DEFAULT = "floodsim-gee-servic@floodsim-hadr.iam.gserviceaccount.com"
@@ -51,20 +30,12 @@ CONFIG_PATH = ROOT / "data" / "dam_config" / "kosi_case_study.json"
 OUTPUTS_DIR = ROOT / "backend" / "outputs"
 
 # Standard literature value for smooth-water VV backscatter in dB (e.g. UN-SPIDER recommended threshold).
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 VV_WATER_THRESHOLD_DB = -17.0
 
 # S1 revisit interval over Kosi AOI is ~6-12 days; 30 days window default
 SEARCH_WINDOW_DAYS = 30
 
-<<<<<<< HEAD
-# Native GRD resolution is 10m; a 70km x 80km AOI at 10m is ~56M pixels, too
-# slow for a synchronous request. 100m keeps reduceToVectors/getInfo within a
-# few-to-tens-of-seconds live query while remaining well under GEE's default
-# maxPixels budget.
-=======
 # Vectorization scale (100m keeps reduceToVectors within live interactive latency)
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 REDUCE_SCALE_M = 100
 MAX_PIXELS = int(2e9)
 
@@ -78,15 +49,6 @@ class GeeError(Exception):
 
 
 class GeeAuthError(GeeError):
-<<<<<<< HEAD
-    def __init__(self, message: str, instructions: list[str] = None):
-        super().__init__(message)
-        self.instructions = instructions or [
-            "1. Place your GCP Service Account JSON key at backend/credentials/service_account.json",
-            "2. Or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to your key path",
-            "3. Or run 'gcloud auth application-default login' on your development machine",
-        ]
-=======
     """Earth Engine authentication missing or invalid error with setup instructions."""
     pass
 
@@ -162,7 +124,6 @@ def check_auth_status() -> Dict[str, Any]:
             "error": str(e),
             "instructions": get_auth_setup_instructions(),
         }
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 
 
 def _ensure_initialized():
@@ -171,56 +132,6 @@ def _ensure_initialized():
     if _initialized:
         return
 
-<<<<<<< HEAD
-    # Strategy 1: Explicit Service Account JSON file in backend/credentials/
-    if CREDENTIALS_PATH.exists():
-        try:
-            creds = ee.ServiceAccountCredentials(SERVICE_ACCOUNT, str(CREDENTIALS_PATH))
-            ee.Initialize(creds, project=GEE_PROJECT)
-            _initialized = True
-            return
-        except Exception as e:
-            raise GeeAuthError(f"Service account authentication failed with {CREDENTIALS_PATH}: {e}")
-
-    # Strategy 2: Environment variable GOOGLE_APPLICATION_CREDENTIALS
-    env_creds = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
-    if env_creds and Path(env_creds).exists():
-        try:
-            creds = ee.ServiceAccountCredentials(SERVICE_ACCOUNT, env_creds)
-            ee.Initialize(creds, project=GEE_PROJECT)
-            _initialized = True
-            return
-        except Exception as e:
-            raise GeeAuthError(f"Authentication failed with GOOGLE_APPLICATION_CREDENTIALS ({env_creds}): {e}")
-
-    # Strategy 3: Default credentials / User token (ADC or ee.Authenticate token)
-    try:
-        ee.Initialize(project=GEE_PROJECT)
-        _initialized = True
-        return
-    except Exception as e:
-        raise GeeAuthError(
-            "Google Earth Engine authentication credentials not found. "
-            "To query live Sentinel-1 SAR data, configure valid credentials.",
-            instructions=[
-                "Option A: Place a Service Account key at 'backend/credentials/service_account.json'",
-                "Option B: Run 'gcloud auth application-default login' in terminal",
-                "Option C: Run 'python -c \"import ee; ee.Authenticate()\"' to link your Google account",
-            ],
-        )
-
-
-def _load_aoi_bounds() -> dict:
-    if not CONFIG_PATH.exists():
-        return dict(west=86.6, south=25.9, east=87.3, north=26.7)
-    config = json.loads(CONFIG_PATH.read_text())
-    return config.get("aoi_bounds", dict(west=86.6, south=25.9, east=87.3, north=26.7))
-
-
-def fetch_latest_water_extent(threshold_db: float = VV_WATER_THRESHOLD_DB, search_days: int = SEARCH_WINDOW_DAYS) -> dict:
-    """Live GEE query -- queries COPERNICUS/S1_GRD for the most recent scene.
-    Raises GeeAuthError on missing credentials, or GeeError on query failure."""
-=======
     status = check_auth_status()
     if not status["authenticated"]:
         raise GeeAuthError(
@@ -254,7 +165,6 @@ def fetch_latest_water_extent(
       - threshold_db: Backscatter threshold in dB for smooth water detection (default: -17.0 dB).
       - aoi_bounds: dict with west, south, east, north.
     """
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
     t0 = dt.datetime.now(dt.timezone.utc)
     _ensure_initialized()
 
@@ -264,9 +174,6 @@ def fetch_latest_water_extent(
     ])
 
     now = dt.datetime.now(dt.timezone.utc)
-<<<<<<< HEAD
-    start = now - dt.timedelta(days=search_days)
-=======
     if end_date:
         ee_end = ee.Date(end_date)
     else:
@@ -276,7 +183,6 @@ def fetch_latest_water_extent(
         ee_start = ee.Date(start_date)
     else:
         ee_start = ee_end.advance(-SEARCH_WINDOW_DAYS, "day")
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 
     collection = (
         ee.ImageCollection("COPERNICUS/S1_GRD")
@@ -299,13 +205,8 @@ def fetch_latest_water_extent(
     if size == 0:
         date_str = f"between {start_date} and {end_date}" if start_date and end_date else f"in the last {SEARCH_WINDOW_DAYS} days"
         raise GeeError(
-<<<<<<< HEAD
-            f"No suitable Sentinel-1 GRD scenes found over the Kosi AOI in the last "
-            f"{search_days} days. This represents satellite orbit pass timing, not a query error."
-=======
             f"No suitable Sentinel-1 observation available for the selected criteria ({date_str}). "
             f"This represents a gap in satellite coverage over the AOI."
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
         )
 
     latest = collection.first()
@@ -318,27 +219,18 @@ def fetch_latest_water_extent(
     props = info.get("properties", {})
     acquired_ms = props.get("system:time_start", 0)
     acquired_utc = dt.datetime.fromtimestamp(acquired_ms / 1000, tz=dt.timezone.utc).isoformat()
-<<<<<<< HEAD
-    orbit_pass = info["properties"].get("orbitProperties_pass", "UNKNOWN")
-    relative_orbit = info["properties"].get("relativeOrbitNumber_start", "UNKNOWN")
-=======
     scene_orbit_pass = props.get("orbitProperties_pass", "Unknown")
     relative_orbit = props.get("relativeOrbitNumber_start")
     platform = props.get("platform_number", "A")
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 
     # Select VV polarization and clip to study area
     vv = latest.select("VV").clip(aoi)
-<<<<<<< HEAD
-    water_mask = vv.lt(threshold_db).selfMask()
-=======
 
     # 3x3 Focal Median Filter for radar speckle reduction
     vv_filtered = vv.focal_median(radius=50, units="meters", iterations=1)
 
     # Specular water mask: smooth water backscatter < threshold_db
     water_mask = vv_filtered.lt(threshold_db).selfMask()
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
 
     try:
         vectors = water_mask.reduceToVectors(
@@ -369,13 +261,8 @@ def fetch_latest_water_extent(
         "features": fc.get("features", []),
         "water_area_km2": area_km2,
         "source": {
-<<<<<<< HEAD
-            "satellite": "Copernicus Sentinel-1 (C-SAR)",
-            "sensor": "C-band Synthetic Aperture Radar (C-SAR)",
-=======
             "satellite": f"Copernicus Sentinel-1{platform}",
             "instrument": "C-SAR (C-band Synthetic Aperture Radar, 5.405 GHz)",
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
             "collection": "COPERNICUS/S1_GRD",
             "product_type": "GRD (Ground Range Detected, IW Mode)",
             "scene_id": scene_id,
@@ -383,41 +270,21 @@ def fetch_latest_water_extent(
             "orbit_pass": scene_orbit_pass,
             "relative_orbit_number": relative_orbit,
             "polarization": "VV",
-<<<<<<< HEAD
-            "instrument_mode": "IW (Interferometric Wide Swath)",
-            "scenes_available_last_30d": size,
-        },
-        "detection_method": {
-            "technique": "VV backscatter thresholding (specular reflection)",
-            "threshold_db": threshold_db,
-            "explanation": (
-                "Smooth open-water surfaces act as specular reflectors and scatter radar energy "
-                "away from the antenna, appearing dark (low backscatter, < -17 dB) in the VV band. "
-                "Detected water pixels are vectorized at 100m scale."
-            ),
-=======
             "scenes_available_in_window": size,
             "bounds": bounds,
         },
         "detection_method": {
             "technique": "VV backscatter thresholding with 50m focal median despeckling",
             "threshold_db": threshold_db,
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
             "reduce_scale_m": REDUCE_SCALE_M,
             "explanation": (
                 "Smooth open-water surfaces act as specular reflectors, scattering radar pulses away from the antenna, "
                 "appearing dark (low backscatter) in the VV band. Pixels below the threshold are classified as water."
             ),
             "caveat": (
-<<<<<<< HEAD
-                "Thresholding is an indicative observation method: wind-roughened open water, "
-                "radar shadows in rough terrain, and wet bare soil can create false positives or negatives. "
-                "This layer represents satellite-observed surface water at pass time, not an authoritative flood claim."
-=======
                 "SAR water detection is an indicative satellite observation product. Radar shadow, smooth dry sands, "
                 "and asphalt can occasionally cause false positives, while wind-induced surface waves or emergent "
                 "vegetation can cause false negatives. This is an observation layer, not an infallible ground truth."
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
             ),
         },
         "query_duration_s": round((t1 - t0).total_seconds(), 2),

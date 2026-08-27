@@ -10,14 +10,9 @@ import LiveTwin from "./components/LiveTwin";
 import RealtimeSar from "./components/RealtimeSar";
 import SideNav from "./components/SideNav";
 import Overview from "./components/Overview";
-<<<<<<< HEAD
-import { fetchResult, frameUrl, triggerRun, queryPointDepth } from "./api";
-=======
+import { fetchResult, frameUrl, triggerRun, queryPointDepth, fetchImpactAnalysis, DEFAULT_JOB_ID } from "./api";
 import ScenarioBuilder from "./components/ScenarioBuilder";
-import ImpactDashboard from "./components/ImpactDashboard";
-import { fetchResult, frameUrl, triggerRun, fetchImpactAnalysis, DEFAULT_JOB_ID } from "./api";
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-import "./App.css";
+import ImpactDashboard from "./components/ImpactDashboard";import "./App.css";
 
 const MAP_MODES = new Set(["full", "instant", "realtime"]);
 
@@ -36,7 +31,6 @@ export default function App() {
   const [realtimeData, setRealtimeData] = useState(null);
   const [sarDifferenceData, setSarDifferenceData] = useState(null);
 
-<<<<<<< HEAD
   // Point Inspection State
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [selectedPointData, setSelectedPointData] = useState(null);
@@ -51,9 +45,6 @@ export default function App() {
     baseSatellite: false,
   });
 
-  const load = () => {
-    fetchResult().then(setMeta).catch((e) => setError(e.message));
-=======
   const load = (jobId = activeJobId) => {
     fetchResult(jobId)
       .then((data) => {
@@ -65,9 +56,7 @@ export default function App() {
           .then(setImpactData)
           .catch((err) => console.warn("Impact analysis note:", err.message));
       })
-      .catch((e) => setError(e.message));
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-  };
+      .catch((e) => setError(e.message));  };
 
   useEffect(() => {
     load(activeJobId);
@@ -78,22 +67,16 @@ export default function App() {
     setError(null);
     try {
       await triggerRun();
-<<<<<<< HEAD
-      load();
+      load(activeJobId);
       if (selectedPoint) {
         handlePointClick(selectedPoint);
-      }
-=======
-      load(activeJobId);
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-    } catch (e) {
+      }    } catch (e) {
       setError(e.message);
     } finally {
       setRunning(false);
     }
   };
 
-<<<<<<< HEAD
   const handlePointClick = async ({ lat, lon }) => {
     setSelectedPoint({ lat, lon });
     setLoadingPoint(true);
@@ -116,11 +99,9 @@ export default function App() {
   const handleClearPoint = () => {
     setSelectedPoint(null);
     setSelectedPointData(null);
-=======
-  const handleScenarioSelect = (newJobId) => {
-    setActiveJobId(newJobId);
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
   };
+  const handleScenarioSelect = (newJobId) => {
+    setActiveJobId(newJobId);  };
 
   if (error) {
     return (
@@ -146,14 +127,8 @@ export default function App() {
 
   const frame = meta.frames && meta.frames.length > frameIndex ? meta.frames[frameIndex] : meta.frames[0];
   const overlayUrl =
-<<<<<<< HEAD
-    mode === "full" || mode === "realtime"
-      ? frameUrl(frame.overlay_png)
-=======
     (mode === "full" || mode === "realtime") && frame
-      ? frameUrl(frame.overlay_png, activeJobId)
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-      : mode === "instant" && prediction
+      ? frameUrl(frame.overlay_png, activeJobId)      : mode === "instant" && prediction
         ? `data:image/png;base64,${prediction.overlay_png_base64}`
         : null;
 
@@ -216,11 +191,11 @@ export default function App() {
                   <FloodMap
                     bounds={activeBounds}
                     overlayUrl={overlayUrl}
-<<<<<<< HEAD
-                    overlayKey={mode === "full" || mode === "realtime" ? frame.overlay_png : prediction?.inference_s + String(predictedLocation)}
+                    overlayKey={mode === "full" || mode === "realtime" ? (frame?.overlay_png + activeJobId) : (prediction?.inference_s + String(predictedLocation))}
                     breachLatLon={meta.breach_latlon}
                     predictedLocation={mode === "instant" ? predictedLocation : null}
                     realtimeExtent={mode === "realtime" ? realtimeData : null}
+                    sarDifferenceExtent={mode === "realtime" ? sarDifferenceData : null}
                     sarComparison={mode === "realtime" ? sarComparison : null}
                     sarLayers={mode === "realtime" ? sarLayers : { showSim: true, showSar: false, showDiff: false, baseSatellite: false }}
                     onPointClick={mode === "full" ? handlePointClick : undefined}
@@ -228,37 +203,21 @@ export default function App() {
                     selectedPointData={selectedPointData}
                     loadingPoint={loadingPoint}
                     frameIndex={frameIndex}
-=======
-                    overlayKey={mode === "full" || mode === "realtime" ? (frame?.overlay_png + activeJobId) : (prediction?.inference_s + String(predictedLocation))}
-                    breachLatLon={meta.breach_latlon}
-                    predictedLocation={mode === "instant" ? predictedLocation : null}
-                    realtimeExtent={mode === "realtime" ? realtimeData : null}
-                    sarDifferenceExtent={mode === "realtime" ? sarDifferenceData : null}
                     settlements={settlementsForMap}
                     selectedSettlement={selectedSettlement}
                     onSelectSettlement={setSelectedSettlement}
                     showSettlements={mode === "full"}
-                    allowLayerToggles={true}
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-                  />
+                    allowLayerToggles={true}                  />
                 ) : (
                   <CesiumViewer
                     bounds={activeBounds}
                     frames={meta.frames}
                     frameIndex={frameIndex}
-<<<<<<< HEAD
-                  />
-                )}
-                {(mode === "full" || mode === "instant") && <Legend />}
-                {(mode === "full" || mode === "realtime") && (
-=======
                     jobId={activeJobId}
                   />
                 )}
                 {(mode === "full" || mode === "instant") && <Legend />}
-                {mode === "full" && meta.frames && (
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-                  <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />
+                {mode === "full" && meta.frames && (                  <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />
                 )}
               </div>
             )}
@@ -268,21 +227,15 @@ export default function App() {
                 <InfoPanel
                   meta={meta}
                   frame={frame}
-<<<<<<< HEAD
-                  onRerun={handleRerun}
-                  running={running}
-                  selectedPointData={selectedPointData}
-                  loadingPoint={loadingPoint}
-                  frameIndex={frameIndex}
-                  onSelectTimestep={setFrameIndex}
-                  onClearPoint={handleClearPoint}
-=======
                   jobId={activeJobId}
                   onRerun={handleRerun}
                   running={running}
                   onOpenBuilder={() => setMode("builder")}
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-                />
+                  selectedPointData={selectedPointData}
+                  loadingPoint={loadingPoint}
+                  frameIndex={frameIndex}
+                  onSelectTimestep={setFrameIndex}
+                  onClearPoint={handleClearPoint}                />
               )}
               {mode === "instant" && (
                 <PredictionControls
@@ -299,21 +252,15 @@ export default function App() {
               {mode === "twin" && <LiveTwin />}
               {mode === "realtime" && (
                 <RealtimeSar
-<<<<<<< HEAD
-                  onData={setRealtimeData}
-                  onComparisonChange={setSarComparison}
-                  sarLayers={sarLayers}
-                  setSarLayers={setSarLayers}
-                  frameIndex={frameIndex}
-                  frames={meta.frames}
-=======
                   jobId={activeJobId}
                   meta={meta}
                   frameIndex={frameIndex}
+                  frames={meta.frames}
                   onData={setRealtimeData}
                   onDifferenceData={setSarDifferenceData}
->>>>>>> d579c85e605d4ea8d29ea6aa24f7d2ccc1836f2d
-                />
+                  onComparisonChange={setSarComparison}
+                  sarLayers={sarLayers}
+                  setSarLayers={setSarLayers}                />
               )}
             </div>
           </div>

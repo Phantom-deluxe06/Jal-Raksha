@@ -286,7 +286,7 @@ def execute_scenario(
             max_depth_m=round(float(depth.max()), 3),
             mean_wet_depth_m=round(float(depth[depth >= depth_thresh].mean()), 3) if flooded_cells else 0.0,
             population_at_risk=t_impact["population_potentially_exposed"],
-            population_significantly_affected_gt0.3m=t_impact["population_significantly_affected_gt0.3m"],
+            **{"population_significantly_affected_gt0.3m": t_impact["population_significantly_affected_gt0.3m"]},
             affected_settlements=t_impact["exposed_settlements"],
             affected_settlements_count=t_impact["settlements_potentially_exposed_count"],
         ))

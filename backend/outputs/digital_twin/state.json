@@ -10,7 +10,7 @@
     "current_reading": {
       "water_level_m": 75.38,
       "data_time_ist": "2026-08-27T08:00:00",
-      "age_hours": 4.4,
+      "age_hours": 11.5,
       "is_live": true,
       "reference_levels_m": {
         "frl": 74.69,
@@ -25,29 +25,49 @@
       "FIN": {
         "latest_value": 5476.92,
         "latest_data_time_ist": "2021-08-18T08:00:00",
-        "age_hours": 44044.4,
+        "age_hours": 44051.5,
         "live": false
       },
       "FOL": {
         "latest_value": 141.6,
         "latest_data_time_ist": "2021-08-18T08:00:00",
-        "age_hours": 44044.4,
+        "age_hours": 44051.5,
         "live": false
       }
     },
     "update_cadence": {
       "median_interval_hours": 24.0,
-      "n_samples": 15,
-      "description": "~daily (median 24.0h between readings over last 15 samples)"
+      "n_samples": 14,
+      "description": "~daily (median 24.0h between readings over last 14 samples)"
     },
     "source": {
       "name": "Central Water Commission (CWC), Government of India -- Flood Forecasting System",
       "url": "https://ffs.india-water.gov.in",
       "note": "Unofficial/undocumented public JSON API discovered by inspecting the CWC dashboard's own network requests -- no auth required, but no published API contract either; could change without notice."
     },
-    "synced_at_utc": "2026-08-27T06:56:40.220585"
+    "synced_at_utc": "2026-08-27T13:58:50.280338"
   },
   "sync_log": [
+    {
+      "attempted_at_utc": "2026-08-27T13:58:50.280338",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T13:10:06.690227",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T12:58:46.473735",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T11:58:31.206837",
+      "success": true,
+      "error": null
+    },
     {
       "attempted_at_utc": "2026-08-27T06:56:40.220585",
       "success": true,
@@ -126,26 +146,6 @@
     },
     {
       "attempted_at_utc": "2026-08-25T06:56:29.206313",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T06:46:58.782936",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T06:07:10.210613",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T04:53:04.399067",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T03:53:00.136672",
       "success": true,
       "error": null
     }

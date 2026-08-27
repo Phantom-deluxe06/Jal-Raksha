@@ -229,7 +229,7 @@ export default function ImpactDashboard({
           <span className="metric-label">Significantly Affected (&gt;0.3m)</span>
           <strong className="metric-value accent-significant">
             {viewScope === "timestep"
-              ? Number(currentFrameImpact?.population_significantly_affected_gt0.3m || 0).toLocaleString()
+              ? Number(currentFrameImpact?.["population_significantly_affected_gt0.3m"] || 0).toLocaleString()
               : Number(summary.max_population_significantly_affected || 0).toLocaleString()}
           </strong>
           <span className="metric-sub">Higher hazard threshold (&gt;0.3m depth)</span>
@@ -532,10 +532,10 @@ export default function ImpactDashboard({
             <h4>📖 Terminology & Methodology</h4>
             <ul>
               <li>
-                <strong>Potentially Exposed:</strong> Estimated population residing within grid cells where simulated flood depth reaches $\ge 0.1\text{m}$.
+                <strong>Potentially Exposed:</strong> Estimated population residing within grid cells where simulated flood depth reaches $\ge 0.1\text{"{"}m{"}"}$.
               </li>
               <li>
-                <strong>Significantly Affected:</strong> Population in zones where depth reaches $\ge 0.3\text{m}$ (representing vehicle and pedestrian hazard thresholds).
+                <strong>Significantly Affected:</strong> Population in zones where depth reaches $\ge 0.3\text{"{"}m{"}"}$ (representing vehicle and pedestrian hazard thresholds).
               </li>
               <li>
                 <strong>Model-Estimated:</strong> All exposure values are scenario estimates for humanitarian disaster planning and response, not confirmed ground truth casualties.

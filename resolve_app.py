@@ -1,123 +1,165 @@
-import { useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, ImageOverlay, GeoJSON, Marker, Popup, ZoomControl, useMapEvents, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import { satelliteUrl } from "../api";
+import re
 
-const breachIcon = new L.DivIcon({
-  className: "breach-marker",
-  html: '<div style="width:14px;height:14px;border-radius:50%;background:#ff3b30;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.8);"></div>',  iconSize: [14, 14],
-  iconAnchor: [7, 7],
-});
+def manual_resolve(filepath, choices):
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    parts = []
+    last_end = 0
+    pattern = re.compile(r'<<<<<<< HEAD\r?\n(.*?)\r?\n?=======\r?\n(.*?)\r?\n?>>>>>>> [a-f0-9]+(?:\r?\n|$)', re.DOTALL)
+    
+    matches = list(pattern.finditer(content))
+    if len(matches) != len(choices):
+        print(f"Error: {filepath} has {len(matches)} conflicts, but {len(choices)} choices provided.")
+        return
+        
+    for i, match in enumerate(matches):
+        parts.append(content[last_end:match.start()])
+        
+        head = match.group(1)
+        incoming = match.group(2)
+        choice = choices[i]
+        
+        if choice == 'head':
+            parts.append(head)
+        elif choice == 'incoming':
+            parts.append(incoming)
+        elif callable(choice):
+            parts.append(choice(head, incoming))
+        else:
+            parts.append(choice)
+            
+        last_end = match.end()
+        
+    parts.append(content[last_end:])
+    
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write("".join(parts))
 
-const barrageIcon = new L.DivIcon({
-  className: "barrage-marker",
-  html: '<div style="width:12px;height:12px;background:#333;border:2px solid white;box-shadow:0 0 4px rgba(0,0,0,0.6);"></div>',
-  iconSize: [12, 12],
-  iconAnchor: [6, 6],
-});
+def app_c1(h, i):
+    # Imports
+    return """import { fetchResult, frameUrl, triggerRun, queryPointDepth, fetchImpactAnalysis, DEFAULT_JOB_ID } from "./api";
+import ScenarioBuilder from "./components/ScenarioBuilder";
+import ImpactDashboard from "./components/ImpactDashboard";"""
 
-const inspectionIcon = new L.DivIcon({
-  className: "inspection-marker",
-  html: `
-    <div style="position:relative;width:20px;height:20px;display:flex;align-items:center;justify-content:center;">
-      <div style="position:absolute;width:18px;height:18px;border-radius:50%;background:rgba(74,144,255,0.4);animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></div>
-      <div style="width:12px;height:12px;border-radius:50%;background:#4a90ff;border:2px solid #ffffff;box-shadow:0 0 8px #4a90ff;z-index:2;"></div>
-    </div>
-  `,
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
-});
-const createSettlementIcon = (isExposed, isSignificant, isSelected) => {
-  let color = "#aaaaaa";
-  let size = 8;
-  let border = "1px solid rgba(0,0,0,0.5)";
-  let pulse = "";
+def app_c2(h, i):
+    # State & load()
+    return """  // Point Inspection State
+  const [selectedPoint, setSelectedPoint] = useState(null);
+  const [selectedPointData, setSelectedPointData] = useState(null);
+  const [loadingPoint, setLoadingPoint] = useState(false);
 
-  if (isSelected) {
-    color = "#f1c40f";
-    size = 14;
-    border = "2px solid #ffffff";
-    pulse = "box-shadow: 0 0 10px #f1c40f;";
-  } else if (isSignificant) {
-    color = "#e74c3c";
-    size = 12;
-    border = "2px solid #ffffff";
-    pulse = "box-shadow: 0 0 8px rgba(231,76,60,0.8);";
-  } else if (isExposed) {
-    color = "#e67e22";
-    size = 10;
-    border = "1.5px solid #ffffff";
-    pulse = "box-shadow: 0 0 6px rgba(230,126,34,0.7);";
-  }
-
-  return new L.DivIcon({
-    className: "settlement-map-marker",
-    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:${border};${pulse}cursor:pointer;"></div>`,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
+  // Real-Time SAR Validation State
+  const [sarComparison, setSarComparison] = useState(null);
+  const [sarLayers, setSarLayers] = useState({
+    showSim: true,
+    showSar: true,
+    showDiff: false,
+    baseSatellite: false,
   });
-};
-const realtimeSarStyle = {
-  color: "#ff9f1c",
-  weight: 1.5,
-  fillColor: "#ff9f1c",
-  fillOpacity: 0.4,
-};
 
-const getDifferenceStyle = (feature) => {
-  const cat = feature.properties?.category;
-  if (cat === "agreement") {
-    return { color: "#3ddc97", weight: 2, fillColor: "#3ddc97", fillOpacity: 0.65 };
-  }
-  if (cat === "simulated_only") {
-    return { color: "#4a90ff", weight: 1.5, fillColor: "#4a90ff", fillOpacity: 0.45 };
-  }
-  if (cat === "observed_only") {
-    return { color: "#ff9f1c", weight: 1.5, fillColor: "#ff9f1c", fillOpacity: 0.45 };
-  }
-  return { color: "#ffffff", weight: 1, fillColor: "#888888", fillOpacity: 0.3 };
-};
+  const load = (jobId = activeJobId) => {
+    fetchResult(jobId)
+      .then((data) => {
+        setMeta(data);
+        setFrameIndex(0);
+        setError(null);
+        // Load impact data
+        fetchImpactAnalysis(jobId)
+          .then(setImpactData)
+          .catch((err) => console.warn("Impact analysis note:", err.message));
+      })
+      .catch((e) => setError(e.message));"""
 
-function MapClickHandler({ onMapClick }) {
-  useMapEvents({
-    click(e) {
-      if (onMapClick) {
-        onMapClick({ lat: e.latlng.lat, lon: e.latlng.lng });
-      }
-    },
-  });
-  return null;
-}
+def app_c3(h, i):
+    # handleRerun
+    return """      load(activeJobId);
+      if (selectedPoint) {
+        handlePointClick(selectedPoint);
+      }"""
 
-const diffStyleFunction = (feature) => {
-  const cls = feature.properties?.class || "agreement";
-  if (cls === "agreement") {
-    return { color: "#2ecc71", weight: 1.5, fillColor: "#2ecc71", fillOpacity: 0.45 };
-  } else if (cls === "simulated_only") {
-    return { color: "#3498db", weight: 1.5, fillColor: "#3498db", fillOpacity: 0.4 };
-  } else {
-    return { color: "#e67e22", weight: 1.5, fillColor: "#e67e22", fillOpacity: 0.4 };
-  }
-};
+def app_c4(h, i):
+    # handlePointClick & handleScenarioSelect
+    return h + "\n" + i
 
-function MapController({ selectedSettlement }) {
-  const map = useMap();
-  useEffect(() => {
-    if (selectedSettlement && selectedSettlement.lat && selectedSettlement.lon) {
-      map.flyTo([selectedSettlement.lat, selectedSettlement.lon], 12, { duration: 1.2 });
-    }
-  }, [selectedSettlement, map]);  return null;
-}
+def app_c5(h, i):
+    # overlayUrl
+    return """    (mode === "full" || mode === "realtime") && frame
+      ? frameUrl(frame.overlay_png, activeJobId)"""
 
-export default function FloodMap({
-  bounds,
-  overlayUrl,
-  overlayKey,
-  breachLatLon,
-  predictedLocation,
-  realtimeExtent,
-  sarDifferenceExtent = null,
+def app_c6(h, i):
+    # FloodMap props
+    return """                    overlayKey={mode === "full" || mode === "realtime" ? (frame?.overlay_png + activeJobId) : (prediction?.inference_s + String(predictedLocation))}
+                    breachLatLon={meta.breach_latlon}
+                    predictedLocation={mode === "instant" ? predictedLocation : null}
+                    realtimeExtent={mode === "realtime" ? realtimeData : null}
+                    sarDifferenceExtent={mode === "realtime" ? sarDifferenceData : null}
+                    sarComparison={mode === "realtime" ? sarComparison : null}
+                    sarLayers={mode === "realtime" ? sarLayers : { showSim: true, showSar: false, showDiff: false, baseSatellite: false }}
+                    onPointClick={mode === "full" ? handlePointClick : undefined}
+                    selectedPoint={selectedPoint}
+                    selectedPointData={selectedPointData}
+                    loadingPoint={loadingPoint}
+                    frameIndex={frameIndex}
+                    settlements={settlementsForMap}
+                    selectedSettlement={selectedSettlement}
+                    onSelectSettlement={setSelectedSettlement}
+                    showSettlements={mode === "full"}
+                    allowLayerToggles={true}"""
+
+def app_c7(h, i):
+    # CesiumViewer props
+    return """                    jobId={activeJobId}
+                  />
+                )}
+                {(mode === "full" || mode === "instant") && <Legend />}
+                {mode === "full" && meta.frames && ("""
+
+def app_c8(h, i):
+    # InfoPanel props
+    return """                  jobId={activeJobId}
+                  onRerun={handleRerun}
+                  running={running}
+                  onOpenBuilder={() => setMode("builder")}
+                  selectedPointData={selectedPointData}
+                  loadingPoint={loadingPoint}
+                  frameIndex={frameIndex}
+                  onSelectTimestep={setFrameIndex}
+                  onClearPoint={handleClearPoint}"""
+
+def app_c9(h, i):
+    # RealtimeSar props
+    return """                  jobId={activeJobId}
+                  meta={meta}
+                  frameIndex={frameIndex}
+                  frames={meta.frames}
+                  onData={setRealtimeData}
+                  onDifferenceData={setSarDifferenceData}
+                  onComparisonChange={setSarComparison}
+                  sarLayers={sarLayers}
+                  setSarLayers={setSarLayers}"""
+
+manual_resolve('frontend/src/App.jsx', [app_c1, app_c2, app_c3, app_c4, app_c5, app_c6, app_c7, app_c8, app_c9])
+
+# FloodMap.jsx
+def fm_c1(h, i):
+    return """import { MapContainer, TileLayer, ImageOverlay, GeoJSON, Marker, Popup, ZoomControl, useMapEvents, useMap } from "react-leaflet";"""
+
+def fm_c2(h, i):
+    # breachIcon
+    return """  html: '<div style="width:14px;height:14px;border-radius:50%;background:#ff3b30;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.8);"></div>',"""
+
+def fm_c3(h, i):
+    # icons
+    return h + "\n" + i
+
+def fm_c4(h, i):
+    # diff styles and hooks
+    return h + "\n" + i
+
+def fm_c5(h, i):
+    # FloodMap args
+    return """  sarDifferenceExtent = null,
   settlements = [],
   selectedSettlement = null,
   onSelectSettlement = null,
@@ -143,21 +185,11 @@ export default function FloodMap({
   const [showSarObs, setShowSarObs] = useState(true);
   const [showDiff, setShowDiff] = useState(false);
   const [baseLayer, setBaseLayer] = useState("dark"); // "dark" | "satellite"
+"""
 
-  if (!bounds) return null;
-  const leafletBounds = [
-    [bounds.south, bounds.west],
-    [bounds.north, bounds.east],
-  ];
-  const center = [(bounds.south + bounds.north) / 2, (bounds.west + bounds.east) / 2];
-
-  const currentSnapshot =
-    selectedPointData?.timeseries && selectedPointData.timeseries[frameIndex]
-      ? selectedPointData.timeseries[frameIndex]
-      : null;
-
-  return (
-    <div style={{ position: "relative", width: "100%", height: "100%", cursor: "crosshair" }}>
+def fm_c6(h, i):
+    # map rendering top
+    return """    <div style={{ position: "relative", width: "100%", height: "100%", cursor: "crosshair" }}>
       {/* Floating Layer Controls */}
       {allowLayerToggles && (
         <div className="map-layer-toggles" style={{ zIndex: 1000, position: 'absolute', top: 10, right: 10 }}>
@@ -198,11 +230,11 @@ export default function FloodMap({
         <ZoomControl position="bottomleft" />
         
         {/* Base Map Tiles */}
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        />
-        {/* Optional Sentinel-2 Optical Base Layer Overlay */}
+"""
+
+def fm_c7(h, i):
+    # map rendering bottom
+    return """        {/* Optional Sentinel-2 Optical Base Layer Overlay */}
         {baseLayer === "satellite" && (
           <ImageOverlay
             url={satelliteUrl()}
@@ -387,5 +419,96 @@ export default function FloodMap({
             );
           })}
       </MapContainer>
-    </div>  );
-}
+    </div>"""
+
+manual_resolve('frontend/src/components/FloodMap.jsx', [fm_c1, fm_c2, fm_c3, fm_c4, fm_c5, fm_c6, fm_c7])
+
+# RealtimeSar.jsx
+def rs_c1(h, i):
+    return """import {
+  fetchRealtimeWaterExtent,
+  fetchSarComparison,
+  fetchGeeAuthStatus,
+  DEFAULT_JOB_ID,
+  compareSarWithSimulation
+} from "../api";
+import { IconSatellite, IconCheck, IconArrowRight } from "./icons";"""
+
+def rs_c2(h, i):
+    return """  onData,
+  onComparisonChange,
+  sarLayers,
+  setSarLayers,
+  frameIndex = 0,
+  frames = [],
+  jobId = DEFAULT_JOB_ID,
+  meta,
+  onDifferenceData,
+}) {
+  const [data, setData] = useState(null);
+  const [comparison, setComparison] = useState(null);
+  const [error, setError] = useState(null);
+  const [authError, setAuthError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [comparing, setComparing] = useState(false);
+  const [authStatus, setAuthStatus] = useState(null);
+
+  const activeTimestep = frames[frameIndex]?.t_minutes ?? null;"""
+
+def rs_c3(h, i):
+    return """    setAuthError(null);
+    const params = {
+      threshold_db: thresholdDb,
+    };
+    if (searchMode === "custom_dates") {
+      if (startDate) params.start_date = startDate;
+      if (endDate) params.end_date = endDate;
+    }
+    if (orbitPass !== "all") {
+      params.orbit_pass = orbitPass;
+    }
+
+    fetchRealtimeWaterExtent(params)"""
+
+def rs_c4(h, i):
+    return """  const runComparison = (sarData, timestep) => {
+    setComparing(true);
+    setError(null);
+
+    const options = {
+      frame_index: frameIndex,
+      threshold_db: thresholdDb,
+    };
+    if (searchMode === "custom_dates") {
+      if (startDate) options.start_date = startDate;
+      if (endDate) options.end_date = endDate;
+    }
+    if (orbitPass !== "all") {
+      options.orbit_pass = orbitPass;
+    }
+
+    fetchSarComparison(jobId, options)
+      .then((res) => {
+        setComparison(res);
+        onComparisonChange?.(res);
+        if (res.difference_geojson && onDifferenceData) {
+          onDifferenceData(res.difference_geojson);
+        }
+      })
+      .catch((e) => {
+        setError(e.message);
+      })
+      .finally(() => setComparing(false));
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);"""
+
+def rs_c5(h, i):
+    return h + "\n" + i
+
+def rs_c6(h, i):
+    return i
+
+manual_resolve('frontend/src/components/RealtimeSar.jsx', [rs_c1, rs_c2, rs_c3, rs_c4, rs_c5, rs_c6])
