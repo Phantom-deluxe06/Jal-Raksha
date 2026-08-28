@@ -73,7 +73,7 @@ export default function ScenarioLibrary({ onLoadScenario, onEnterView }) {
   };
 
   return (
-    <div style={{ padding: "24px 28px", maxWidth: 1100, margin: "0 auto" }}>
+    <div style={{ padding: "24px 28px", maxWidth: 1100, margin: "0 auto", height: "100%", overflowY: "auto" }}>
       <h1 style={{ marginBottom: 4 }}>Scenario Library</h1>
       <p style={{ color: "#8aa0b4", marginTop: 0 }}>
         The engine is river/dam-agnostic. Below: one fully-validated historical case and additional

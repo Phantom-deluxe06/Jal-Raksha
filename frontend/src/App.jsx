@@ -149,7 +149,9 @@ export default function App() {
     );
   }
 
-  const frame = meta.frames && meta.frames.length > frameIndex ? meta.frames[frameIndex] : meta.frames[0];
+  const frame = meta.frames && meta.frames.length > 0 
+    ? (meta.frames.length > frameIndex ? meta.frames[frameIndex] : meta.frames[0]) 
+    : null;
   const overlayUrl =
     (mode === "full" || mode === "realtime") && frame
       ? frameUrl(frame.overlay_png, activeJobId)      : mode === "instant" && prediction

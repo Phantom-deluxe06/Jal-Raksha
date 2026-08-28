@@ -617,7 +617,9 @@ export default function CesiumViewer({ bounds, frames = [], frameIndex = 0, setF
     viewer.scene.preUpdate.addEventListener(onPreUpdate);
 
     return () => {
-      viewer.scene.preUpdate.removeEventListener(onPreUpdate);
+      if (viewer && !viewer.isDestroyed()) {
+        viewer.scene.preUpdate.removeEventListener(onPreUpdate);
+      }
     };
   }, [frameIndex, meshesLoaded, bounds, particleSpeed, particleDensity]);
 
