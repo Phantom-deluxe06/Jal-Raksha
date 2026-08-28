@@ -12,7 +12,10 @@ import SideNav from "./components/SideNav";
 import Overview from "./components/Overview";
 import { fetchResult, frameUrl, triggerRun, queryPointDepth, fetchImpactAnalysis, DEFAULT_JOB_ID } from "./api";
 import ScenarioBuilder from "./components/ScenarioBuilder";
-import ImpactDashboard from "./components/ImpactDashboard";import "./App.css";
+import ScenarioLibrary from "./components/ScenarioLibrary";
+import ImpactDashboard from "./components/ImpactDashboard";
+import JuryDemoBar from "./components/JuryDemoBar";
+import "./App.css";
 
 const MAP_MODES = new Set(["full", "instant", "realtime"]);
 
@@ -103,6 +106,17 @@ export default function App() {
   const handleScenarioSelect = (newJobId) => {
     setActiveJobId(newJobId);  };
 
+  const handleJuryPreset = ({ preset }) => {
+    // Pre-cached bundle already confirmed available by JuryDemoBar.
+    setActiveJobId(preset.id);
+    setPrediction(null);
+    setPredictedLocation(null);
+    setSelectedPoint(null);
+    setSelectedPointData(null);
+    setFrameIndex(0);
+    if (!["full", "impact", "realtime"].includes(mode)) setMode("full");
+  };
+
   if (error) {
     return (
       <div className="error-screen">
@@ -150,6 +164,7 @@ export default function App() {
       <SideNav mode={mode} setMode={setMode} />
 
       <div className="app-main">
+        <JuryDemoBar activeJobId={activeJobId} onSelectPreset={handleJuryPreset} />
         {mode === "overview" ? (
           <Overview key="overview" meta={meta} onEnter={setMode} />
         ) : mode === "builder" ? (
@@ -157,6 +172,12 @@ export default function App() {
             key="builder"
             activeJobId={activeJobId}
             onScenarioSelect={handleScenarioSelect}
+            onEnterView={setMode}
+          />
+        ) : mode === "library" ? (
+          <ScenarioLibrary
+            key="library"
+            onLoadScenario={handleScenarioSelect}
             onEnterView={setMode}
           />
         ) : mode === "impact" ? (
@@ -213,6 +234,7 @@ export default function App() {
                     bounds={activeBounds}
                     frames={meta.frames}
                     frameIndex={frameIndex}
+                    setFrameIndex={setFrameIndex}
                     jobId={activeJobId}
                   />
                 )}
@@ -248,7 +270,7 @@ export default function App() {
                   }}
                 />
               )}
-              {mode === "sph" && <SphComparison />}
+              {mode === "sph" && <SphComparison jobId={activeJobId} />}
               {mode === "twin" && <LiveTwin />}
               {mode === "realtime" && (
                 <RealtimeSar

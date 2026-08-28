@@ -37,10 +37,40 @@ export function exportUrl(format, jobId = DEFAULT_JOB_ID) {
   return `${API_BASE}/export/${jobId}?format=${format}`;
 }
 
+export function ue5PackageUrl(jobId = DEFAULT_JOB_ID) {
+  return `${API_BASE}/api/export/${jobId}/ue5-package`;
+}
+
+export async function fetchHydroComparison(jobId = DEFAULT_JOB_ID) {
+  const res = await fetch(`${API_BASE}/api/simulation/${jobId}/hydro-comparison`);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `hydro-comparison fetch failed: ${res.status}`);
+  }
+  return res.json();
+}
+
 export async function fetchScenarioPresets() {
   const res = await fetch(`${API_BASE}/scenarios/presets`);
   if (!res.ok) throw new Error(`presets fetch failed: ${res.status}`);
   return res.json();
+}
+
+export async function fetchScenarioLibrary() {
+  const res = await fetch(`${API_BASE}/scenarios/library`);
+  if (!res.ok) throw new Error(`scenario library fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function runGenericScenario(config) {
+  const res = await fetch(`${API_BASE}/scenarios/run-generic`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(config),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.detail || `run-generic failed: ${res.status}`);
+  return body;
 }
 
 export async function fetchScenarioList() {

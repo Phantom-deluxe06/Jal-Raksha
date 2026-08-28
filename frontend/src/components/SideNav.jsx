@@ -11,6 +11,7 @@ import {
 
 const ITEMS = [
   { id: "overview", label: "Overview", Icon: IconHome },
+  { id: "library", label: "Scenario Library", Icon: IconSatellite },
   { id: "builder", label: "Scenario Builder", Icon: IconSliders, accent: "builder" },
   { id: "full", label: "Full SWE Sim", Icon: IconWaves },
   { id: "impact", label: "Impact Analysis", Icon: IconBuilding, accent: "impact" },
@@ -44,9 +45,16 @@ export default function SideNav({ mode, setMode }) {
         ))}
       </div>
 
-      <div className="side-nav-footer">
-        <span className="live-dot" />
-        Real spatial data & physics
+      <div
+        className="side-nav-footer"
+        title="All layers use real DEM, population, SAR, CWC gauge and OSM data — no mock, fake or synthetic values anywhere in the stack."
+        style={{ color: "#2ed573", fontWeight: 600 }}
+      >
+        <span
+          className="live-dot"
+          style={{ background: "#2ed573", boxShadow: "0 0 6px #2ed573" }}
+        />
+        Real data, no mocks
       </div>
     </nav>
   );

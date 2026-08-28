@@ -11,6 +11,11 @@ export default function InfoPanel({ meta, frame, onRerun, running, onOpenBuilder
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
         <div>
           <h2>{meta.scenario_label || "Simulation Results"}</h2>
+          {(meta.event_type_label || meta.event_type) && (
+            <p style={{ margin: "2px 0 4px 0", fontWeight: 600, color: "#4a90ff", fontSize: "13px" }}>
+              Scenario: {meta.event_type_label || meta.event_type} — {meta.scenario_label}
+            </p>
+          )}
           {meta.scenario_description && (
             <p className="subtle" style={{ margin: "4px 0 8px 0" }}>
               {meta.scenario_description}

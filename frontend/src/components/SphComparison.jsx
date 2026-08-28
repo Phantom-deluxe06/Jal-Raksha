@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchSphResult } from "../api";
+import HydroComparisonCard from "./HydroComparisonCard";
 
 function StatusBadge({ status }) {
   if (status.aborted) {
@@ -8,7 +9,7 @@ function StatusBadge({ status }) {
   return <span className="sph-status-badge ok">Completed, no scaling/timeout issues</span>;
 }
 
-export default function SphComparison() {
+export default function SphComparison({ jobId }) {
   const [meta, setMeta] = useState(null);
   const [error, setError] = useState(null);
 
@@ -19,12 +20,13 @@ export default function SphComparison() {
   if (error) {
     return (
       <div className="sph-panel">
+        <HydroComparisonCard jobId={jobId} />
         <p className="warn">{error}</p>
         <p className="subtle">Run <code>backend/sph/run_kosi_sph.py</code> to generate SPH results.</p>
       </div>
     );
   }
-  if (!meta) return <div className="sph-panel"><div className="panel-loading"><span className="spinner" />Loading SPH results…</div></div>;
+  if (!meta) return <div className="sph-panel"><HydroComparisonCard jobId={jobId} /><div className="panel-loading"><span className="spinner" />Loading SPH results…</div></div>;
 
   const { hardware, neighbor_search, solver_status, domain, parameters, validation_comparison } = meta;
   const timeline = validation_comparison.timelines;
@@ -33,6 +35,7 @@ export default function SphComparison() {
 
   return (
     <div className="sph-panel">
+      <HydroComparisonCard jobId={jobId} />
       <h2>SPH vs SWE — Kusaha Breach Zone</h2>
       <p className="subtle">
         {domain.description} · {parameters.discharge_cumecs} m³/s · {parameters.duration_s}s window

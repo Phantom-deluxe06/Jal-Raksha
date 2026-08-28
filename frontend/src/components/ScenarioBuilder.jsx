@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import DamSelector from "./DamSelector";
+import DemPreviewPanel from "./DemPreviewPanel";
+import ScenarioExecutionPanel from "./ScenarioExecutionPanel";
 import {
   fetchScenarioPresets,
   fetchScenarioList,
@@ -7,7 +10,13 @@ import {
   fetchScenarioStatus,
   fetchResult,
 } from "../api";
-import { IconCheck, IconArrowRight, IconSliders, IconWaves, IconGauge } from "./icons";
+import {
+  IconCheck,
+  IconArrowRight,
+  IconSliders,
+  IconWaves,
+  IconGauge,
+} from "./icons";
 
 const KOSI_BOUNDS = {
   west: 86.6,
@@ -23,22 +32,74 @@ const COORD_PRESETS = [
   { name: "Supaul Border Sector", lat: 26.45, lon: 86.95 },
 ];
 
-export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJobId }) {
+// Deliverable (i): "dam break AND river blockage" are distinct event types.
+// Defaults below are labelling + starting-parameter conventions only — the SWE
+// solver treats every case as a parameterized breach inflow (physics unchanged).
+// Rationale for each default is documented in the `note` field and the UI.
+const EVENT_TYPES = [
+  {
+    key: "dam_break",
+    label: "Dam Break",
+    icon: "🏗️",
+    discharge: 15000,
+    width_m: 150,
+    ramp_minutes: 10,
+    note: "Sudden structural failure of an engineered (concrete/masonry) dam. Near-instantaneous full-height breach → catastrophic peak outflow. Formation time of minutes (cf. Malpasset 1959).",
+  },
+  {
+    key: "river_blockage",
+    label: "River Blockage / Natural Lake Breach",
+    icon: "⛰️",
+    discharge: 5000,
+    width_m: 80,
+    ramp_minutes: 120,
+    note: "Landslide / glacial / debris dam impounds a lake, then fails by overtopping and progressive erosion. Longer breach-formation time and lower peak discharge per unit stored volume than an engineered dam (Costa & Schuster 1988).",
+  },
+  {
+    key: "controlled_release",
+    label: "Controlled Release",
+    icon: "💧",
+    discharge: 8000,
+    width_m: 200,
+    ramp_minutes: 20,
+    note: "Deliberate operator-managed spillway/gate release. Wide effective opening (gate bay width), operator-ramped inflow, no structural failure.",
+  },
+  {
+    key: "embankment_failure",
+    label: "Embankment Failure",
+    icon: "🌊",
+    discharge: 3675,
+    width_m: 100,
+    ramp_minutes: 30,
+    note: "Earthen embankment / afflux bund overtopping and headward erosion. Progressive breach growth over ~0.5–2 h (Froehlich 2008 regression). Defaults match the documented Kosi 2008 Kusaha breach (3,675 m³/s).",
+  },
+];
+
+export default function ScenarioBuilder({
+  onScenarioSelect,
+  onEnterView,
+  activeJobId,
+}) {
   const [presets, setPresets] = useState([]);
   const [existingRuns, setExistingRuns] = useState([]);
   const [selectedPresetId, setSelectedPresetId] = useState("kosi_actual2008");
-  
+
   // Scenario Configuration State
   const [scenarioId, setScenarioId] = useState("kosi_actual2008");
-  const [scenarioName, setScenarioName] = useState("Kosi 2008 — Historical Validation");
+  const [scenarioName, setScenarioName] = useState(
+    "Kosi 2008 — Historical Validation",
+  );
   const [scenarioType, setScenarioType] = useState("historical");
+  const [eventType, setEventType] = useState("embankment_failure");
   const [description, setDescription] = useState(
-    "Documented 18 Aug 2008 Kusaha afflux embankment breach on the Kosi River. Reference validation case."
+    "Documented 18 Aug 2008 Kusaha afflux embankment breach on the Kosi River. Reference validation case.",
   );
 
   // Water & Inflow
   const [dischargeCumecs, setDischargeCumecs] = useState(3675);
-  const [dischargeSource, setDischargeSource] = useState("Documented 18 Aug 2008 actual breach discharge");
+  const [dischargeSource, setDischargeSource] = useState(
+    "Documented 18 Aug 2008 actual breach discharge",
+  );
 
   // Breach / Release Location & Geometry
   const [breachSiteName, setBreachSiteName] = useState("Kusaha Breach Site");
@@ -58,6 +119,10 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
   const [validationResult, setValidationResult] = useState(null);
   const [error, setError] = useState(null);
   const [activeRunningJobId, setActiveRunningJobId] = useState(null);
+
+  // Phase 11/12 specific state
+  const [showDemPreview, setShowDemPreview] = useState(false);
+  const [demData, setDemData] = useState(null);
 
   // Load Presets and Existing Runs on Mount
   useEffect(() => {
@@ -80,6 +145,54 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
         }
       })
       .catch((e) => console.error("Error fetching runs:", e));
+  };
+
+  const handleDamSelect = async (dam, aoi) => {
+    setScenarioType("custom_dam_break");
+    setScenarioId(`custom_${dam.dam_id}`);
+    setScenarioName(`${dam.name} Scenario`);
+    setDescription(
+      `Custom dam break scenario for ${dam.name} on the ${dam.river} river.`,
+    );
+    setDischargeCumecs(
+      dam.spillway_capacity_cumec > 0
+        ? dam.spillway_capacity_cumec * 1.5
+        : 5000,
+    );
+    setDischargeSource("Estimated based on spillway capacity");
+    setBreachSiteName(dam.name);
+    setBreachLat(dam.lat);
+    setBreachLon(dam.lon);
+
+    setSelectedPresetId("");
+
+    // Trigger DEM Fetch
+    setShowDemPreview(true);
+    setDemData(null);
+    try {
+      const fetchBbox = aoi || KOSI_BOUNDS;
+      const bbox = [
+        fetchBbox.west,
+        fetchBbox.south,
+        fetchBbox.east,
+        fetchBbox.north,
+      ];
+
+      const res = await fetch("http://127.0.0.1:8000/api/dem/fetch-aoi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          dam_id: dam.dam_id,
+          bbox: bbox,
+          resolution_m: 90.0,
+        }),
+      });
+      const data = await res.json();
+      setDemData(data);
+    } catch (e) {
+      console.error("Failed to fetch DEM:", e);
+      setDemData({ status: "error", error: e.message });
+    }
   };
 
   // Switch Preset Handler
@@ -108,6 +221,21 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
     setJobStatus("idle");
   };
 
+  const eventTypeMeta =
+    EVENT_TYPES.find((e) => e.key === eventType) || EVENT_TYPES[3];
+
+  // Applying an event type seeds physically-defensible starting parameters.
+  const handleEventTypeChange = (key) => {
+    setEventType(key);
+    if (scenarioType === "historical") return; // don't mutate the locked reference case
+    const et = EVENT_TYPES.find((e) => e.key === key);
+    if (!et) return;
+    setDischargeCumecs(et.discharge);
+    setDischargeSource(`${et.label} default (${et.note})`);
+    setBreachWidthM(et.width_m);
+    setRampMinutes(et.ramp_minutes);
+  };
+
   // Compile Current Scenario Object
   const compileScenario = () => {
     return {
@@ -115,6 +243,8 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
         scenario_id: scenarioId.trim() || `custom_${Date.now()}`,
         name: scenarioName.trim() || "Custom Scenario",
         scenario_type: scenarioType,
+        event_type: eventType,
+        event_type_label: eventTypeMeta.label,
         description: description.trim(),
         author: "FloodSim Operator",
         created_at: new Date().toISOString(),
@@ -127,8 +257,14 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
         bounds: KOSI_BOUNDS,
       },
       dam: {
-        name: scenarioType === "controlled_release" ? "Kosi Barrage Gates" : "Kusaha Afflux Embankment",
-        structure_type: scenarioType === "controlled_release" ? "gated_barrage_release" : "embankment_breach",
+        name:
+          scenarioType === "controlled_release"
+            ? "Kosi Barrage Gates"
+            : "Kusaha Afflux Embankment",
+        structure_type:
+          scenarioType === "controlled_release"
+            ? "gated_barrage_release"
+            : "embankment_breach",
         barrage_name: "Kosi Barrage (Bhimnagar)",
         barrage_coordinates: { lat: 26.5263, lon: 86.9269 },
       },
@@ -164,10 +300,14 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
     const warnings = [];
 
     if (breachLat < KOSI_BOUNDS.south || breachLat > KOSI_BOUNDS.north) {
-      errors.push(`Latitude must be within the DEM AOI: ${KOSI_BOUNDS.south}°N to ${KOSI_BOUNDS.north}°N.`);
+      errors.push(
+        `Latitude must be within the DEM AOI: ${KOSI_BOUNDS.south}°N to ${KOSI_BOUNDS.north}°N.`,
+      );
     }
     if (breachLon < KOSI_BOUNDS.west || breachLon > KOSI_BOUNDS.east) {
-      errors.push(`Longitude must be within the DEM AOI: ${KOSI_BOUNDS.west}°E to ${KOSI_BOUNDS.east}°E.`);
+      errors.push(
+        `Longitude must be within the DEM AOI: ${KOSI_BOUNDS.west}°E to ${KOSI_BOUNDS.east}°E.`,
+      );
     }
     if (isNaN(dischargeCumecs) || dischargeCumecs <= 0) {
       errors.push("Peak discharge must be a positive number.");
@@ -181,7 +321,9 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
     if (isNaN(durationHours) || durationHours <= 0) {
       errors.push("Simulation duration must be greater than 0 hours.");
     } else if (durationHours > 8) {
-      warnings.push("Simulation duration > 8h requires extended computation time.");
+      warnings.push(
+        "Simulation duration > 8h requires extended computation time.",
+      );
     }
     if (isNaN(snapshotIntervalMin) || snapshotIntervalMin <= 0) {
       errors.push("Snapshot interval must be greater than 0 minutes.");
@@ -193,7 +335,8 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
     }
 
     const estimatedTimesteps = Math.round((durationHours * 3600) / 10);
-    const estimatedFrames = Math.floor((durationHours * 60) / snapshotIntervalMin) + 1;
+    const estimatedFrames =
+      Math.floor((durationHours * 60) / snapshotIntervalMin) + 1;
 
     return {
       valid: errors.length === 0,
@@ -284,7 +427,8 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
           <div>
             <h2>Scenario Builder</h2>
             <p className="subtle">
-              Configure and run physical 2D Shallow Water Equation simulations across the Kosi River basin.
+              Configure and run physical 2D Shallow Water Equation simulations
+              across the Kosi River basin.
             </p>
           </div>
         </div>
@@ -308,456 +452,593 @@ export default function ScenarioBuilder({ onScenarioSelect, onEnterView, activeJ
             );
           })}
         </div>
+        <DamSelector onSelect={handleDamSelect} />
       </div>
 
-      <div className="sb-grid">
-        {/* Left Column: Form Configuration */}
-        <div className="sb-form-col">
-          {/* Metadata Section */}
-          <div className="sb-card">
-            <div className="sb-card-header">
-              <h3>Scenario Identification</h3>
-              <span className={`sb-badge badge-${scenarioType}`}>
-                {scenarioType === "historical"
-                  ? "Historical Validation"
-                  : scenarioType === "controlled_release"
-                  ? "Controlled Release"
-                  : "Custom Dam Break"}
-              </span>
-            </div>
-            <div className="sb-card-body">
-              <div className="form-group">
-                <label>Scenario Name</label>
-                <input
-                  type="text"
-                  value={scenarioName}
-                  onChange={(e) => setScenarioName(e.target.value)}
-                  disabled={scenarioType === "historical"}
-                />
+      {showDemPreview && (
+        <DemPreviewPanel
+          demData={demData}
+          damId={scenarioId}
+          onContinue={() => setShowDemPreview(false)}
+        />
+      )}
+
+      {!showDemPreview && (
+        <div className="sb-grid">
+          {/* Left Column: Form Configuration */}
+          <div className="sb-form-col">
+            {/* Metadata Section */}
+            <div className="sb-card">
+              <div className="sb-card-header">
+                <h3>Scenario Identification</h3>
+                <span className={`sb-badge badge-${scenarioType}`}>
+                  {scenarioType === "historical"
+                    ? "Historical Validation"
+                    : scenarioType === "controlled_release"
+                      ? "Controlled Release"
+                      : "Custom Dam Break"}
+                </span>
               </div>
-              <div className="form-row-2">
+              <div className="sb-card-body">
                 <div className="form-group">
-                  <label>Scenario ID</label>
+                  <label>Scenario Name</label>
                   <input
                     type="text"
-                    value={scenarioId}
-                    onChange={(e) => setScenarioId(e.target.value)}
+                    value={scenarioName}
+                    onChange={(e) => setScenarioName(e.target.value)}
                     disabled={scenarioType === "historical"}
                   />
                 </div>
-                <div className="form-group">
-                  <label>Scenario Type</label>
-                  <select
-                    value={scenarioType}
-                    onChange={(e) => setScenarioType(e.target.value)}
-                    disabled={scenarioType === "historical"}
-                  >
-                    <option value="historical">Historical Validation</option>
-                    <option value="custom_dam_break">Custom Dam Break Scenario</option>
-                    <option value="controlled_release">Controlled Water Release</option>
-                  </select>
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Description & Notes</label>
-                <textarea
-                  rows="2"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  disabled={scenarioType === "historical"}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section 1: Study Area */}
-          <div className="sb-card">
-            <div className="sb-card-header">
-              <h3>1. Study Area & Topography</h3>
-              <span className="sb-param-tag">SRTM 30m DEM</span>
-            </div>
-            <div className="sb-card-body">
-              <div className="sb-info-banner">
-                <strong>Verified Dataset:</strong> Topography is bound to the high-resolution SRTM 30m digital elevation grid covering the Kosi River Basin (North Bihar / Sunsari AOI: 25.9°N–26.7°N, 86.6°E–87.3°E, ~6,222 km²).
-              </div>
-              <div className="stat-grid" style={{ marginTop: "10px" }}>
-                <div><span>River Basin</span><strong>Kosi (Ganga Sub-basin)</strong></div>
-                <div><span>Grid Extent</span><strong>6,221.5 km²</strong></div>
-                <div><span>Elevation Range</span><strong>41m – 391m MSL</strong></div>
-                <div><span>Bed Roughness (n)</span><strong>{manningN}</strong></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 2: Water Conditions */}
-          <div className="sb-card">
-            <div className="sb-card-header">
-              <h3>2. Water Conditions & Inflow</h3>
-              <span className="sb-param-tag">Hydrograph Mass Inflow</span>
-            </div>
-            <div className="sb-card-body">
-              <div className="form-group">
-                <label>
-                  Peak Discharge ($Q_{'{peak}'}$): <strong>{Number(dischargeCumecs).toLocaleString()} m³/s (cumecs)</strong>
-                </label>
-                <input
-                  type="number"
-                  min="100"
-                  max="40000"
-                  step="50"
-                  value={dischargeCumecs}
-                  onChange={(e) => setDischargeCumecs(Number(e.target.value))}
-                  disabled={scenarioType === "historical"}
-                />
-              </div>
-              <div className="quick-buttons">
-                <span className="subtle" style={{ fontSize: "12px", alignSelf: "center" }}>Quick presets:</span>
-                <button
-                  type="button"
-                  className="chip-btn"
-                  onClick={() => setDischargeCumecs(3675)}
-                  disabled={scenarioType === "historical"}
-                >
-                  3,675 m³/s (2008 Actual)
-                </button>
-                <button
-                  type="button"
-                  className="chip-btn"
-                  onClick={() => setDischargeCumecs(12000)}
-                  disabled={scenarioType === "historical"}
-                >
-                  12,000 m³/s (High Spillway)
-                </button>
-                <button
-                  type="button"
-                  className="chip-btn"
-                  onClick={() => setDischargeCumecs(27000)}
-                  disabled={scenarioType === "historical"}
-                >
-                  27,000 m³/s (Design Peak)
-                </button>
-              </div>
-
-              <div className="form-row-2" style={{ marginTop: "12px" }}>
-                <div className="form-group">
-                  <label>Initial Bed Condition</label>
-                  <select disabled value="dry_bed">
-                    <option value="dry_bed">Dry-bed ($h_0 = 0.0\text{"{ m}"}$) — Standard Overland</option>
-                  </select>
+                <div className="form-row-2">
+                  <div className="form-group">
+                    <label>Scenario ID</label>
+                    <input
+                      type="text"
+                      value={scenarioId}
+                      onChange={(e) => setScenarioId(e.target.value)}
+                      disabled={scenarioType === "historical"}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Scenario Type</label>
+                    <select
+                      value={scenarioType}
+                      onChange={(e) => setScenarioType(e.target.value)}
+                      disabled={scenarioType === "historical"}
+                    >
+                      <option value="historical">Historical Validation</option>
+                      <option value="custom_dam_break">
+                        Custom Dam Break Scenario
+                      </option>
+                      <option value="controlled_release">
+                        Controlled Water Release
+                      </option>
+                    </select>
+                  </div>
                 </div>
                 <div className="form-group">
-                  <label>Discharge Source Citation</label>
-                  <input
-                    type="text"
-                    value={dischargeSource}
-                    onChange={(e) => setDischargeSource(e.target.value)}
+                  <label>Description & Notes</label>
+                  <textarea
+                    rows="2"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     disabled={scenarioType === "historical"}
                   />
                 </div>
+
+                <div className="form-group">
+                  <label>Event Type <span style={{ color: "#888", fontWeight: 400 }}>(Deliverable i — dam break vs. river blockage)</span></label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                    {EVENT_TYPES.map((et) => (
+                      <button
+                        key={et.key}
+                        type="button"
+                        onClick={() => handleEventTypeChange(et.key)}
+                        style={{
+                          textAlign: "left",
+                          padding: "8px 10px",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          border: eventType === et.key ? "1px solid #4a90ff" : "1px solid rgba(255,255,255,0.15)",
+                          background: eventType === et.key ? "rgba(74,144,255,0.15)" : "rgba(255,255,255,0.03)",
+                          color: eventType === et.key ? "#cfe0ff" : "#bbb",
+                        }}
+                      >
+                        <div style={{ fontWeight: 600, fontSize: "13px" }}>{et.icon} {et.label}</div>
+                        <div style={{ fontSize: "10px", color: "#888" }}>
+                          {et.discharge.toLocaleString()} m³/s · {et.width_m} m · {et.ramp_minutes} min ramp
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div style={{ fontSize: "11px", color: "#999", marginTop: "6px", lineHeight: 1.4 }}>
+                    {eventTypeMeta.note}
+                    {scenarioType === "historical" && (
+                      <em style={{ display: "block", color: "#ffb020", marginTop: "2px" }}>
+                        Reference case parameters are locked — selecting an event type here only re-labels the run.
+                      </em>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Section 3: Breach Scenario */}
-          <div className="sb-card">
-            <div className="sb-card-header">
-              <h3>3. Breach / Inflow Location & Failure Geometry</h3>
-              <span className="sb-param-tag">DEM Sited</span>
+            {/* Section 1: Study Area */}
+            <div className="sb-card">
+              <div className="sb-card-header">
+                <h3>1. Study Area & Topography</h3>
+                <span className="sb-param-tag">SRTM 30m DEM</span>
+              </div>
+              <div className="sb-card-body">
+                <div className="sb-info-banner">
+                  <strong>Verified Dataset:</strong> Topography is bound to the
+                  high-resolution SRTM 30m digital elevation grid covering the
+                  Kosi River Basin (North Bihar / Sunsari AOI: 25.9°N–26.7°N,
+                  86.6°E–87.3°E, ~6,222 km²).
+                </div>
+                <div className="stat-grid" style={{ marginTop: "10px" }}>
+                  <div>
+                    <span>River Basin</span>
+                    <strong>Kosi (Ganga Sub-basin)</strong>
+                  </div>
+                  <div>
+                    <span>Grid Extent</span>
+                    <strong>6,221.5 km²</strong>
+                  </div>
+                  <div>
+                    <span>Elevation Range</span>
+                    <strong>41m – 391m MSL</strong>
+                  </div>
+                  <div>
+                    <span>Bed Roughness (n)</span>
+                    <strong>{manningN}</strong>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="sb-card-body">
-              <div className="form-group">
-                <label>Breach / Structure Location Name</label>
-                <input
-                  type="text"
-                  value={breachSiteName}
-                  onChange={(e) => setBreachSiteName(e.target.value)}
-                  disabled={scenarioType === "historical"}
-                />
-              </div>
 
-              <div className="form-row-2">
-                <div className="form-group">
-                  <label>Latitude (°N) [25.90 - 26.70]</label>
-                  <input
-                    type="number"
-                    step="0.001"
-                    min={KOSI_BOUNDS.south}
-                    max={KOSI_BOUNDS.north}
-                    value={breachLat}
-                    onChange={(e) => setBreachLat(Number(e.target.value))}
-                    disabled={scenarioType === "historical"}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Longitude (°E) [86.60 - 87.30]</label>
-                  <input
-                    type="number"
-                    step="0.001"
-                    min={KOSI_BOUNDS.west}
-                    max={KOSI_BOUNDS.east}
-                    value={breachLon}
-                    onChange={(e) => setBreachLon(Number(e.target.value))}
-                    disabled={scenarioType === "historical"}
-                  />
-                </div>
+            {/* Section 2: Water Conditions */}
+            <div className="sb-card">
+              <div className="sb-card-header">
+                <h3>2. Water Conditions & Inflow</h3>
+                <span className="sb-param-tag">Hydrograph Mass Inflow</span>
               </div>
-
-              <div className="quick-buttons">
-                <span className="subtle" style={{ fontSize: "12px", alignSelf: "center" }}>Siting presets:</span>
-                {COORD_PRESETS.map((cp) => (
-                  <button
-                    key={cp.name}
-                    type="button"
-                    className="chip-btn"
-                    onClick={() => {
-                      setBreachLat(cp.lat);
-                      setBreachLon(cp.lon);
-                      setBreachSiteName(cp.name);
-                    }}
-                    disabled={scenarioType === "historical"}
-                  >
-                    {cp.name.split(" ")[0]} ({cp.lat}°, {cp.lon}°)
-                  </button>
-                ))}
-              </div>
-
-              <div className="form-row-2" style={{ marginTop: "12px" }}>
-                <div className="form-group">
-                  <label>Breach Width ($W$): <strong>{breachWidthM} m</strong></label>
-                  <input
-                    type="range"
-                    min="10"
-                    max="500"
-                    step="5"
-                    value={breachWidthM}
-                    onChange={(e) => setBreachWidthM(Number(e.target.value))}
-                    disabled={scenarioType === "historical"}
-                  />
-                </div>
+              <div className="sb-card-body">
                 <div className="form-group">
                   <label>
-                    {scenarioType === "controlled_release" ? "Gate Opening / Ramp Duration" : "Breach Failure Duration ($T_{ramp}$)"}: <strong>{rampMinutes} min</strong>
+                    Peak Discharge ($Q_{"{peak}"}$):{" "}
+                    <strong>
+                      {Number(dischargeCumecs).toLocaleString()} m³/s (cumecs)
+                    </strong>
                   </label>
                   <input
-                    type="range"
-                    min="0"
-                    max="120"
-                    step="5"
-                    value={rampMinutes}
-                    onChange={(e) => setRampMinutes(Number(e.target.value))}
+                    type="number"
+                    min="100"
+                    max="40000"
+                    step="50"
+                    value={dischargeCumecs}
+                    onChange={(e) => setDischargeCumecs(Number(e.target.value))}
                     disabled={scenarioType === "historical"}
                   />
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 4: Simulation Settings */}
-          <div className="sb-card">
-            <div className="sb-card-header">
-              <h3>4. Simulation Settings</h3>
-              <span className="sb-param-tag">2D SWE Solver</span>
-            </div>
-            <div className="sb-card-body">
-              <div className="form-row-3">
-                <div className="form-group">
-                  <label>Duration: <strong>{durationHours} hours</strong></label>
-                  <input
-                    type="range"
-                    min="1.0"
-                    max="8.0"
-                    step="0.5"
-                    value={durationHours}
-                    onChange={(e) => setDurationHours(Number(e.target.value))}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Snapshot Interval</label>
-                  <select
-                    value={snapshotIntervalMin}
-                    onChange={(e) => setSnapshotIntervalMin(Number(e.target.value))}
+                <div className="quick-buttons">
+                  <span
+                    className="subtle"
+                    style={{ fontSize: "12px", alignSelf: "center" }}
                   >
-                    <option value="5">5 minutes (dense)</option>
-                    <option value="10">10 minutes</option>
-                    <option value="15">15 minutes (standard)</option>
-                    <option value="30">30 minutes (fast)</option>
-                  </select>
+                    Quick presets:
+                  </span>
+                  <button
+                    type="button"
+                    className="chip-btn"
+                    onClick={() => setDischargeCumecs(3675)}
+                    disabled={scenarioType === "historical"}
+                  >
+                    3,675 m³/s (2008 Actual)
+                  </button>
+                  <button
+                    type="button"
+                    className="chip-btn"
+                    onClick={() => setDischargeCumecs(12000)}
+                    disabled={scenarioType === "historical"}
+                  >
+                    12,000 m³/s (High Spillway)
+                  </button>
+                  <button
+                    type="button"
+                    className="chip-btn"
+                    onClick={() => setDischargeCumecs(27000)}
+                    disabled={scenarioType === "historical"}
+                  >
+                    27,000 m³/s (Design Peak)
+                  </button>
                 </div>
+
+                <div className="form-row-2" style={{ marginTop: "12px" }}>
+                  <div className="form-group">
+                    <label>Initial Bed Condition</label>
+                    <select disabled value="dry_bed">
+                      <option value="dry_bed">
+                        Dry-bed ($h_0 = 0.0\text{"{ m}"}$) — Standard Overland
+                      </option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Discharge Source Citation</label>
+                    <input
+                      type="text"
+                      value={dischargeSource}
+                      onChange={(e) => setDischargeSource(e.target.value)}
+                      disabled={scenarioType === "historical"}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3: Breach Scenario */}
+            <div className="sb-card">
+              <div className="sb-card-header">
+                <h3>3. Breach / Inflow Location & Failure Geometry</h3>
+                <span className="sb-param-tag">DEM Sited</span>
+              </div>
+              <div className="sb-card-body">
                 <div className="form-group">
-                  <label>Manning Roughness ($n$)</label>
+                  <label>Breach / Structure Location Name</label>
                   <input
-                    type="number"
-                    step="0.005"
-                    min="0.020"
-                    max="0.080"
-                    value={manningN}
-                    onChange={(e) => setManningN(Number(e.target.value))}
+                    type="text"
+                    value={breachSiteName}
+                    onChange={(e) => setBreachSiteName(e.target.value)}
+                    disabled={scenarioType === "historical"}
                   />
+                </div>
+
+                <div className="form-row-2">
+                  <div className="form-group">
+                    <label>Latitude (°N) [25.90 - 26.70]</label>
+                    <input
+                      type="number"
+                      step="0.001"
+                      min={KOSI_BOUNDS.south}
+                      max={KOSI_BOUNDS.north}
+                      value={breachLat}
+                      onChange={(e) => setBreachLat(Number(e.target.value))}
+                      disabled={scenarioType === "historical"}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Longitude (°E) [86.60 - 87.30]</label>
+                    <input
+                      type="number"
+                      step="0.001"
+                      min={KOSI_BOUNDS.west}
+                      max={KOSI_BOUNDS.east}
+                      value={breachLon}
+                      onChange={(e) => setBreachLon(Number(e.target.value))}
+                      disabled={scenarioType === "historical"}
+                    />
+                  </div>
+                </div>
+
+                <div className="quick-buttons">
+                  <span
+                    className="subtle"
+                    style={{ fontSize: "12px", alignSelf: "center" }}
+                  >
+                    Siting presets:
+                  </span>
+                  {COORD_PRESETS.map((cp) => (
+                    <button
+                      key={cp.name}
+                      type="button"
+                      className="chip-btn"
+                      onClick={() => {
+                        setBreachLat(cp.lat);
+                        setBreachLon(cp.lon);
+                        setBreachSiteName(cp.name);
+                      }}
+                      disabled={scenarioType === "historical"}
+                    >
+                      {cp.name.split(" ")[0]} ({cp.lat}°, {cp.lon}°)
+                    </button>
+                  ))}
+                </div>
+
+                <div className="form-row-2" style={{ marginTop: "12px" }}>
+                  <div className="form-group">
+                    <label>
+                      Breach Width ($W$): <strong>{breachWidthM} m</strong>
+                    </label>
+                    <input
+                      type="range"
+                      min="10"
+                      max="500"
+                      step="5"
+                      value={breachWidthM}
+                      onChange={(e) => setBreachWidthM(Number(e.target.value))}
+                      disabled={scenarioType === "historical"}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      {scenarioType === "controlled_release"
+                        ? "Gate Opening / Ramp Duration"
+                        : "Breach Failure Duration ($T_{ramp}$)"}
+                      : <strong>{rampMinutes} min</strong>
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="120"
+                      step="5"
+                      value={rampMinutes}
+                      onChange={(e) => setRampMinutes(Number(e.target.value))}
+                      disabled={scenarioType === "historical"}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 4: Simulation Settings */}
+            <div className="sb-card">
+              <div className="sb-card-header">
+                <h3>4. Simulation Settings</h3>
+                <span className="sb-param-tag">2D SWE Solver</span>
+              </div>
+              <div className="sb-card-body">
+                <div className="form-row-3">
+                  <div className="form-group">
+                    <label>
+                      Duration: <strong>{durationHours} hours</strong>
+                    </label>
+                    <input
+                      type="range"
+                      min="1.0"
+                      max="8.0"
+                      step="0.5"
+                      value={durationHours}
+                      onChange={(e) => setDurationHours(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Snapshot Interval</label>
+                    <select
+                      value={snapshotIntervalMin}
+                      onChange={(e) =>
+                        setSnapshotIntervalMin(Number(e.target.value))
+                      }
+                    >
+                      <option value="5">5 minutes (dense)</option>
+                      <option value="10">10 minutes</option>
+                      <option value="15">15 minutes (standard)</option>
+                      <option value="30">30 minutes (fast)</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Manning Roughness ($n$)</label>
+                    <input
+                      type="number"
+                      step="0.005"
+                      min="0.020"
+                      max="0.080"
+                      value={manningN}
+                      onChange={(e) => setManningN(Number(e.target.value))}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Right Column: Validation, Summary & Execution */}
-        <div className="sb-summary-col">
-          {/* Summary & Execution Card */}
-          <div className="sb-card sb-sticky-card">
-            <div className="sb-card-header">
-              <h3>Configuration Summary</h3>
-              <button className="sb-text-btn" onClick={handleValidate}>
-                Validate
-              </button>
-            </div>
-            <div className="sb-card-body">
-              <div className="sb-summary-list">
-                <div className="sb-summary-item">
-                  <span>Scenario:</span>
-                  <strong>{scenarioName}</strong>
-                </div>
-                <div className="sb-summary-item">
-                  <span>Breach Location:</span>
-                  <strong>{breachLat.toFixed(4)}°N, {breachLon.toFixed(4)}°E</strong>
-                </div>
-                <div className="sb-summary-item">
-                  <span>Peak Inflow Discharge:</span>
-                  <strong>{Number(dischargeCumecs).toLocaleString()} m³/s</strong>
-                </div>
-                <div className="sb-summary-item">
-                  <span>Breach Geometry:</span>
-                  <strong>{breachWidthM}m width · {rampMinutes}m ramp</strong>
-                </div>
-                <div className="sb-summary-item">
-                  <span>Simulated Duration:</span>
-                  <strong>{durationHours} hours ({snapshotIntervalMin}m snapshots)</strong>
-                </div>
-                <div className="sb-summary-item">
-                  <span>Total Output Snapshots:</span>
-                  <strong>{Math.floor((durationHours * 60) / snapshotIntervalMin) + 1} frames</strong>
-                </div>
-              </div>
-
-              {/* Validation Feedback */}
-              {validationResult && (
-                <div className={`sb-validation-box ${validationResult.valid ? "valid" : "invalid"}`}>
-                  {validationResult.valid ? (
-                    <div className="sb-val-ok">
-                      <IconCheck /> All parameters physically valid & within DEM AOI bounds.
-                    </div>
-                  ) : (
-                    <div className="sb-val-errors">
-                      <strong>Validation Errors:</strong>
-                      <ul>
-                        {validationResult.errors.map((err, i) => (
-                          <li key={i}>{err}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {validationResult.warnings && validationResult.warnings.length > 0 && (
-                    <div className="sb-val-warnings">
-                      <strong>Notes:</strong>
-                      <ul>
-                        {validationResult.warnings.map((w, i) => (
-                          <li key={i}>{w}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {error && <div className="sb-error-box">{error}</div>}
-
-              {/* Honest Execution Tracker */}
-              {jobStatus !== "idle" && (
-                <div className={`sb-status-box status-${jobStatus}`}>
-                  <div className="sb-status-header">
-                    <span className="sb-status-dot" />
-                    <strong>Status: {jobStatus.toUpperCase()}</strong>
-                  </div>
-                  <p className="sb-status-msg">{statusMessage}</p>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="sb-actions">
-                <button
-                  className="sb-run-btn"
-                  onClick={handleRunSimulation}
-                  disabled={jobStatus === "running" || jobStatus === "processing" || jobStatus === "queued"}
-                >
-                  {jobStatus === "running" || jobStatus === "processing" || jobStatus === "queued"
-                    ? "Running Simulation…"
-                    : "🚀 Run Simulation Pipeline"}
+          {/* Right Column: Validation, Summary & Execution */}
+          <div className="sb-summary-col">
+            {/* Summary & Execution Card */}
+            <div className="sb-card sb-sticky-card">
+              <div className="sb-card-header">
+                <h3>Configuration Summary</h3>
+                <button className="sb-text-btn" onClick={handleValidate}>
+                  Validate
                 </button>
+              </div>
+              <div className="sb-card-body">
+                <div className="sb-summary-list">
+                  <div className="sb-summary-item">
+                    <span>Scenario:</span>
+                    <strong>{scenarioName}</strong>
+                  </div>
+                  <div className="sb-summary-item">
+                    <span>Breach Location:</span>
+                    <strong>
+                      {breachLat.toFixed(4)}°N, {breachLon.toFixed(4)}°E
+                    </strong>
+                  </div>
+                  <div className="sb-summary-item">
+                    <span>Peak Inflow Discharge:</span>
+                    <strong>
+                      {Number(dischargeCumecs).toLocaleString()} m³/s
+                    </strong>
+                  </div>
+                  <div className="sb-summary-item">
+                    <span>Breach Geometry:</span>
+                    <strong>
+                      {breachWidthM}m width · {rampMinutes}m ramp
+                    </strong>
+                  </div>
+                  <div className="sb-summary-item">
+                    <span>Simulated Duration:</span>
+                    <strong>
+                      {durationHours} hours ({snapshotIntervalMin}m snapshots)
+                    </strong>
+                  </div>
+                  <div className="sb-summary-item">
+                    <span>Total Output Snapshots:</span>
+                    <strong>
+                      {Math.floor((durationHours * 60) / snapshotIntervalMin) +
+                        1}{" "}
+                      frames
+                    </strong>
+                  </div>
+                </div>
 
-                {jobStatus === "complete" && (
-                  <div className="sb-completed-actions">
-                    <button
-                      className="sb-view-btn primary"
-                      onClick={() => {
-                        if (onScenarioSelect) onScenarioSelect(scenarioId);
-                        if (onEnterView) onEnterView("full");
-                      }}
-                    >
-                      🗺️ Open 2D Map & Timeline <IconArrowRight />
-                    </button>
-                    <button
-                      className="sb-view-btn"
-                      onClick={() => {
-                        if (onScenarioSelect) onScenarioSelect(scenarioId);
-                        if (onEnterView) onEnterView("full");
-                      }}
-                    >
-                      🌐 View 3D Cesium Terrain
-                    </button>
+                {/* Validation Feedback */}
+                {validationResult && (
+                  <div
+                    className={`sb-validation-box ${validationResult.valid ? "valid" : "invalid"}`}
+                  >
+                    {validationResult.valid ? (
+                      <div className="sb-val-ok">
+                        <IconCheck /> All parameters physically valid & within
+                        DEM AOI bounds.
+                      </div>
+                    ) : (
+                      <div className="sb-val-errors">
+                        <strong>Validation Errors:</strong>
+                        <ul>
+                          {validationResult.errors.map((err, i) => (
+                            <li key={i}>{err}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {validationResult.warnings &&
+                      validationResult.warnings.length > 0 && (
+                        <div className="sb-val-warnings">
+                          <strong>Notes:</strong>
+                          <ul>
+                            {validationResult.warnings.map((w, i) => (
+                              <li key={i}>{w}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                  </div>
+                )}
+
+                {error && <div className="sb-error-box">{error}</div>}
+
+                {scenarioType === "custom_dam_break" ? (
+                  <ScenarioExecutionPanel
+                    damId={scenarioId.replace("custom_", "")}
+                    demData={demData}
+                    onExecutionComplete={(jobId) => {
+                      if (onScenarioSelect) {
+                        onScenarioSelect(jobId);
+                      }
+                      if (onEnterView) {
+                        onEnterView("full");
+                      }
+                    }}
+                  />
+                ) : (
+                  <>
+                    {/* Honest Execution Tracker */}
+                    {jobStatus !== "idle" && (
+                      <div className={`sb-status-box status-${jobStatus}`}>
+                        <div className="sb-status-header">
+                          <span className="sb-status-dot" />
+                          <strong>Status: {jobStatus.toUpperCase()}</strong>
+                        </div>
+                        <p className="sb-status-msg">{statusMessage}</p>
+                        <p className="sb-status-msg" style={{ color: "#cfe0ff", fontWeight: 600 }}>
+                          Scenario: {eventTypeMeta.label} — {scenarioName}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="sb-actions">
+                      <button
+                        className="sb-run-btn"
+                        onClick={handleRunSimulation}
+                        disabled={
+                          jobStatus === "running" ||
+                          jobStatus === "processing" ||
+                          jobStatus === "queued"
+                        }
+                      >
+                        {jobStatus === "running" ||
+                        jobStatus === "processing" ||
+                        jobStatus === "queued"
+                          ? "Running Simulation…"
+                          : "🚀 Run Simulation Pipeline"}
+                      </button>
+
+                      {jobStatus === "complete" && (
+                        <div className="sb-completed-actions">
+                          <button
+                            className="sb-view-btn primary"
+                            onClick={() => {
+                              if (onScenarioSelect)
+                                onScenarioSelect(scenarioId);
+                              if (onEnterView) onEnterView("full");
+                            }}
+                          >
+                            🗺️ Open 2D Map & Timeline <IconArrowRight />
+                          </button>
+                          <button
+                            className="sb-view-btn"
+                            onClick={() => {
+                              if (onScenarioSelect)
+                                onScenarioSelect(scenarioId);
+                              if (onEnterView) onEnterView("full");
+                            }}
+                          >
+                            🌐 View 3D Cesium Terrain
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Available Scenario Runs History */}
+            <div className="sb-card" style={{ marginTop: "16px" }}>
+              <div className="sb-card-header">
+                <h3>Available Scenario Runs</h3>
+                <span className="subtle">{existingRuns.length} runs</span>
+              </div>
+              <div className="sb-card-body">
+                {existingRuns.length === 0 ? (
+                  <p className="subtle">No runs available yet.</p>
+                ) : (
+                  <div className="sb-runs-list">
+                    {existingRuns.map((r) => {
+                      const isActive = activeJobId === r.job_id;
+                      return (
+                        <div
+                          key={r.job_id}
+                          className={`sb-run-item ${isActive ? "active" : ""}`}
+                          onClick={() => handleLoadExistingRun(r.job_id)}
+                        >
+                          <div className="sb-run-title">
+                            <strong>{r.scenario_label}</strong>
+                            {isActive && (
+                              <span className="sb-active-tag">Active</span>
+                            )}
+                          </div>
+                          <div className="sb-run-meta">
+                            <span>
+                              {Number(r.discharge_cumecs).toLocaleString()} m³/s
+                            </span>
+                            <span>·</span>
+                            <span>{r.duration_hours}h duration</span>
+                            <span>·</span>
+                            <span>{r.max_flooded_area_km2} km² max extent</span>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
             </div>
           </div>
-
-          {/* Available Scenario Runs History */}
-          <div className="sb-card" style={{ marginTop: "16px" }}>
-            <div className="sb-card-header">
-              <h3>Available Scenario Runs</h3>
-              <span className="subtle">{existingRuns.length} runs</span>
-            </div>
-            <div className="sb-card-body">
-              {existingRuns.length === 0 ? (
-                <p className="subtle">No runs available yet.</p>
-              ) : (
-                <div className="sb-runs-list">
-                  {existingRuns.map((r) => {
-                    const isActive = activeJobId === r.job_id;
-                    return (
-                      <div
-                        key={r.job_id}
-                        className={`sb-run-item ${isActive ? "active" : ""}`}
-                        onClick={() => handleLoadExistingRun(r.job_id)}
-                      >
-                        <div className="sb-run-title">
-                          <strong>{r.scenario_label}</strong>
-                          {isActive && <span className="sb-active-tag">Active</span>}
-                        </div>
-                        <div className="sb-run-meta">
-                          <span>{Number(r.discharge_cumecs).toLocaleString()} m³/s</span>
-                          <span>·</span>
-                          <span>{r.duration_hours}h duration</span>
-                          <span>·</span>
-                          <span>{r.max_flooded_area_km2} km² max extent</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

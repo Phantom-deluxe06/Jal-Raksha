@@ -10,7 +10,7 @@
     "current_reading": {
       "water_level_m": 75.38,
       "data_time_ist": "2026-08-27T08:00:00",
-      "age_hours": 11.5,
+      "age_hours": 21.6,
       "is_live": true,
       "reference_levels_m": {
         "frl": 74.69,
@@ -25,13 +25,13 @@
       "FIN": {
         "latest_value": 5476.92,
         "latest_data_time_ist": "2021-08-18T08:00:00",
-        "age_hours": 44051.5,
+        "age_hours": 44061.6,
         "live": false
       },
       "FOL": {
         "latest_value": 141.6,
         "latest_data_time_ist": "2021-08-18T08:00:00",
-        "age_hours": 44051.5,
+        "age_hours": 44061.6,
         "live": false
       }
     },
@@ -45,9 +45,75 @@
       "url": "https://ffs.india-water.gov.in",
       "note": "Unofficial/undocumented public JSON API discovered by inspecting the CWC dashboard's own network requests -- no auth required, but no published API contract either; could change without notice."
     },
-    "synced_at_utc": "2026-08-27T13:58:50.280338"
+    "synced_at_utc": "2026-08-28T00:05:31.910146"
   },
   "sync_log": [
+    {
+      "attempted_at_utc": "2026-08-28T00:05:31.910146",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T20:17:14.967484",
+      "success": false,
+      "error": "request to /iam/api/flood-forecast-static/specification/ failed: HTTPSConnectionPool(host='ffs.india-water.gov.in', port=443): Max retries exceeded with url: /iam/api/flood-forecast-static/specification/?specification=%7B%22where%22%3A%20%7B%22expression%22%3A%20%7B%22valueIsRelationField%22%3A%20false%2C%20%22fieldName%22%3A%20%22type%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Inflow%22%7D%7D%7D (Caused by NameResolutionError(\"HTTPSConnection(host='ffs.india-water.gov.in', port=443): Failed to resolve 'ffs.india-water.gov.in' ([Errno 11001] getaddrinfo failed)\"))",
+      "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\urllib3\\connection.py\", line 204, in _new_conn\n    sock = connection.create_connection(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\urllib3\\util\\connection.py\", line 60, in create_connection\n    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\socket.py\", line 978, in getaddrinfo\n    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsocket.gaierror: [Errno 11001] getaddrinfo failed\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\urllib3\\connectionpool.py\", line 788, in urlopen\n    response = self._make_request(\n               ^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\urllib3\\connectionpool.py\", line 488, in _make_request\n    raise new_e\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\urllib3\\connectionpool.py\", line 464, in _make_request\n    self._validate_conn(conn)\nurllib3.exceptions.NameResolutionError: HTTPSConnection(host='ffs.india-water.gov.in', port=443): Failed to resolve 'ffs.india-water.gov.in' ([Errno 11001] getaddrinfo failed)\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\requests\\adapters.py\", line 696, in send\n    resp = conn.urlopen(\n           ^^^^^^^^^^^^^\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\urllib3\\connectionpool.py\", line 842, in urlopen\n    retries = retries.increment(\n              ^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\urllib3\\util\\retry.py\", line 543, in increment\n    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nurllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='ffs.india-water.gov.in', port=443): Max retries exceeded with url: /iam/api/flood-forecast-static/specification/?specification=%7B%22where%22%3A%20%7B%22expression%22%3A%20%7B%22valueIsRelationField%22%3A%20false%2C%20%22fieldName%22%3A%20%22type%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Inflow%22%7D%7D%7D (Caused by NameResolutionError(\"HTTPSConnection(host='ffs.india-water.gov.in', port=443): Failed to resolve 'ffs.india-water.gov.in' ([Errno 11001] getaddrinfo failed)\"))\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"E:\\software projects\\flood_simulator\\backend\\digital_twin\\cwc_client.py\", line 39, in _get_json\n    resp = requests.get(url, headers=HEADERS, timeout=TIMEOUT_S)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\requests\\api.py\", line 87, in get\n    return request(\"get\", url, params=params, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Hamshitha S A\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\requests\\api.py\", line 71, in request\n    return session.request(method=method, url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='ffs.india-water.gov.in', port=443): Max retries exceeded with url: /iam/api/flood-forecast-static/specification/?specification=%7B%22where%22%3A%20%7B%22expression%22%3A%20%7B%22valueIsRelationField%22%3A%20false%2C%20%22fieldName%22%3A%20%22type%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Inflow%22%7D%7D%7D (Caused by NameResolutionError(\"HTTPSConnection(host='ffs.india-water.gov.in', port=443): Failed to resolve 'ffs.india-water.gov.in' ([Errno 11001] getaddrinfo failed)\"))\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"E:\\software projects\\flood_simulator\\backend\\digital_twin\\sync.py\", line 85, in sync_now\n    static_info = cwc_client.fetch_station_static_info()\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"E:\\software projects\\flood_simulator\\backend\\digital_twin\\cwc_client.py\", line 54, in fetch_station_static_info\n    stations = _get_json(\"/iam/api/flood-forecast-static/specification/\", spec)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"E:\\software projects\\flood_simulator\\backend\\digital_twin\\cwc_client.py\", line 43, in _get_json\n    raise CwcApiError(f\"request to {path} failed: {e}\") from e\ndigital_twin.cwc_client.CwcApiError: request to /iam/api/flood-forecast-static/specification/ failed: HTTPSConnectionPool(host='ffs.india-water.gov.in', port=443): Max retries exceeded with url: /iam/api/flood-forecast-static/specification/?specification=%7B%22where%22%3A%20%7B%22expression%22%3A%20%7B%22valueIsRelationField%22%3A%20false%2C%20%22fieldName%22%3A%20%22type%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Inflow%22%7D%7D%7D (Caused by NameResolutionError(\"HTTPSConnection(host='ffs.india-water.gov.in', port=443): Failed to resolve 'ffs.india-water.gov.in' ([Errno 11001] getaddrinfo failed)\"))\n"
+    },
+    {
+      "attempted_at_utc": "2026-08-27T18:49:03.937711",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T18:05:47.840359",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T18:02:42.451510",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T17:21:03.562789",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T17:13:01.202550",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T17:07:18.161214",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T16:51:46.938344",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T16:49:44.229911",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T16:39:28.162197",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T16:05:46.893629",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-27T15:05:41.674280",
+      "success": true,
+      "error": null
+    },
     {
       "attempted_at_utc": "2026-08-27T13:58:50.280338",
       "success": true,
@@ -80,72 +146,6 @@
     },
     {
       "attempted_at_utc": "2026-08-27T04:06:00.084658",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T03:49:04.758717",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T03:25:21.959672",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T03:05:57.449061",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T17:30:03.287612",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T16:29:59.187016",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T15:29:38.948495",
-      "success": false,
-      "error": "request to /iam/api/flood-forecast-static/specification/ failed: HTTPSConnectionPool(host='ffs.india-water.gov.in', port=443): Max retries exceeded with url: /iam/api/flood-forecast-static/specification/?specification=%7B%22where%22%3A%20%7B%22expression%22%3A%20%7B%22valueIsRelationField%22%3A%20false%2C%20%22fieldName%22%3A%20%22type%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Inflow%22%7D%7D%7D (Caused by ConnectTimeoutError(<HTTPSConnection(host='ffs.india-water.gov.in', port=443) at 0x19fdb10ac10>, 'Connection to ffs.india-water.gov.in timed out. (connect timeout=20)'))",
-      "traceback": "Traceback (most recent call last):\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\urllib3\\connection.py\", line 204, in _new_conn\n    sock = connection.create_connection(\n        (self._dns_host, self.port),\n    ...<2 lines>...\n        socket_options=self.socket_options,\n    )\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\urllib3\\util\\connection.py\", line 85, in create_connection\n    raise err\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\urllib3\\util\\connection.py\", line 73, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nTimeoutError: timed out\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\urllib3\\connectionpool.py\", line 788, in urlopen\n    response = self._make_request(\n        conn,\n    ...<10 lines>...\n        **response_kw,\n    )\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\urllib3\\connectionpool.py\", line 488, in _make_request\n    raise new_e\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\urllib3\\connectionpool.py\", line 464, in _make_request\n    self._validate_conn(conn)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^\nurllib3.exceptions.ConnectTimeoutError: (<HTTPSConnection(host='ffs.india-water.gov.in', port=443) at 0x19fdb10ac10>, 'Connection to ffs.india-water.gov.in timed out. (connect timeout=20)')\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\requests\\adapters.py\", line 696, in send\n    resp = conn.urlopen(\n        method=request.method,\n    ...<9 lines>...\n        chunked=chunked,\n    )\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\urllib3\\connectionpool.py\", line 842, in urlopen\n    retries = retries.increment(\n        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]\n    )\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\urllib3\\util\\retry.py\", line 543, in increment\n    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nurllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='ffs.india-water.gov.in', port=443): Max retries exceeded with url: /iam/api/flood-forecast-static/specification/?specification=%7B%22where%22%3A%20%7B%22expression%22%3A%20%7B%22valueIsRelationField%22%3A%20false%2C%20%22fieldName%22%3A%20%22type%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Inflow%22%7D%7D%7D (Caused by ConnectTimeoutError(<HTTPSConnection(host='ffs.india-water.gov.in', port=443) at 0x19fdb10ac10>, 'Connection to ffs.india-water.gov.in timed out. (connect timeout=20)'))\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"D:\\Projects\\SIH 26\\backend\\digital_twin\\cwc_client.py\", line 39, in _get_json\n    resp = requests.get(url, headers=HEADERS, timeout=TIMEOUT_S)\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\requests\\api.py\", line 87, in get\n    return request(\"get\", url, params=params, **kwargs)\n  File \"D:\\Projects\\SIH 26\\.venv\\Lib\\site-packages\\requests\\api.py\", line 71, in request\n    return session.request(method=method, url=url, **kwargs)\n           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nrequests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='ffs.india-water.gov.in', port=443): Max retries exceeded with url: /iam/api/flood-forecast-static/specification/?specification=%7B%22where%22%3A%20%7B%22expression%22%3A%20%7B%22valueIsRelationField%22%3A%20false%2C%20%22fieldName%22%3A%20%22type%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Inflow%22%7D%7D%7D (Caused by ConnectTimeoutError(<HTTPSConnection(host='ffs.india-water.gov.in', port=443) at 0x19fdb10ac10>, 'Connection to ffs.india-water.gov.in timed out. (connect timeout=20)'))\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"D:\\Projects\\SIH 26\\backend\\digital_twin\\sync.py\", line 85, in sync_now\n    static_info = cwc_client.fetch_station_static_info()\n  File \"D:\\Projects\\SIH 26\\backend\\digital_twin\\cwc_client.py\", line 54, in fetch_station_static_info\n    stations = _get_json(\"/iam/api/flood-forecast-static/specification/\", spec)\n  File \"D:\\Projects\\SIH 26\\backend\\digital_twin\\cwc_client.py\", line 43, in _get_json\n    raise CwcApiError(f\"request to {path} failed: {e}\") from e\ndigital_twin.cwc_client.CwcApiError: request to /iam/api/flood-forecast-static/specification/ failed: HTTPSConnectionPool(host='ffs.india-water.gov.in', port=443): Max retries exceeded with url: /iam/api/flood-forecast-static/specification/?specification=%7B%22where%22%3A%20%7B%22expression%22%3A%20%7B%22valueIsRelationField%22%3A%20false%2C%20%22fieldName%22%3A%20%22type%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Inflow%22%7D%7D%7D (Caused by ConnectTimeoutError(<HTTPSConnection(host='ffs.india-water.gov.in', port=443) at 0x19fdb10ac10>, 'Connection to ffs.india-water.gov.in timed out. (connect timeout=20)'))\n"
-    },
-    {
-      "attempted_at_utc": "2026-08-25T14:29:33.904841",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T13:29:29.294428",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T12:29:23.023471",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T07:56:33.439336",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T07:04:32.340031",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T07:01:50.462707",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-25T06:56:29.206313",
       "success": true,
       "error": null
     }

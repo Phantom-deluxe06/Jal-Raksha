@@ -1479,6 +1479,9 @@
   ],
   "caveats": [
     "Trained on only 48 SWE runs -- a small dataset for a CNN/U-Net trained from scratch. Validation metrics below are honest but should be read as indicative, not a rigorous generalization guarantee; expect degraded accuracy for breach parameter combinations far from the sampled ranges (discharge outside (1837.5, 5512.5), or locations beyond +/-6 cells from the documented breach site).",
-    "Per-sample validation metrics are included below (not just the mean) so any poorly-predicted held-out scenarios are visible, not averaged away."
-  ]
+    "Per-sample validation metrics are included below (not just the mean) so any poorly-predicted held-out scenarios are visible, not averaged away.",
+    "Surrogate is trained and evaluated on a ~300m grid, coarser than the ~185m Full SWE operational grid. This resolution gap is disclosed in the UI; the two modes are not pixel-for-pixel comparable."
+  ],
+  "surrogate_grid_resolution": "~300m (coarser than SWE solver's operational grid)",
+  "ui_disclosure": "Resolution difference explicitly shown in UI \u2014 modes are not pixel-for-pixel comparable"
 }

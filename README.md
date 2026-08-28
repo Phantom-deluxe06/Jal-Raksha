@@ -199,9 +199,95 @@ every call — no caching, no hardcoded scene date:
   orange map layer) from the blue SWE/SPH modeled-depth layers — makes
   clear this is an actual satellite observation, not a simulation.
 
+## Demo Day Startup
+
+Run these **in order**. Copy-paste exactly. Total warm-up ≈ 60–90 s.
+
+### 1. Start the backend
+```bash
+cd backend
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+Leave this terminal running. On startup it auto-warms the ML surrogate and
+kicks off the first CWC digital-twin sync.
+
+### 2. Verify the backend is healthy
+Open in a browser or curl:
+```
+http://127.0.0.1:8000/health          -> {"status":"ok"}
+http://127.0.0.1:8000/scenarios/library  -> 3 river entries
+```
+
+### 3. Start the frontend
+```bash
+cd frontend
+npm run dev
+```
+Open the printed URL (default http://localhost:5173).
+
+### 4. Confirm the ML surrogate is warm
+```
+curl -X POST http://127.0.0.1:8000/predict/instant -H "content-type: application/json" -d "{}"
+```
+First call ≈ 2–3 s, subsequent calls < 0.5 s. If it returns `409`, run
+`python backend/ml/train.py` (only needed if `backend/ml_checkpoints/` is empty).
+
+### 5. Pre-fetch a fresh GEE SAR scene (do this ~2 min before going on stage)
+```
+curl "http://127.0.0.1:8000/realtime/water-extent"
+```
+Takes 5–10 s (real Earth Engine round-trip). Doing it once now means the
+"Real-Time SAR" tab renders instantly during the demo.
+
+### 6. Pre-fetch the roads cache
+```bash
+python scripts/fetch_roads.py
+```
+Writes `backend/outputs/kosi_aoi_roads.geojson`. Confirm:
+```
+curl -s http://127.0.0.1:8000/infrastructure/roads | head -c 120
+```
+should start with `{"type": "FeatureCollection"`. Once cached it is served
+instantly and offline for the rest of the day.
+
+### 7. (Optional) Preflight everything at once
+```bash
+python scripts/demo_day_check.py
+```
+Prints a PASS/FAIL line for every endpoint and data asset.
+
+---
+
+## Scenario Library (multi-river generalization)
+
+`GET /scenarios/library` returns the framework's river/dam catalog:
+
+| Entry | River / Structure | Data status |
+|---|---|---|
+| `kosi_actual2008` | Kosi / Kusaha Embankment (Bihar) | ⭐ Validated — DEM, simulation, population, settlements all ready |
+| `hirakud_mahanadi` | Mahanadi / Hirakud Dam (Odisha) | 🟡 Real SRTM DEM fetched; breach hydraulics = operator input |
+| `godavari_dowleswaram` | Godavari / Dowleswaram Barrage (AP) | 🟡 Real SRTM DEM fetched; release discharge = operator input |
+
+DEMs for the non-Kosi entries are fetched programmatically from the public
+AWS `elevation-tiles-prod` SRTM bucket via `scripts/fetch_dem_aoi.py` — same
+pipeline as the Kosi DEM. No physical breach parameter is ever invented: if a
+value isn't in public documentation the library shows **"⚠️ Parameter
+required"** and `POST /scenarios/run-generic` refuses (HTTP 422) until the
+operator supplies it.
+
+## Event Types (Deliverable i)
+
+The Scenario Builder exposes an explicit **Event Type** selector — *Dam Break*,
+*River Blockage / Natural Lake Breach*, *Controlled Release*, *Embankment
+Failure* — each seeding physically-defensible default breach parameters
+(engineered-dam breaches: minutes-scale formation, high peak Q; natural-dam /
+blockage breaches: hour-scale formation, lower peak Q per Costa & Schuster
+1988; embankment breaches: ~0.5–2 h per Froehlich 2008). This is a
+labelling + default-parameter layer only — the SWE/SPH solver is unchanged.
+The selected label is written to `metadata.event_type_label` and shown on the
+results panel ("Scenario: River Blockage / Natural Lake Breach — …").
+
 ## Next step
 
-None currently scoped — all five PRD build priorities are implemented
-end-to-end on real data. Possible follow-ups: multi-temporal SAR change
-detection (compare against a pre-flood baseline scene) or exposing the SAR
-layer inside the 3D terrain view.
+Multi-temporal SAR change detection, or running full simulations for the
+Hirakud / Godavari library entries once breach parameters are sourced.

@@ -2,7 +2,7 @@
   "scenario_id": "kosi_actual2008",
   "scenario_label": "Kosi 2008 \u2014 Historical Validation",
   "scenario_type": "historical",
-  "scenario_description": "Documented 18 Aug 2008 Kusaha afflux embankment breach on the Kosi River. Reference validation case.",
+  "scenario_description": "Documented 18 Aug 2008 Kusaha afflux embankment breach on the Kosi River (Bihar flood). Reference validation case.",
   "discharge_cumecs": 3675.0,
   "design_discharge_cumecs_NOT_USED": 27000.0,
   "breach_latlon": {
@@ -31,7 +31,7 @@
     "duration_s": 14400.0,
     "snapshot_interval_s": 900.0,
     "n_steps": 1440,
-    "wall_time_s": 252.2,
+    "wall_time_s": 202.4,
     "unstable": false
   },
   "bounds": {
@@ -33900,9 +33900,11 @@
       "scenario_id": "kosi_actual2008",
       "name": "Kosi 2008 \u2014 Historical Validation",
       "scenario_type": "historical",
-      "description": "Documented 18 Aug 2008 Kusaha afflux embankment breach on the Kosi River. Reference validation case.",
+      "description": "Documented 18 Aug 2008 Kusaha afflux embankment breach on the Kosi River (Bihar flood). Reference validation case.",
       "author": "FloodSim Operator",
-      "created_at": "2026-08-27T14:23:58.218Z"
+      "created_at": "2026-08-27T19:03:57.824Z",
+      "event_type": "embankment_failure",
+      "event_type_label": "Embankment Failure"
     },
     "studyArea": {
       "name": "Kosi River Basin (North Bihar / Sunsari AOI)",
@@ -33940,7 +33942,7 @@
     },
     "waterConditions": {
       "peak_discharge_cumecs": 3675.0,
-      "discharge_source": "Documented 18 Aug 2008 actual breach discharge",
+      "discharge_source": "breach_event.discharge_at_breach_cumecs (actual documented 2008 breach flow)",
       "design_discharge_cumecs_NOT_USED": 27000.0
     },
     "simulation": {
@@ -33951,5 +33953,7 @@
       "cfl": 0.4,
       "flood_depth_threshold_m": 0.1
     }
-  }
+  },
+  "event_type": "embankment_failure",
+  "event_type_label": "Embankment Failure"
 }

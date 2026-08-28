@@ -26,6 +26,14 @@ STATE_PATH = STATE_DIR / "state.json"
 STALE_THRESHOLD_HOURS = 72
 MAX_SYNC_LOG_ENTRIES = 20
 
+# CWC reports these forecast datatype codes for the Kosi Barrage station, but
+# the underlying model feed has been frozen since 2021 -- their latestDataTime
+# never advances. They are explicitly excluded from classification and from the
+# presented state so a stale 2021 forecast can never surface as "live". The
+# staleness check in _classify_datatypes is a second line of defence, not the
+# only one.
+EXCLUDED_DATATYPES = ("FIN", "FOL")
+
 
 def _classify_datatypes(latest_readings: list[dict], now_utc: dt.datetime) -> dict:
     """For each datatype code reported for the station, judge live vs stale
@@ -34,6 +42,9 @@ def _classify_datatypes(latest_readings: list[dict], now_utc: dt.datetime) -> di
     out = {}
     for r in latest_readings:
         code = r["datatypeCode"]
+        if code in EXCLUDED_DATATYPES:
+            # Frozen-since-2021 forecast feed -- never present it.
+            continue
         # CWC timestamps are naive IST (UTC+5:30). Converting to UTC means
         # subtracting 5.5h from data_time -- which makes the gap to now_utc
         # 5.5h *larger*, not smaller (data_time_utc = data_time - 5.5h, so

@@ -51,6 +51,8 @@ def get_default_kosi_scenario() -> Dict[str, Any]:
             "scenario_id": "kosi_actual2008",
             "name": "Kosi 2008 — Historical Validation",
             "scenario_type": "historical",
+            "event_type": "embankment_failure",
+            "event_type_label": "Embankment Failure",
             "description": "Documented 18 Aug 2008 Kusaha afflux embankment breach on the Kosi River (Bihar flood). Reference validation case.",
             "author": "FloodSim Reference Suite",
             "created_at": "2008-08-18",
@@ -137,6 +139,16 @@ def execute_scenario(
     scenario_id = meta_cfg.get("scenario_id", f"custom_{int(time.time())}")
     scenario_name = meta_cfg.get("name", "Custom Simulation Scenario")
     scenario_type = meta_cfg.get("scenario_type", "custom_dam_break")
+    _EVENT_TYPE_LABELS = {
+        "dam_break": "Dam Break",
+        "river_blockage": "River Blockage / Natural Lake Breach",
+        "controlled_release": "Controlled Release",
+        "embankment_failure": "Embankment Failure",
+    }
+    event_type = meta_cfg.get("event_type", "embankment_failure")
+    event_type_label = meta_cfg.get("event_type_label") or _EVENT_TYPE_LABELS.get(
+        event_type, event_type.replace("_", " ").title()
+    )
 
     # Output directory naming: preserve swe_kosi_actual2008 for historical case
     if scenario_id in ("kosi_actual2008", "kosi_2008_historical"):
@@ -368,6 +380,8 @@ def execute_scenario(
         scenario_id=scenario_id,
         scenario_label=scenario_name,
         scenario_type=scenario_type,
+        event_type=event_type,
+        event_type_label=event_type_label,
         scenario_description=meta_cfg.get("description", ""),
         discharge_cumecs=discharge_cumecs,
         design_discharge_cumecs_NOT_USED=water_cfg.get("design_discharge_cumecs_NOT_USED", 27000),

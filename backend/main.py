@@ -47,6 +47,13 @@ from swe.scenario_runner import (
     TARGET_RES_DEG,
 )
 
+from routes.catalog import catalog_router
+from routes.dem import dem_router
+from routes.simulation import simulation_router
+from routes.exposure import exposure_router
+from routes.export import export_router
+from routes.sar import sar_router
+
 app = FastAPI(title="FloodSim-HADR API — Parameterizable Scenario System")
 app.add_middleware(
     CORSMiddleware,
@@ -54,6 +61,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(catalog_router)
+app.include_router(dem_router)
+app.include_router(simulation_router)
+app.include_router(exposure_router)
+app.include_router(export_router)
+app.include_router(sar_router)
 
 # In-memory tracking of active jobs: job_id -> { status, step_message, error, started_at, completed_at }
 _jobs_lock = threading.Lock()
@@ -96,10 +110,23 @@ def _set_job_state(job_id: str, status: str, step_message: str = "", error: Opti
 
 # --- Pydantic Data Models for Scenario System ---
 
+# Event types per Problem Statement Deliverable (i): "dam break AND river blockage"
+# are distinct event types. This is a labelling / default-parameter concept only --
+# the SWE/SPH solver treats every case as a parameterized breach inflow.
+EVENT_TYPES = {
+    "dam_break": "Dam Break",
+    "river_blockage": "River Blockage / Natural Lake Breach",
+    "controlled_release": "Controlled Release",
+    "embankment_failure": "Embankment Failure",
+}
+
+
 class ScenarioMetadata(BaseModel):
     scenario_id: str = "custom_scenario"
     name: str = "Custom Scenario"
     scenario_type: str = "custom_dam_break"  # "historical" | "custom_dam_break" | "controlled_release"
+    event_type: str = "embankment_failure"  # one of EVENT_TYPES keys
+    event_type_label: Optional[str] = None
     description: str = ""
     author: Optional[str] = "Operator"
     created_at: Optional[str] = None
@@ -292,6 +319,33 @@ def get_scenario_presets():
             custom_template,
         ]
     }
+
+
+@app.get("/scenarios/library")
+def scenarios_library():
+    """Deliverable (ii): multi-river scenario library with live data-status."""
+    from services.scenario_library import get_library
+    return {"entries": get_library()}
+
+
+@app.get("/scenarios/library/{entry_id}")
+def scenarios_library_entry(entry_id: str):
+    from services.scenario_library import get_entry
+    entry = get_entry(entry_id)
+    if not entry:
+        raise HTTPException(404, f"scenario library entry '{entry_id}' not found")
+    return entry
+
+
+@app.post("/scenarios/run-generic")
+def scenarios_run_generic(config: Dict[str, Any]):
+    """River/dam-agnostic scenario runner. Missing physical params -> 422, never invented."""
+    from services.scenario_library import run_scenario
+    try:
+        result = run_scenario(config)
+    except ValueError as e:
+        raise HTTPException(422, detail=str(e))
+    return {"job_id": result.get("scenario_id"), "status": "complete", "metadata": result}
 
 
 @app.get("/scenarios/list")
@@ -597,6 +651,7 @@ def predict_instant(req: PredictRequest):
 def get_terrain_dem(downsample: int = 1):
     """Serve the real SRTM DEM elevation grid for 3D terrain mesh rendering."""
     from swe.dem_utils import load_dem_grid
+    from swe.scenario_runner import DEM_DEFAULT_PATH
     import numpy as np
 
     dem_path = str(DEM_DEFAULT_PATH)
@@ -630,6 +685,194 @@ def get_terrain_satellite():
     if not sat_path.exists():
         raise HTTPException(404, "satellite preview image not found")
     return FileResponse(sat_path, media_type="image/png", headers={"Cache-Control": "no-store"})
+
+
+# --- Infrastructure (OSM roads & settlements) ---
+
+_KOSI_AOI_BOUNDS = {"west": 86.6, "south": 25.9, "east": 87.3, "north": 26.7}
+_SETTLEMENTS_PATH = ROOT / "data" / "settlements" / "kosi_aoi_settlements.geojson"
+_ROADS_STATIC_PATH = ROOT / "data" / "settlements" / "kosi_aoi_roads.geojson"
+_ROADS_CACHE_PATH = OUTPUTS_DIR / "kosi_aoi_roads.geojson"
+
+
+_OVERPASS_MIRRORS = (
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+)
+
+
+def _fetch_overpass_roads(bounds: Dict[str, float]) -> Dict[str, Any]:
+    """Fetch the highway network for the AOI from the OSM Overpass API.
+
+    Tries each public mirror in turn; raises only if every mirror fails or
+    returns an empty element set.
+    """
+    import time as _time
+
+    import requests
+    from requests.adapters import HTTPAdapter
+
+    s, w, n, e = bounds["south"], bounds["west"], bounds["north"], bounds["east"]
+    query = (
+        "[out:json][timeout:45];"
+        f'(way["highway"~"motorway|trunk|primary|secondary|tertiary|unclassified"]'
+        f"({s},{w},{n},{e}););out geom;"
+    )
+
+    session = requests.Session()
+    session.mount("https://", HTTPAdapter(max_retries=0))
+
+    data = None
+    last_err = None
+    deadline = _time.monotonic() + 45  # hard wall-clock budget for the whole loop
+    for mirror in _OVERPASS_MIRRORS:
+        if _time.monotonic() >= deadline:
+            last_err = "Overpass wall-clock budget exhausted"
+            break
+        try:
+            resp = session.post(mirror, data={"data": query}, timeout=(5, 20))
+            resp.raise_for_status()
+            payload = resp.json()
+            if payload.get("elements"):
+                data = payload
+                break
+            last_err = f"{mirror}: empty element set"
+        except Exception as ex:  # noqa: BLE001 - try the next mirror
+            last_err = f"{mirror}: {ex}"
+    if data is None:
+        raise RuntimeError(last_err or "all Overpass mirrors failed")
+
+    features = []
+    for el in data.get("elements", []):
+        if el.get("type") != "way" or not el.get("geometry"):
+            continue
+        features.append({
+            "type": "Feature",
+            "properties": {
+                "osm_id": el.get("id"),
+                "name": el.get("tags", {}).get("name", ""),
+                "highway": el.get("tags", {}).get("highway", "road"),
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [[g["lon"], g["lat"]] for g in el["geometry"]],
+            },
+        })
+    return {
+        "type": "FeatureCollection",
+        "properties": {
+            "source": "OpenStreetMap via Overpass API",
+            "license": "ODbL (openstreetmap.org/copyright)",
+            "query_bounds": bounds,
+        },
+        "features": features,
+    }
+
+
+_GEOFABRIK_PBF_URL = "https://download.geofabrik.de/asia/india/eastern-zone-latest.osm.pbf"
+_GEOFABRIK_PBF_PATH = BACKEND_DIR.parent / "data" / "raw" / "eastern-zone.osm.pbf"
+
+
+def _roads_from_geofabrik(bounds: Dict[str, float]) -> Dict[str, Any]:
+    """Offline-capable fallback: parse a Geofabrik OSM extract with pyosmium and
+    clip the highway network to the AOI. Downloads the extract once if absent."""
+    import osmium  # pyosmium
+
+    if not _GEOFABRIK_PBF_PATH.exists():
+        import requests
+
+        _GEOFABRIK_PBF_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with requests.get(_GEOFABRIK_PBF_URL, stream=True, timeout=(10, 120)) as r:
+            r.raise_for_status()
+            tmp = _GEOFABRIK_PBF_PATH.with_suffix(".part")
+            with open(tmp, "wb") as f:
+                for chunk in r.iter_content(chunk_size=1 << 20):
+                    f.write(chunk)
+            tmp.rename(_GEOFABRIK_PBF_PATH)
+
+    s, w, n, e = bounds["south"], bounds["west"], bounds["north"], bounds["east"]
+    hw = {"motorway", "trunk", "primary", "secondary", "tertiary", "unclassified"}
+
+    class _RoadHandler(osmium.SimpleHandler):
+        def __init__(self):
+            super().__init__()
+            self.features = []
+
+        def way(self, way):
+            tag = way.tags.get("highway")
+            if tag not in hw:
+                return
+            coords = []
+            for node in way.nodes:
+                if not node.location.valid():
+                    continue
+                lon, lat = node.location.lon, node.location.lat
+                coords.append([lon, lat])
+            if len(coords) < 2:
+                return
+            if not any(w <= c[0] <= e and s <= c[1] <= n for c in coords):
+                return
+            self.features.append({
+                "type": "Feature",
+                "properties": {"osm_id": way.id, "name": way.tags.get("name", ""), "highway": tag},
+                "geometry": {"type": "LineString", "coordinates": coords},
+            })
+
+    handler = _RoadHandler()
+    handler.apply_file(str(_GEOFABRIK_PBF_PATH), locations=True)
+    if not handler.features:
+        raise RuntimeError("Geofabrik extract parsed but no highways found in AOI")
+    return {
+        "type": "FeatureCollection",
+        "properties": {
+            "source": "OpenStreetMap via Geofabrik extract (pyosmium)",
+            "license": "ODbL (openstreetmap.org/copyright)",
+            "query_bounds": bounds,
+        },
+        "features": handler.features,
+    }
+
+
+@app.get("/infrastructure/roads")
+def infrastructure_roads():
+    """Serve the AOI road network as GeoJSON.
+
+    Priority: static vector -> cached result -> live Overpass (multi-mirror) ->
+    Geofabrik OSM extract via pyosmium (offline-capable). Result is cached on
+    first success. Returns 502 only if every source fails.
+    """
+    if _ROADS_STATIC_PATH.exists():
+        return JSONResponse(json.loads(_ROADS_STATIC_PATH.read_text(encoding="utf-8")))
+    if _ROADS_CACHE_PATH.exists():
+        return JSONResponse(json.loads(_ROADS_CACHE_PATH.read_text(encoding="utf-8")))
+
+    errors = []
+    fc = None
+    for name, fetch in (
+        ("overpass", lambda: _fetch_overpass_roads(_KOSI_AOI_BOUNDS)),
+        ("geofabrik", lambda: _roads_from_geofabrik(_KOSI_AOI_BOUNDS)),
+    ):
+        try:
+            fc = fetch()
+            break
+        except Exception as e:  # noqa: BLE001 - try the next source
+            errors.append(f"{name}: {e}")
+
+    if fc is None:
+        raise HTTPException(502, f"road vector unavailable from all sources -> {'; '.join(errors)}")
+
+    _ROADS_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _ROADS_CACHE_PATH.write_text(json.dumps(fc), encoding="utf-8")
+    return JSONResponse(fc)
+
+
+@app.get("/infrastructure/settlements")
+def infrastructure_settlements():
+    """Serve the 363 OSM named-settlement points for the Kosi AOI as GeoJSON."""
+    if not _SETTLEMENTS_PATH.exists():
+        raise HTTPException(404, "settlements geojson not found")
+    return JSONResponse(json.loads(_SETTLEMENTS_PATH.read_text(encoding="utf-8")))
 
 
 # --- SPH Particle Physics ---

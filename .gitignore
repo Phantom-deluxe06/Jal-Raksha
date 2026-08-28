@@ -8,3 +8,5 @@ backend/ml_checkpoints/*.pt
 data/dem/*.tif
 data/satellite/*.tif
 data/population/*.tif
+data/raw/
+backend/data/raw/
