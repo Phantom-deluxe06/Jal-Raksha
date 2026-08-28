@@ -10,7 +10,7 @@
     "current_reading": {
       "water_level_m": 75.38,
       "data_time_ist": "2026-08-27T08:00:00",
-      "age_hours": 21.6,
+      "age_hours": 23.4,
       "is_live": true,
       "reference_levels_m": {
         "frl": 74.69,
@@ -21,20 +21,7 @@
         "below_mwl_m": 3.88
       }
     },
-    "other_datatypes_seen": {
-      "FIN": {
-        "latest_value": 5476.92,
-        "latest_data_time_ist": "2021-08-18T08:00:00",
-        "age_hours": 44061.6,
-        "live": false
-      },
-      "FOL": {
-        "latest_value": 141.6,
-        "latest_data_time_ist": "2021-08-18T08:00:00",
-        "age_hours": 44061.6,
-        "live": false
-      }
-    },
+    "other_datatypes_seen": {},
     "update_cadence": {
       "median_interval_hours": 24.0,
       "n_samples": 14,
@@ -45,9 +32,39 @@
       "url": "https://ffs.india-water.gov.in",
       "note": "Unofficial/undocumented public JSON API discovered by inspecting the CWC dashboard's own network requests -- no auth required, but no published API contract either; could change without notice."
     },
-    "synced_at_utc": "2026-08-28T00:05:31.910146"
+    "synced_at_utc": "2026-08-28T01:52:35.949384"
   },
   "sync_log": [
+    {
+      "attempted_at_utc": "2026-08-28T01:52:35.949384",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-28T01:52:20.744743",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-28T01:52:05.130711",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-28T01:51:48.974414",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-28T01:51:22.840721",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-28T01:45:02.407831",
+      "success": true,
+      "error": null
+    },
     {
       "attempted_at_utc": "2026-08-28T00:05:31.910146",
       "success": true,
@@ -116,36 +133,6 @@
     },
     {
       "attempted_at_utc": "2026-08-27T13:58:50.280338",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T13:10:06.690227",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T12:58:46.473735",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T11:58:31.206837",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T06:56:40.220585",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T06:34:52.154703",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T04:06:00.084658",
       "success": true,
       "error": null
     }

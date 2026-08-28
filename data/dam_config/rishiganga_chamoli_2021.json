@@ -1,0 +1,53 @@
+{
+  "case_study_id": "rishiganga_chamoli_2021",
+  "name": "Rishiganga / Dhauliganga — 7 Feb 2021 Chamoli Rock-Ice Avalanche Flood (GLOF-type)",
+  "description": "On 7 February 2021 a ~27 x 10^6 m3 rock-and-ice avalanche detached from the north face of Ronti Peak (Ronti Gad catchment), Chamoli district, Uttarakhand. The ice fraction fluidised over the 3.2 km drop, generating a debris-laden flash flood that swept down the Ronti Gad into the Rishiganga, destroyed the 13.2 MW Rishiganga hydropower project at Raini, then continued down the Dhauliganga and overwhelmed the under-construction 520 MW Tapovan Vishnugad project. 200+ people killed or missing. Well-documented event with multiple published discharge estimates.",
+  "river": {
+    "name": "Rishiganga -> Dhauliganga (Alaknanda basin)",
+    "basin": "Alaknanda / Upper Ganga",
+    "country": ["India"],
+    "state": "Uttarakhand"
+  },
+  "structure": {
+    "type": "natural_dam_breach / rock_ice_avalanche_debris_flow",
+    "note": "Not an engineered dam failure. Modelled here as a transient high-discharge inflow source routed over the real SRTM valley terrain (the framework's generic breach-inflow model). The avalanche source is Ronti Gad; the inflow point used for simulation sits on the Dhauliganga above Tapovan."
+  },
+  "breach_event": {
+    "date": "2021-02-07",
+    "cause": "Rock-and-ice avalanche from Ronti Peak north face; ice fraction fluidised into a debris flow / flash flood.",
+    "avalanche_volume_m3": 27000000,
+    "avalanche_composition": "~80% rock, ~20% glacier ice (Shugar et al. 2021, Science)",
+    "breach_discharge_cumecs": 12762,
+    "parameter_status": "documented",
+    "discharge_source": "HEC-RAS hydrodynamic reconstruction peak inflow 12,761.88 m3/s from a 26.4 x 10^6 m3 transient storage breach (Springer, Natural Hazards, 2023, doi:10.1007/s11069-023-05972-5). Consistent with Shugar et al. 2021 (Science) video-derived range of ~8,200-14,200 m3/s near the Rishiganga HEP. Other published point estimates along the system range 7,500-28,000 m3/s depending on reach and whether debris bulking is included.",
+    "flow_velocity_ms_at_rishiganga_hep": "~25 m/s (Shugar et al. 2021)",
+    "outcome": {
+      "fatalities_or_missing": "204 (approx.)",
+      "infrastructure_destroyed": [
+        "13.2 MW Rishiganga Hydro Electric Project (Raini)",
+        "520 MW Tapovan Vishnugad Hydro Electric Project (under construction) - intake, barrage, tunnel adit flooded"
+      ]
+    }
+  },
+  "simulation_defaults": {
+    "breach_type": "transient_inflow_hydrograph",
+    "breach_width_m": 120,
+    "breach_width_note": "Effective valley-floor inflow width at the modelling point (narrow Himalayan gorge). Tunable.",
+    "breach_hydrograph_ramp_minutes": 8,
+    "breach_hydrograph_note": "The real surge was extremely rapid (minutes). Video timing at Tapovan implies a near-step rise; 8 min ramp used for numerical stability.",
+    "breach_lat": 30.48,
+    "breach_lon": 79.62,
+    "breach_latlon_note": "Dhauliganga channel above Tapovan Vishnugad, within the fetched SRTM AOI. Inflow routed downstream over real terrain.",
+    "simulation_duration_hours": 2.0,
+    "snapshot_interval_minutes": 10.0,
+    "manning_n": 0.06,
+    "manning_n_note": "Elevated roughness for a boulder-bed high-gradient Himalayan gorge with debris (typical 0.05-0.08)."
+  },
+  "aoi_bounds": {
+    "west": 79.30,
+    "south": 30.20,
+    "east": 79.95,
+    "north": 30.75
+  },
+  "dem_file": "data/dem/rishiganga_chamoli_srtm30m.tif"
+}

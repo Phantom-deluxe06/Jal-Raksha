@@ -1,0 +1,50 @@
+{
+  "case_study_id": "tehri_dam",
+  "name": "Tehri Dam — Bhagirathi River (Uttarakhand)",
+  "description": "260.5 m earth-and-rockfill dam on the Bhagirathi River, 1.5 km downstream of its confluence with the Bhilangana, near New Tehri, Uttarakhand. Tallest dam in India (1000 MW Stage-I, operated by THDC). No failure has occurred; this is a hypothetical scenario over the real Bhagirathi gorge terrain down towards Devprayag.",
+  "river": {
+    "name": "Bhagirathi (Upper Ganga)",
+    "basin": "Upper Ganga / Alaknanda-Bhagirathi",
+    "country": ["India"],
+    "state": "Uttarakhand"
+  },
+  "structure": {
+    "type": "earth_and_rockfill_dam",
+    "height_m": 260.5,
+    "length_m": 575,
+    "crest_width_m": 20,
+    "base_width_m": 1128,
+    "dead_storage_mcm": 925,
+    "live_storage_mcm": 2615,
+    "total_storage_mcm": 3540,
+    "spillway": "Chute spillway (3 bays) on right bank + 2 right-bank and 2 left-bank shaft spillways",
+    "probable_maximum_flood_cumecs": 15540,
+    "pmf_return_period_years": 10000,
+    "spec_source": "en.wikipedia.org/wiki/Tehri_Dam ; thdc.co.in Tehri Dam & HPP (Stage-I)."
+  },
+  "breach_event": {
+    "date": null,
+    "cause": "Hypothetical - no historical failure.",
+    "breach_discharge_cumecs": null,
+    "parameter_status": "requires_input",
+    "discharge_source": "No authoritative published dam-break peak-outflow figure adopted. A full breach of a 3,540 Mm3 reservoir would produce a peak outflow far in excess of the 15,540 m3/s PMF spillway design flood, but no single peer-reviewed value is cited here. Operator must supply a breach hydrograph before running.",
+    "reference_pmf_spillway_cumecs": 15540
+  },
+  "simulation_defaults": {
+    "breach_type": null,
+    "breach_width_m": null,
+    "breach_hydrograph_ramp_minutes": null,
+    "breach_lat": 30.3775,
+    "breach_lon": 78.4803,
+    "breach_latlon_note": "Public geographic reference for the dam location. Not a physics parameter.",
+    "simulation_duration_hours": null,
+    "manning_n": 0.055
+  },
+  "aoi_bounds": {
+    "west": 78.20,
+    "south": 30.15,
+    "east": 78.78,
+    "north": 30.62
+  },
+  "dem_file": "data/dem/tehri_bhagirathi_srtm30m.tif"
+}

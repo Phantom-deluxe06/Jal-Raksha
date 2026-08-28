@@ -1,55 +1,50 @@
-import { useState } from "react";
-import { fetchResult } from "../api";
-import { JURY_PRESETS } from "../utils/juryPresets";
+import { useEffect, useState } from "react";
+import { fetchScenarioLibrary } from "../api";
 
 /**
- * 1-click jury benchmark demo switcher (Track B / Deliverable v).
- * Persistent top bar with 4 open-source Indian river/dam benchmark presets.
+ * 1-click jury benchmark demo switcher (Deliverable v).
+ * Driven entirely by GET /scenarios/library so every chip is either
+ *   - Validated (loads immediately), or
+ *   - Data ready / simulation pending (opens the Scenario Library cleanly).
+ * It never calls a per-scenario result endpoint, so it can never surface a 404.
  */
-export default function JuryDemoBar({ activeJobId, onSelectPreset }) {
-  const [busy, setBusy] = useState(null);
-  const [note, setNote] = useState(null);
+export default function JuryDemoBar({ activeJobId, onSelectScenario }) {
+  const [entries, setEntries] = useState([]);
+  const [error, setError] = useState(false);
 
-  const pick = async (preset) => {
-    setBusy(preset.id);
-    setNote(null);
-    try {
-      // Confirm the pre-cached scenario bundle (DEM + frames + impact) is available.
-      const meta = await fetchResult(preset.id);
-      onSelectPreset({ preset, meta });
-      setNote(null);
-    } catch (e) {
-      setNote(
-        `${preset.label}: pre-cached bundle not staged on this backend yet ` +
-          `(run the scenario once to cache DEM + frames). ${e.message}`
-      );
-    } finally {
-      setBusy(null);
-    }
-  };
+  useEffect(() => {
+    fetchScenarioLibrary()
+      .then((d) => setEntries(d.entries || []))
+      .catch(() => setError(true));
+  }, []);
+
+  if (error || entries.length === 0) return null; // fail silent — bar is a convenience
 
   return (
     <div style={S.bar}>
       <span style={S.brand}>⚡ JURY DEMO</span>
       <div style={S.presets}>
-        {JURY_PRESETS.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => pick(p)}
-            disabled={busy === p.id}
-            style={{
-              ...S.chip,
-              ...(activeJobId === p.id ? S.chipActive : {}),
-              opacity: busy === p.id ? 0.6 : 1,
-            }}
-            title={`${p.region} — ${p.lat}°N, ${p.lon}°E`}
-          >
-            <span style={S.chipLabel}>{busy === p.id ? "Loading…" : p.label}</span>
-            <span style={S.chipRegion}>{p.region}</span>
-          </button>
-        ))}
+        {entries.map((e) => {
+          const ready = e.data_status?.simulation === "READY";
+          return (
+            <button
+              key={e.id}
+              onClick={() => onSelectScenario(e.id, ready)}
+              style={{
+                ...S.chip,
+                ...(activeJobId === e.id ? S.chipActive : {}),
+                borderColor: ready ? "rgba(46,213,115,0.5)" : "rgba(255,176,32,0.45)",
+              }}
+              title={`${e.state} · ${e.structure_coordinates.lat.toFixed(2)}°N, ${e.structure_coordinates.lon.toFixed(2)}°E`}
+            >
+              <span style={S.chipLabel}>{e.river}</span>
+              <span style={{ ...S.chipState, color: ready ? "#2ed573" : "#ffb020" }}>
+                {ready ? "● Validated — load" : "● Data ready — pending"}
+              </span>
+            </button>
+          );
+        })}
       </div>
-      {note && <span style={S.note}>{note}</span>}
     </div>
   );
 }
@@ -77,10 +72,9 @@ const S = {
     padding: "5px 12px",
     color: "#ddd",
     cursor: "pointer",
-    lineHeight: 1.25,
+    lineHeight: 1.3,
   },
-  chipActive: { background: "rgba(74,144,255,0.2)", borderColor: "#4a90ff", color: "#fff" },
+  chipActive: { background: "rgba(74,144,255,0.2)", color: "#fff" },
   chipLabel: { fontSize: 12, fontWeight: 600 },
-  chipRegion: { fontSize: 9, color: "#8aa0b4" },
-  note: { fontSize: 11, color: "#ffb020", maxWidth: 460 },
+  chipState: { fontSize: 9 },
 };

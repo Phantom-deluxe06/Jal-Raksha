@@ -1,0 +1,50 @@
+{
+  "case_study_id": "mullaperiyar_dam",
+  "name": "Mullaperiyar Dam — Periyar River (Kerala / Tamil Nadu)",
+  "description": "1895 lime-surkhi masonry gravity dam on the Periyar River in the Cardamom Hills, Idukki district, Kerala; operated by Tamil Nadu for trans-basin irrigation diversion to the Vaigai basin. Long-running inter-state safety dispute over the age of the structure and the permitted reservoir level. No dam failure has occurred; this is a hypothetical dam-break scenario over the real downstream terrain (Idukki reservoir / lower Periyar valley).",
+  "river": {
+    "name": "Periyar",
+    "basin": "Periyar",
+    "country": ["India"],
+    "state": "Kerala (dam operated by Tamil Nadu)"
+  },
+  "structure": {
+    "type": "masonry_gravity_dam",
+    "commissioned": 1895,
+    "height_m": 53.6,
+    "length_m": 365.7,
+    "crest_width_m": 3.6,
+    "base_width_m": 42.2,
+    "total_storage_mcm": 443.23,
+    "active_storage_mcm": 299.13,
+    "max_water_depth_m": 43.28,
+    "spillway": "13 chute-type spillways, combined capacity 3,454.62 m3/s",
+    "construction_note": "Lime-surkhi (burnt brick powder) mortar, rubble-faced; built by Col. John Pennycuick without Portland cement.",
+    "spec_source": "en.wikipedia.org/wiki/Mullaperiyar_Dam and the 2015 Pre-feasibility Report (environmentclearance.nic.in)."
+  },
+  "breach_event": {
+    "date": null,
+    "cause": "Hypothetical - no historical failure.",
+    "breach_discharge_cumecs": null,
+    "parameter_status": "requires_input",
+    "discharge_source": "No authoritative published dam-break peak-outflow figure adopted. Dam-break analyses exist in litigation filings but their peak-discharge numbers are contested and not used here. Operator must supply a breach hydrograph (or reservoir volume + breach geometry) before running.",
+    "reference_spillway_capacity_cumecs": 3454.62
+  },
+  "simulation_defaults": {
+    "breach_type": null,
+    "breach_width_m": null,
+    "breach_hydrograph_ramp_minutes": null,
+    "breach_lat": 9.5275,
+    "breach_lon": 77.1442,
+    "breach_latlon_note": "Public geographic reference for the dam location (Western Ghats, Idukki). Not a physics parameter.",
+    "simulation_duration_hours": null,
+    "manning_n": 0.05
+  },
+  "aoi_bounds": {
+    "west": 76.90,
+    "south": 9.30,
+    "east": 77.45,
+    "north": 9.78
+  },
+  "dem_file": "data/dem/mullaperiyar_periyar_srtm30m.tif"
+}

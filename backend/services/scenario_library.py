@@ -24,17 +24,22 @@ OUTPUTS_DIR = BACKEND_DIR / "outputs"
 PARAM_REQUIRED = "⚠️ Parameter required"
 
 
-def _asset_status(dem_file: str, sim_dir: Optional[str], needs_local_pop: bool) -> Dict[str, Any]:
+def _asset_status(dem_file: str, sim_dir: Optional[str], is_kosi: bool) -> Dict[str, Any]:
     dem_ok = (DEM_DIR / dem_file).exists() if dem_file else False
     sim_ok = bool(sim_dir) and (OUTPUTS_DIR / sim_dir / "metadata.json").exists()
-    pop_ok = (ROOT / "data" / "population" / "kosi_aoi_worldpop_2020.tif").exists() if not needs_local_pop else False
-    settle_ok = (ROOT / "data" / "settlements" / "kosi_aoi_settlements.geojson").exists() if not needs_local_pop else False
-    return {
+    status = {
         "dem": "READY" if dem_ok else "MISSING",
         "simulation": "READY" if sim_ok else "PENDING",
-        "population": "READY" if pop_ok else "PARAM_REQUIRED",
-        "settlements": "READY" if settle_ok else "PARAM_REQUIRED",
     }
+    if is_kosi:
+        status["population"] = "READY"
+        status["settlements"] = "READY"
+    else:
+        # AOI-specific exposure layers not staged for this river yet -- shown
+        # neutrally (not as a warning); the simulation itself is unaffected.
+        status["population"] = "NOT_STAGED"
+        status["settlements"] = "NOT_STAGED"
+    return status
 
 
 _LIBRARY: List[Dict[str, Any]] = [
@@ -103,6 +108,71 @@ _LIBRARY: List[Dict[str, Any]] = [
         },
         "notes": "Real SRTM 30m DEM fetched for the AOI. Structure coordinates are a public geographic reference. Release discharge requires operator input.",
     },
+    {
+        "id": "rishiganga_chamoli2021",
+        "river": "Rishiganga / Dhauliganga",
+        "structure": "Ronti Gad rock-ice avalanche (GLOF-type flash flood)",
+        "state": "Uttarakhand",
+        "event": "Chamoli Disaster — 7 Feb 2021",
+        "event_type": "river_blockage",
+        "structure_coordinates": {"lat": 30.48, "lon": 79.62},
+        "aoi_bounds": {"west": 79.30, "south": 30.20, "east": 79.95, "north": 30.75},
+        "dem_file": "rishiganga_chamoli_srtm30m.tif",
+        "sim_dir": "swe_rishiganga_chamoli2021",
+        "badge": "⭐ Validated Historical Case",
+        "validated": True,
+        "breach_parameters": {
+            "peak_discharge_cumecs": 12762,
+            "breach_width_m": 120,
+            "ramp_minutes": 8,
+            "source": "data/dam_config/rishiganga_chamoli_2021.json — HEC-RAS reconstruction peak inflow 12,761.88 m³/s (Springer Natural Hazards 2023, doi:10.1007/s11069-023-05972-5); within Shugar et al. 2021 (Science) video range ~8,200–14,200 m³/s.",
+        },
+        "notes": "Real SRTM 30m DEM fetched for the AOI. Simulation run with the documented published peak-inflow estimate routed over the real Dhauliganga gorge. No population/settlement layer for this AOI yet.",
+    },
+    {
+        "id": "mullaperiyar_dam",
+        "river": "Periyar",
+        "structure": "Mullaperiyar Dam (1895 masonry gravity)",
+        "state": "Kerala / Tamil Nadu",
+        "event": "Hypothetical dam-break scenario (no historical failure)",
+        "event_type": "dam_break",
+        "structure_coordinates": {"lat": 9.5275, "lon": 77.1442},
+        "aoi_bounds": {"west": 76.90, "south": 9.30, "east": 77.45, "north": 9.78},
+        "dem_file": "mullaperiyar_periyar_srtm30m.tif",
+        "sim_dir": None,
+        "badge": "\U0001f7e1 Data Ready — Simulation Pending",
+        "validated": False,
+        "breach_parameters": {
+            "peak_discharge_cumecs": None,
+            "breach_width_m": None,
+            "ramp_minutes": None,
+            "source": PARAM_REQUIRED
+            + " — no authoritative published dam-break peak-outflow figure. Documented spillway capacity 3,454.62 m³/s; total storage 443.23 Mm³ (Wikipedia / 2015 pre-feasibility report). Operator must supply a breach hydrograph.",
+        },
+        "notes": "Real SRTM 30m DEM fetched for the AOI. Structure specs sourced from public records; breach hydraulics are contested in litigation and are NOT adopted here — operator input required.",
+    },
+    {
+        "id": "tehri_dam",
+        "river": "Bhagirathi",
+        "structure": "Tehri Dam (260.5 m earth-rockfill — India's tallest)",
+        "state": "Uttarakhand",
+        "event": "Hypothetical dam-break scenario (no historical failure)",
+        "event_type": "dam_break",
+        "structure_coordinates": {"lat": 30.3775, "lon": 78.4803},
+        "aoi_bounds": {"west": 78.20, "south": 30.15, "east": 78.78, "north": 30.62},
+        "dem_file": "tehri_bhagirathi_srtm30m.tif",
+        "sim_dir": None,
+        "badge": "\U0001f7e1 Data Ready — Simulation Pending",
+        "validated": False,
+        "breach_parameters": {
+            "peak_discharge_cumecs": None,
+            "breach_width_m": None,
+            "ramp_minutes": None,
+            "source": PARAM_REQUIRED
+            + " — no authoritative published dam-break peak-outflow figure. Documented PMF spillway design flood 15,540 m³/s (1-in-10,000-yr); total storage 3,540 Mm³ (Wikipedia / THDC). Operator must supply a breach hydrograph.",
+        },
+        "notes": "Real SRTM 30m DEM fetched for the AOI. Structure specs sourced from public records; a full-breach peak outflow would greatly exceed the PMF and no single value is cited — operator input required.",
+    },
 ]
 
 
@@ -111,7 +181,7 @@ def get_library() -> List[Dict[str, Any]]:
     for e in _LIBRARY:
         entry = dict(e)
         entry["data_status"] = _asset_status(
-            e["dem_file"], e["sim_dir"], needs_local_pop=(e["id"] != "kosi_actual2008")
+            e["dem_file"], e["sim_dir"], is_kosi=(e["id"] == "kosi_actual2008")
         )
         out.append(entry)
     return out

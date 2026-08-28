@@ -265,14 +265,20 @@ Prints a PASS/FAIL line for every endpoint and data asset.
 | Entry | River / Structure | Data status |
 |---|---|---|
 | `kosi_actual2008` | Kosi / Kusaha Embankment (Bihar) | ⭐ Validated — DEM, simulation, population, settlements all ready |
+| `rishiganga_chamoli2021` | Rishiganga / Dhauliganga (Uttarakhand) | ⭐ Validated — real SRTM DEM + SWE run at the published 12,762 m³/s peak inflow (HEC-RAS reconstruction, Springer *Natural Hazards* 2023; within Shugar et al. 2021 *Science* range 8,200–14,200 m³/s) |
 | `hirakud_mahanadi` | Mahanadi / Hirakud Dam (Odisha) | 🟡 Real SRTM DEM fetched; breach hydraulics = operator input |
 | `godavari_dowleswaram` | Godavari / Dowleswaram Barrage (AP) | 🟡 Real SRTM DEM fetched; release discharge = operator input |
+| `mullaperiyar_dam` | Periyar / Mullaperiyar Dam (Kerala/TN) | 🟡 Real SRTM DEM fetched; documented specs only, breach discharge = operator input |
+| `tehri_dam` | Bhagirathi / Tehri Dam (Uttarakhand) | 🟡 Real SRTM DEM fetched; documented specs only, breach discharge = operator input |
 
-DEMs for the non-Kosi entries are fetched programmatically from the public
+DEMs for every non-Kosi entry are fetched programmatically from the public
 AWS `elevation-tiles-prod` SRTM bucket via `scripts/fetch_dem_aoi.py` — same
-pipeline as the Kosi DEM. No physical breach parameter is ever invented: if a
-value isn't in public documentation the library shows **"⚠️ Parameter
-required"** and `POST /scenarios/run-generic` refuses (HTTP 422) until the
+pipeline as the Kosi DEM. Structural specs and (where they exist) discharge
+figures are sourced from public records — see `data/dam_config/*.json` for the
+per-case citations. No physical breach parameter is ever invented: if a value
+isn't in public documentation the case config carries `"breach_discharge":
+null, "parameter_status": "requires_input"`, the library shows **"⚠️ Parameter
+required"**, and `POST /scenarios/run-generic` refuses (HTTP 422) until the
 operator supplies it.
 
 ## Event Types (Deliverable i)

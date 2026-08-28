@@ -7,7 +7,14 @@ import { fetchScenarioLibrary, runGenericScenario } from "../api";
  * breach parameters that aren't publicly sourced are shown as "⚠️ Parameter
  * required" and block the run — never invented.
  */
-const STATUS_ICON = { READY: "✅", PENDING: "🟡", MISSING: "❌", PARAM_REQUIRED: "⚠️" };
+const STATUS_ICON = {
+  READY: "✅",
+  PENDING: "🟡",
+  MISSING: "❌",
+  PARAM_REQUIRED: "⚠️",
+  NOT_STAGED: "◦",
+};
+const STATUS_LABEL = { NOT_STAGED: "not staged for this AOI" };
 
 export default function ScenarioLibrary({ onLoadScenario, onEnterView }) {
   const [entries, setEntries] = useState(null);
@@ -27,7 +34,7 @@ export default function ScenarioLibrary({ onLoadScenario, onEnterView }) {
 
   const setField = (id, k, v) => setForm((f) => ({ ...f, [id]: { ...f[id], [k]: v } }));
 
-  const handleLoadKosi = (entry) => {
+  const handleLoadValidated = (entry) => {
     onLoadScenario?.(entry.id);
     onEnterView?.("full");
   };
@@ -113,8 +120,8 @@ export default function ScenarioLibrary({ onLoadScenario, onEnterView }) {
 
               <div style={{ display: "flex", gap: 16, flexWrap: "wrap", margin: "12px 0", fontSize: 12 }}>
                 {Object.entries(e.data_status).map(([k, v]) => (
-                  <span key={k} style={{ color: "#bbb" }}>
-                    {STATUS_ICON[v] || "•"} {k}: <strong style={{ color: "#ddd" }}>{v}</strong>
+                  <span key={k} style={{ color: v === "NOT_STAGED" ? "#667" : "#bbb" }}>
+                    {STATUS_ICON[v] || "•"} {k}: <strong style={{ color: v === "NOT_STAGED" ? "#889" : "#ddd" }}>{STATUS_LABEL[v] || v}</strong>
                   </span>
                 ))}
               </div>
@@ -122,13 +129,13 @@ export default function ScenarioLibrary({ onLoadScenario, onEnterView }) {
               <div style={{ fontSize: 12, color: "#999", marginBottom: 12 }}>{e.notes}</div>
 
               {e.validated ? (
-                <button className="sb-run-btn" onClick={() => handleLoadKosi(e)}>
+                <button className="sb-run-btn" onClick={() => handleLoadValidated(e)}>
                   📂 Load Validated Simulation
                 </button>
               ) : (
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 12 }}>
-                  <div style={{ fontSize: 12, color: "#ffb020", marginBottom: 8 }}>
-                    Breach hydraulics for this structure: <strong>{bp.source}</strong>
+                  <div style={{ fontSize: 12, color: "#8aa0b4", marginBottom: 8, lineHeight: 1.5 }}>
+                    <strong style={{ color: "#cfd8e3" }}>Breach hydraulics — operator input:</strong> {bp.source}
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 8 }}>
                     <label style={lbl}>Peak discharge (m³/s)

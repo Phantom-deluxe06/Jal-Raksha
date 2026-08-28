@@ -197,10 +197,13 @@ export default function FloodMap({
       <MapContainer center={center} zoom={10} zoomControl={false} style={{ height: "100%", width: "100%" }}>
         <ZoomControl position="bottomleft" />
         
-        {/* Base Map Tiles */}
+        {/* Base map — CARTO free public "dark_all" CDN. No API key, no account,
+            no watermark. (basemaps.cartocdn.com is CARTO's free tier; it is NOT
+            the authenticated carto.com Maps API.) Verified keyless: HTTP 200. */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          subdomains="abcd"
         />
         {/* Optional Sentinel-2 Optical Base Layer Overlay */}
         {baseLayer === "satellite" && (

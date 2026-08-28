@@ -216,7 +216,9 @@ export class InfrastructureLayer {
         outlineWidth: 2,
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
         pixelOffset: new Cesium.Cartesian2(0, -15),
-        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 25000), // Hide when camera > 25km away
+        // Only reveal name labels on a close approach so the default (wide,
+        // oblique) demo view is not cluttered along the bottom edge.
+        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 18000),
         id: { type: "settlement", name, population, lon: coords[0], lat: coords[1] }
       });
 

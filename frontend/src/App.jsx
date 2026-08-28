@@ -29,6 +29,7 @@ export default function App() {
   const [running, setRunning] = useState(false);
   const [mode, setMode] = useState("overview"); // "overview" | "builder" | "full" | "impact" | "instant" | "sph" | "twin" | "realtime"
   const [viewMode, setViewMode] = useState("2d"); // "2d" | "3d"
+  const [cesiumCinematic, setCesiumCinematic] = useState(false);
   const [prediction, setPrediction] = useState(null);
   const [predictedLocation, setPredictedLocation] = useState(null);
   const [realtimeData, setRealtimeData] = useState(null);
@@ -64,6 +65,10 @@ export default function App() {
   useEffect(() => {
     load(activeJobId);
   }, [activeJobId]);
+
+  useEffect(() => {
+    if (viewMode !== "3d") setCesiumCinematic(false);
+  }, [viewMode]);
 
   const handleRerun = async () => {
     setRunning(true);
@@ -106,9 +111,14 @@ export default function App() {
   const handleScenarioSelect = (newJobId) => {
     setActiveJobId(newJobId);  };
 
-  const handleJuryPreset = ({ preset }) => {
-    // Pre-cached bundle already confirmed available by JuryDemoBar.
-    setActiveJobId(preset.id);
+  const handleJuryScenario = (jobId, ready) => {
+    if (!ready) {
+      // Simulation pending -> open the Scenario Library so the operator can
+      // supply parameters and run it. Never surface a 404.
+      setMode("library");
+      return;
+    }
+    setActiveJobId(jobId);
     setPrediction(null);
     setPredictedLocation(null);
     setSelectedPoint(null);
@@ -164,7 +174,7 @@ export default function App() {
       <SideNav mode={mode} setMode={setMode} />
 
       <div className="app-main">
-        <JuryDemoBar activeJobId={activeJobId} onSelectPreset={handleJuryPreset} />
+        <JuryDemoBar activeJobId={activeJobId} onSelectScenario={handleJuryScenario} />
         {mode === "overview" ? (
           <Overview key="overview" meta={meta} onEnter={setMode} />
         ) : mode === "builder" ? (
@@ -193,20 +203,22 @@ export default function App() {
           <div key={mode} className={`workspace ${showMap ? "workspace-map" : "workspace-dashboard"}`}>
             {showMap && (
               <div className="map-pane">
-                <div className="viewport-toggle">
-                  <button
-                    className={viewMode === "2d" ? "active" : ""}
-                    onClick={() => setViewMode("2d")}
-                  >
-                    🗺️ 2D Map
-                  </button>
-                  <button
-                    className={viewMode === "3d" ? "active" : ""}
-                    onClick={() => setViewMode("3d")}
-                  >
-                    🌐 3D Terrain
-                  </button>
-                </div>
+                {!(viewMode === "3d" && cesiumCinematic) && (
+                  <div className="viewport-toggle">
+                    <button
+                      className={viewMode === "2d" ? "active" : ""}
+                      onClick={() => setViewMode("2d")}
+                    >
+                      🗺️ 2D Map
+                    </button>
+                    <button
+                      className={viewMode === "3d" ? "active" : ""}
+                      onClick={() => setViewMode("3d")}
+                    >
+                      🌐 3D Terrain
+                    </button>
+                  </div>
+                )}
 
                 {viewMode === "2d" ? (
                   <FloodMap
@@ -236,10 +248,13 @@ export default function App() {
                     frameIndex={frameIndex}
                     setFrameIndex={setFrameIndex}
                     jobId={activeJobId}
+                    onCinematicChange={setCesiumCinematic}
                   />
                 )}
-                {(mode === "full" || mode === "instant") && <Legend />}
-                {mode === "full" && meta.frames && (                  <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />
+                {/* 3D view carries its own merged legend; 2D uses this one */}
+                {(mode === "full" || mode === "instant") && viewMode === "2d" && <Legend />}
+                {mode === "full" && meta.frames && !(viewMode === "3d" && cesiumCinematic) && (
+                  <Timeline frames={meta.frames} index={frameIndex} onChange={setFrameIndex} />
                 )}
               </div>
             )}
