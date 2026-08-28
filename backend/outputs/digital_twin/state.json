@@ -8,33 +8,43 @@
       "cwc_type": "Inflow"
     },
     "current_reading": {
-      "water_level_m": 75.38,
-      "data_time_ist": "2026-08-27T08:00:00",
-      "age_hours": 24.3,
+      "water_level_m": 75.35,
+      "data_time_ist": "2026-08-28T08:00:00",
+      "age_hours": 1.4,
       "is_live": true,
       "reference_levels_m": {
         "frl": 74.69,
         "mwl": 79.26
       },
       "level_vs_reference": {
-        "above_frl_m": 0.69,
-        "below_mwl_m": 3.88
+        "above_frl_m": 0.66,
+        "below_mwl_m": 3.91
       }
     },
     "other_datatypes_seen": {},
     "update_cadence": {
       "median_interval_hours": 24.0,
-      "n_samples": 14,
-      "description": "~daily (median 24.0h between readings over last 14 samples)"
+      "n_samples": 15,
+      "description": "~daily (median 24.0h between readings over last 15 samples)"
     },
     "source": {
       "name": "Central Water Commission (CWC), Government of India -- Flood Forecasting System",
       "url": "https://ffs.india-water.gov.in",
       "note": "Unofficial/undocumented public JSON API discovered by inspecting the CWC dashboard's own network requests -- no auth required, but no published API contract either; could change without notice."
     },
-    "synced_at_utc": "2026-08-28T02:48:14.624258"
+    "synced_at_utc": "2026-08-28T03:51:56.592418"
   },
   "sync_log": [
+    {
+      "attempted_at_utc": "2026-08-28T03:51:56.592418",
+      "success": true,
+      "error": null
+    },
+    {
+      "attempted_at_utc": "2026-08-28T03:48:17.489418",
+      "success": true,
+      "error": null
+    },
     {
       "attempted_at_utc": "2026-08-28T02:48:14.624258",
       "success": true,
@@ -123,16 +133,6 @@
     },
     {
       "attempted_at_utc": "2026-08-27T16:39:28.162197",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T16:05:46.893629",
-      "success": true,
-      "error": null
-    },
-    {
-      "attempted_at_utc": "2026-08-27T15:05:41.674280",
       "success": true,
       "error": null
     }

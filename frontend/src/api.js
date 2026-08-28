@@ -41,6 +41,28 @@ export function ue5PackageUrl(jobId = DEFAULT_JOB_ID) {
   return `${API_BASE}/api/export/${jobId}/ue5-package`;
 }
 
+// Fetch a GIS vector export as a Blob. format: "geojson" | "kml" | "shapefile"
+export async function exportVectorLayer(jobId = DEFAULT_JOB_ID, format = "geojson") {
+  const res = await fetch(`${API_BASE}/api/export/${jobId}/${format}`);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `export failed: ${res.status}`);
+  }
+  return res.blob();
+}
+
+// Trigger a browser download of a Blob.
+export function downloadFile(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 export async function fetchHydroComparison(jobId = DEFAULT_JOB_ID) {
   const res = await fetch(`${API_BASE}/api/simulation/${jobId}/hydro-comparison`);
   if (!res.ok) {
@@ -210,4 +232,15 @@ export async function fetchSarComparison(jobId = DEFAULT_JOB_ID, options = {}) {
     throw new Error(body.detail || `SAR comparison failed: ${res.status}`);
   }
   return res.json();
+}
+
+export function downloadFile(blob, filename) {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
 }

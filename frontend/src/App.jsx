@@ -14,6 +14,7 @@ import { fetchResult, frameUrl, triggerRun, queryPointDepth, fetchImpactAnalysis
 import ScenarioBuilder from "./components/ScenarioBuilder";
 import ScenarioLibrary from "./components/ScenarioLibrary";
 import ImpactDashboard from "./components/ImpactDashboard";
+import ReportsExport from "./components/ReportsExport";
 import JuryDemoBar from "./components/JuryDemoBar";
 import "./App.css";
 
@@ -200,6 +201,12 @@ export default function App() {
             frameIndex={frameIndex}
             onSelectSettlement={(s) => setSelectedSettlement(s)}
             onEnterView={setMode}
+          />
+        ) : mode === "export" ? (
+          <ReportsExport
+            key="export"
+            jobId={activeJobId}
+            meta={meta}
           />
         ) : (
           <div key={mode} className={`workspace ${showMap ? "workspace-map" : "workspace-dashboard"}`}>

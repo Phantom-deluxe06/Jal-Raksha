@@ -1,3 +1,4 @@
+import { FileText } from "lucide-react";
 import {
   IconHome,
   IconSliders,
@@ -15,6 +16,7 @@ const ITEMS = [
   { id: "builder", label: "Scenario Builder", Icon: IconSliders, accent: "builder" },
   { id: "full", label: "Full SWE Sim", Icon: IconWaves },
   { id: "impact", label: "Impact Analysis", Icon: IconBuilding, accent: "impact" },
+  { id: "export", label: "Reports & Export", Icon: FileText },
   { id: "instant", label: "Instant AI", Icon: IconBolt },
   { id: "sph", label: "SPH Compare", Icon: IconAtom },
   { id: "twin", label: "Live Twin", Icon: IconGauge },
